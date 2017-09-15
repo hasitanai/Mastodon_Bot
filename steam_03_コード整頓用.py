@@ -27,7 +27,7 @@ mastodon = Mastodon(
 
 class men_toot(StreamListener):
     def on_notification(self, notification):
-        global timer_hello
+        bot.toimer_hello = timer_hello
         print("●通知が来たよ！！")     
         if notification["type"] == "mention":
             status = notification["status"]
@@ -42,21 +42,18 @@ class men_toot(StreamListener):
             print("---")
             if mentions:
                 if re.compile("おは|おあひょ").search(status['content']):
-                    global toot_now
-                    global g_vis
                     if account["acct"] == "lamazeP":
                         timer_hello = 1
                         print("test")
                         pass
                     toot_now = "@"+str(account["acct"])+" "+"（*'∀'人）おあひょーーーー♪"
                     g_vis = status["visibility"]
-                    t = threading.Timer(8 ,toot)
+                    t = threading.Timer(8 ,bot.toot[toot_now,g_vis])
                     t.start()
         pass
  
 class res_toot(StreamListener):
     def on_update(self, status):
-        global g_sta
         print("===タイムライン===")
         account = status["account"]
         mentions = status["mentions"]
@@ -66,12 +63,12 @@ class res_toot(StreamListener):
         print((re.sub("<p>|</p>", "", str(content).translate(non_bmp_map))))
         print((re.sub("<p>|</p>", "", str(mentions).translate(non_bmp_map))))
         print("   ")
-        g_sta = status
-        check01()
-        fav01()
-        res01()
-        res06()
-        check02()
+        bot.g_sta = status
+        bot.check01()
+        bot.fav01()
+        bot.res01()
+        bot.res06()
+        bot.check02()
         pass
 
     def on_delete(self, status_id):
@@ -89,27 +86,26 @@ class res_toot(StreamListener):
     """
 
 class bot():
-    
-    timer_toot = 0
-    timer_hello = 1
-    listener = res_toot()
-    u = threading.Timer(0 ,t_local)
-    l = threading.Timer(0 ,t_user)
-    u.start()
-    l.start()
+    def _init_(self):
+    self.timer_toot = 0
+    self.timer_hello = 1
+    self.listener = res_toot()
+    self.u = threading.Timer(0 ,t_local)
+    self.l = threading.Timer(0 ,t_user)
+    self.u.start()
+    self.l.start()
+    self.g_sta = None
+    self.n_sta = None
     
     def toot(toot_now,g_vis):
         mastodon.status_post(status=toot_now, visibility=g_vis)
         """visibility   これで公開範囲を指定できるよ！: public, unlisted, private, direct"""
 
     def res01():
-            global timer_toot
-            global g_sta
-            global timer_hello
-            status = g_sta
+            status = bot.g_sta
             account = status["account"]
             if account["acct"] != "JC":
-                if timer_hello == 0:
+                if self.timer_hello == 0:
                     if re.compile("ももな(.*)おは|ももな(.*)おあひょ").search(status['content']):
                         print("○hitしました♪")
                         print("○あいさつします（*'∀'人）")
@@ -117,7 +113,7 @@ class bot():
                         g_vis = "public"
                         t1 = threading.Timer(20 ,toot,[toot_now,g_vis])
                         t1.start()
-                        timer_hello = 1
+                        self.timer_hello = 1
                 else:
                     if re.compile("寝(ます|る|マス)(.*)[ぽお]や[すし]み|ももな(.*)[ぽお]や[すし]み").search(status['content']):
                         print("○hitしました♪")
@@ -161,9 +157,7 @@ class bot():
                             t1.start() 
 
     def res06():
-            global timer_toot
-            global g_sta
-            status = g_sta
+            status = bot.g_sta
             account = status["account"]
             if account["acct"] != "JC":
                 if re.compile("(.+)とマストドン(どちら|どっち)が大切か分かってない").search(status['content']):
@@ -173,21 +167,18 @@ class bot():
                     g_vis = "public"
                     t1 = threading.Timer(5 ,toot,[toot_now,g_vis])
                     t1.start()
-                    timer_hello = 1
+                    self.timer_hello = 1
 
 
     def fav01(): 
-        global g_sta
-        global n_sta
-        status = g_sta
+        status = bot.g_sta
         if re.compile("ももな").search(status['content']):
             n_sta = status
             v = threading.Timer(1 ,fav_now)
             v.start()
 
     def check01():
-        global g_sta
-        status = g_sta
+        status = bot.g_sta
         account = status["account"]
         created_at = status['created_at']
         non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
@@ -196,22 +187,19 @@ class bot():
         f.close() # ファイルを閉じる
 
     def check02():
-        global g_sta
-        status = g_sta
+        status = bot.g_sta
         account = status["account"]
         created_at = status['created_at']
         f = codecs.open('at_time\\'+account["acct"]+'.txt', 'w', 'UTF-8') # 書き込みモードで開く
         f.write(str(status["created_at"])) # \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z
         f.close() # ファイルを閉じる
 
-    def time_res():
-        global timer_toot    
-        timer_toot = 0
+    def time_res():   
+        bot.timer_toot = 0
         print("「(๑•̀ㅁ•́๑)✧＜tootｽﾃﾝﾊﾞｰｲ」")
 
     def fav_now(): #ニコります
-        global n_sta
-        fav = n_sta["id"]
+        fav = bot.n_sta["id"]
         mastodon.status_favourite(fav)
         print("◇Fav")
 
