@@ -90,10 +90,6 @@ class bot():
     self.timer_toot = 0
     self.timer_hello = 1
     self.listener = res_toot()
-    self.u = threading.Timer(0 ,t_local)
-    self.l = threading.Timer(0 ,t_user)
-    self.u.start()
-    self.l.start()
     self.g_sta = None
     self.n_sta = None
     
@@ -222,4 +218,7 @@ class bot():
         mastodon.user_stream(listener)
 
 if __name__ == '__main__':
-    bot()
+    u = threading.Timer(0 ,bot.t_local)
+    l = threading.Timer(0 ,bot.t_user)
+    u.start()
+    l.start()
