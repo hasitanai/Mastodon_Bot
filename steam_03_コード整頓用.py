@@ -234,7 +234,4 @@ class bot():
         mastodon.user_stream(listener)
 
 if __name__ == '__main__':
-
-#    toot()　#上のStreamingAPIをサブスレッドで動かしながらこっちえお動かすか、別々で動かそうか迷うやつね。    
-
-
+    bot()
