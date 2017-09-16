@@ -56,7 +56,7 @@ class men_toot(StreamListener):
             v.start()
         elif notification["type"] == "favourite":
             account = notification["account"]
-            print((re.sub("<p>|</p>", "", str(account["display_name"]).translate(non_bmp_map)+ "@" + str(account["acct"]).translate(non_bmp_map))))
+            print((re.sub("<p>|</p>", "", str(account["display_name"]).translate(non_bmp_map)+ "@" + str(account["acct"]))))
             print("₍₍ ◝(●˙꒳˙●)◜ ₎₎ニコってくれたよーーーー！！")
             bot.thank(account,32)
             print("---")
@@ -185,6 +185,8 @@ class bot():
     def fav01(status): 
         if re.compile("ももな").search(status['content']):
             bot.n_sta = status
+            account=status["account"]
+            bot.thank(account,8)
             v = threading.Timer(5 ,bot.fav_now)
             v.start()
 
