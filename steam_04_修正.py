@@ -142,9 +142,9 @@ class bot():
                             print("○初あいさつします（*'∀'人）")
                             if account['statuses_count'] <= 2:
                                 if account['display_name'] == "":
-                                    toot_now = account['acct']+"\n"+'ようこそようこそーーーー♪'
+                                    toot_now = "@"+str(account["acct"])+"\n"+account['acct']+"\n"+'ようこそようこそーーーー♪'
                                 else:
-                                    toot_now = account['display_name']+"\n"+'ようこそようこそーーーー♪'
+                                    toot_now = "@"+str(account["acct"])+"\n"+account['display_name']+"\n"+'ようこそようこそーーーー♪'
                             else:                               
                                 if account['display_name'] == "":
                                     toot_now = account['acct']+"\n"+'いらっしゃーーーーい♪'
