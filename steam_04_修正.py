@@ -56,7 +56,7 @@ class men_toot(StreamListener):
             v.start()
         elif notification["type"] == "favourite":
             account = notification["account"]
-            print((re.sub("<p>|</p>", "", str(account["display_name"]).translate(non_bmp_map)+ "@" + str(account["acct"]))))
+            print((re.sub("<p>|</p>", "", str(account["display_name"])+ "@" + str(account["acct"]))))
             print("₍₍ ◝(●˙꒳˙●)◜ ₎₎ニコってくれたよーーーー！！")
             bot.thank(account,32)
             print("---")
@@ -282,7 +282,22 @@ class count():
                     f.write(str(y))
                     f.close()
 
-    def emo02():
+    def emo02(point):
+        sleep(time)
+        data_dir_path = u"./thank/"
+        file_list = os.listdir(r'./thank/')
+        for file_name in file_list:
+            root, ext = os.path.splitext(file_name)
+            if ext == u'.txt':
+                abs_name = data_dir_path + '/' + file_name
+                f = open(abs_name, 'r')
+                x = f.read()
+                y = int(x)
+                y += point
+                f.close()
+                f = open(abs_name, 'w')
+                f.write(str(y))
+                f.close()
         pass
 
 
