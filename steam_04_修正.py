@@ -13,10 +13,12 @@ import json
 import codecs
 import random
 from datetime import datetime
+import os
 
 warnings.simplefilter("ignore", UnicodeWarning)
 
 """ログイントークン取得済みで動かしてね（*'∀'人）"""
+
 url_ins = open("instance.txt").read()
 
 mastodon = Mastodon(
@@ -27,8 +29,6 @@ mastodon = Mastodon(
 
 class men_toot(StreamListener):
     def on_notification(self, notification):
-        bot.toimer_hello = timer_hello
-        print("●通知が来たよ！！")     
         if notification["type"] == "mention":
             status = notification["status"]
             account = status["account"]
@@ -48,8 +48,12 @@ class men_toot(StreamListener):
                         pass
                     toot_now = "@"+str(account["acct"])+" "+"（*'∀'人）おあひょーーーー♪"
                     g_vis = status["visibility"]
-                    t = threading.Timer(8 ,bot.toot[toot_now,g_vis])
+                    t = threading.Timer(8 ,bot.toot,[toot_now,g_vis])
                     t.start()
+        elif notification["type"] == "favourite":
+            account = notification["account"]
+            bot.thank(account)
+            print("---")
         pass
  
 class res_toot(StreamListener):
@@ -63,60 +67,47 @@ class res_toot(StreamListener):
         print((re.sub("<p>|</p>", "", str(content).translate(non_bmp_map))))
         print((re.sub("<p>|</p>", "", str(mentions).translate(non_bmp_map))))
         print("   ")
-        bot.g_sta = status
-        bot.check01()
-        bot.fav01()
-        bot.res01()
-        bot.res06()
-        bot.check02()
+        bot.check01(status)
+        bot.fav01(status)
+        bot.res01(status)
+        bot.res06(status)
+        bot.check02(status)
+        f = codecs.open('log\\'+'log_'+'.txt', 'a', 'UTF-8')
+        f.write(str(status))
+        f.close()
         pass
 
     def on_delete(self, status_id):
         print("===削除されました===")
 
-    """
-        global toot_now
-        global g_vis
-        toot_now = ":police_car: :police_car: :police_car:  ＜ｳ~ｳ~\nトゥー消し警察です！！！！\nToot番号「"+str(status_id)+"」を消した人ーー！！\n:gun: (๑•̀ㅁ•́๑)✧腹ばいになり手足を広げろーー！"
-        g_vis = "unlisted"
-        t = threading.Timer(8 ,toot)
-        t.start()
-        print(status_id)
-        pass
-    """
-
 class bot():
     def _init_(self):
-    self.timer_toot = 0
-    self.timer_hello = 1
-    self.listener = res_toot()
-    self.g_sta = None
-    self.n_sta = None
+        self.g_sta = None
+        self.n_sta = None
     
     def toot(toot_now,g_vis):
         mastodon.status_post(status=toot_now, visibility=g_vis)
         """visibility   これで公開範囲を指定できるよ！: public, unlisted, private, direct"""
 
-    def res01():
-            status = bot.g_sta
+    def res01(status):
             account = status["account"]
             if account["acct"] != "JC":
-                if self.timer_hello == 0:
+                if count.timer_hello == 0:
                     if re.compile("ももな(.*)おは|ももな(.*)おあひょ").search(status['content']):
                         print("○hitしました♪")
                         print("○あいさつします（*'∀'人）")
                         toot_now = "(๑•̀ㅁ•́๑)✧おはありでーーーーす♪"
                         g_vis = "public"
-                        t1 = threading.Timer(20 ,toot,[toot_now,g_vis])
-                        t1.start()
-                        self.timer_hello = 1
+                        t1 = threading.Timer(20 ,bot.toot,[toot_now,g_vis])
+                        t1.start() 
+                        count.timer_hello = 1
                 else:
                     if re.compile("寝(ます|る|マス)(.*)[ぽお]や[すし]み|ももな(.*)[ぽお]や[すし]み").search(status['content']):
                         print("○hitしました♪")
                         print("○おやすみします（*'∀'人）")
                         toot_now = account['display_name']+"\n"+'(ृ 　 ु *`ω､)ु ⋆゜おやすみーーーー♪'
                         g_vis = "public"
-                        t1 = threading.Timer(3 ,toot,[toot_now,g_vis])
+                        t1 = threading.Timer(5 ,bot.toot,[toot_now,g_vis])
                         t1.start() 
                     else:
                         print("○hitしました♪")
@@ -134,26 +125,36 @@ class bot():
                             print(delta)
                             if delta.total_seconds() >= 10800:
                                 if now_time.hour in range(3,9):
-                                    to_r = rand_w('time\\kon.txt')
+                                    to_r = bot.rand_w('time\\kon.txt')
                                 elif now_time.hour in range(9,20):
-                                    to_r = rand_w('time\\kob.txt')
+                                    to_r = bot.rand_w('time\\kob.txt')
                                 else:
-                                    to_r = rand_w('time\\oha.txt')
+                                    to_r = bot.rand_w('time\\oha.txt')
                                 print("○あいさつします（*'∀'人）")
-                                toot_now = account['display_name']+"\n"+to_r
-                                #g_vis = "unlisted"
+                                if account['display_name'] == "":
+                                    toot_now = account['acct']+"\n"+to_r
+                                else:
+                                    toot_now = account['display_name']+"\n"+to_r
                                 g_vis = "public"
-                                t1 = threading.Timer(3 ,toot,[toot_now,g_vis])
-                                t1.start()
+                                t1 = threading.Timer(5 ,bot.toot,[toot_now,g_vis])
+                                t1.start() 
                         except:    
-                            print("○あいさつします（*'∀'人）")
-                            toot_now = account['display_name']+"\n"+'いらっしゃい♪'
+                            print("○初あいさつします（*'∀'人）")
+                            if account['statuses_count'] <= 2:
+                                if account['display_name'] == "":
+                                    toot_now = account['acct']+"\n"+'ようこそようこそーーーー♪'
+                                else:
+                                    toot_now = account['display_name']+"\n"+'ようこそようこそーーーー♪'
+                            else:                               
+                                if account['display_name'] == "":
+                                    toot_now = account['acct']+"\n"+'いらっしゃーーーーい♪'
+                                else:
+                                    toot_now = account['display_name']+"\n"+'いらっしゃーーーーい♪'
                             g_vis = "public"
-                            t1 = threading.Timer(3 ,toot,[toot_now,g_vis])
+                            t1 = threading.Timer(5 ,bot.toot,[toot_now,g_vis])
                             t1.start() 
 
-    def res06():
-            status = bot.g_sta
+    def res06(status):
             account = status["account"]
             if account["acct"] != "JC":
                 if re.compile("(.+)とマストドン(どちら|どっち)が大切か分かってない").search(status['content']):
@@ -161,20 +162,18 @@ class bot():
                     print("○だったら")
                     toot_now = (re.sub("<p>|とマストドン(.*)", "", str(status['content'])))+"しながらマストドンして❤"
                     g_vis = "public"
-                    t1 = threading.Timer(5 ,toot,[toot_now,g_vis])
+                    t1 = threading.Timer(5 ,bot.toot,[toot_now,g_vis])
                     t1.start()
-                    self.timer_hello = 1
+                    count.timer_hello = 1
 
 
-    def fav01(): 
-        status = bot.g_sta
+    def fav01(status): 
         if re.compile("ももな").search(status['content']):
-            n_sta = status
-            v = threading.Timer(1 ,fav_now)
+            bot.n_sta = status
+            v = threading.Timer(1 ,bot.fav_now)
             v.start()
 
-    def check01():
-        status = bot.g_sta
+    def check01(status):
         account = status["account"]
         created_at = status['created_at']
         non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
@@ -182,13 +181,28 @@ class bot():
         f.write(str(status["account"]).translate(non_bmp_map)) # アカウント情報の更新
         f.close() # ファイルを閉じる
 
-    def check02():
-        status = bot.g_sta
+    def check02(status):
         account = status["account"]
         created_at = status['created_at']
         f = codecs.open('at_time\\'+account["acct"]+'.txt', 'w', 'UTF-8') # 書き込みモードで開く
         f.write(str(status["created_at"])) # \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z
         f.close() # ファイルを閉じる
+
+    def thank(account):
+        path = 'thank\\'+account["acct"]+'.txt'
+        if os.path.exists(path):
+            f = open(path,'r')
+            x = f.read()
+            y = int(x)
+            y += 1
+            f.close()
+            f = open(path,'w')
+            f.write(str(y))
+            f.close()
+        else:
+            f = open(path,'w')
+            f.write("1")
+            f.close() # ファイルを閉じる
 
     def time_res():   
         bot.timer_toot = 0
@@ -217,7 +231,16 @@ class bot():
         listener = men_toot()
         mastodon.user_stream(listener)
 
+class count():
+        timer_toot = 0
+        timer_hello = 0
+
+
+def go():
+    count.timer_hello = 1
+
 if __name__ == '__main__':
+    count()
     u = threading.Timer(0 ,bot.t_local)
     l = threading.Timer(0 ,bot.t_user)
     u.start()
