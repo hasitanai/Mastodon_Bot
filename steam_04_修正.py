@@ -14,6 +14,7 @@ import codecs
 import random
 from datetime import datetime
 import os
+import traceback
 
 warnings.simplefilter("ignore", UnicodeWarning)
 
@@ -60,24 +61,9 @@ class men_toot(StreamListener):
                     g_vis = status["visibility"]
                     t = threading.Timer(8, bot.toot, [toot_now, g_vis, status['id']])
                     t.start()
-                elif re.compile("1d(\d*)").search(status['content']):
-                    dice = (re.sub("<span(.+)span>|<p>|</p>", "", str(status['content']).translate(non_bmp_map)))
-                    m = re.sub("(.*)1d", "", str(dice))
-                    m = re.sub("[^\d]", "", m)
-                    if re.compile("(\d*):(\d*)").search(dice):
-                        s = re.sub("(.*)1d(\d*):", "", str(dice))
-                        m = re.sub(":(\d*)", "", str(m))   
-                    m = int(m)
-                    print("○サイコロ振ります（*'∀'人）")
-                    num = random.randint(1, m)
-                    num = str(num)
-                    try:
-                        if int(num) <= int(s):
-                            result="ｺﾛｺﾛ……"+num,"成功だよーー！！"
-                        else:
-                            result="ｺﾛｺﾛ……"+num,"失敗だよ……"
-                    except:
-                        result="ｺﾛｺﾛ……"+num
+                elif re.compile("\d+d(\d*)").search(status['content']):
+                    inp = (re.sub("<span(.+)span>|<p>|</p>", "", str(status['content']).translate(non_bmp_map)))
+                    result = bot.dice(inp)
                     g_vis = status["visibility"]
                     toot_now="@"+str(account["acct"])+"\n"+result
                     t = threading.Timer(5, bot.toot, [toot_now, g_vis, status['id']])
@@ -112,7 +98,7 @@ class res_toot(StreamListener):
         bot.fav01(status)
         bot.res01(status)
         bot.res06(status)
-        #bot.dice(status)
+        bot.res07(status)
         bot.check02(status)
         #f = codecs.open('log\\' + 'log_' + '.txt', 'a', 'UTF-8')
         #f.write(str(status) + "\n")
@@ -132,30 +118,18 @@ class bot():
         mastodon.status_post(status=toot_now, visibility=g_vis, in_reply_to_id=rep)
         """visibility   これで公開範囲を指定できるよ！: public, unlisted, private, direct"""
 
-    def dice(status):
-        if re.compile("ももな(.*)1d(\d*)").search(status['content']):              
-            print("○hitしました♪") 
-            account = status["account"]
+    def res07(status):
+        if re.compile("ももな(.*)[1-5](\d*)").search(status['content']):
+            print("○hitしました♪")
             non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
-            dice = (re.sub("<p>|</p>", "", str(status["content"]).translate(non_bmp_map)))
-            m = re.sub("(.*)1d", "", str(dice))
-            m = re.sub("[^\d]", "", m)
-            if re.compile("(\d*):(\d*)").search(dice):
-                s = re.sub("1d(\d*):", "", str(dice))
-                m = re.sub(":(\d*)", "", str(m))   
-            m = int(m)
-            print("○サイコロ振ります（*'∀'人）")
-            num = random.randint(1, m)
-            num = str(num)
-            try:
-                if int(num) <= int(s):
-                    result="ｺﾛｺﾛ……"+num,"成功だよーー！！"
-                else:
-                    result="ｺﾛｺﾛ……"+num,"失敗だよ……"
-            except:
-                result="ｺﾛｺﾛ……"+num
+            coro = (re.sub("<p>|</p>", "", str(status['content']).translate(non_bmp_map)))
+            toot_now = bot.dice(coro)
             g_vis = status["visibility"]
-            toot_now="@"+str(account["acct"])+"\n"+result
+            t = threading.Timer(5, bot.toot, [toot_now, g_vis])
+            t.start()
+        elif re.compile("ももな(.*)([6-9]|\d{2})d(\d*)").search(status['content']):
+            toot_now = "６回以上の回数は畳む内容だからメンションの方で送ってーー！！"
+            g_vis = status["visibility"]
             t = threading.Timer(5, bot.toot, [toot_now, g_vis])
             t.start()
 
@@ -338,6 +312,55 @@ class bot():
         listener = men_toot()
         mastodon.user_stream(listener)
 
+    def dice(inp):
+        l=[]
+        n=[]
+        x=0
+        try:
+            r = re.search("\d+[dD]", str(inp))
+            r = re.sub("[dD]", "", str(r.group()))
+            if re.compile("(\d*):(\d*)").search(inp):
+                s = re.sub("(.*)[dD](\d*):", "", str(inp))
+                s = re.sub("[^\d]", "", str(s))
+                print(str(s))
+            m = re.search("[dD](\d*)", str(inp))
+            m = re.sub("[dD]", "", str(m.group(1)))
+            m = int(m)
+            r = int(r)
+            if m == 0:
+                result = "面が0の数字は振れないよ……"
+            elif r >= 51:
+                result = "回数が長すぎるとめんどくさいから振らないよ……？"
+            elif r == 0:
+                result = "えっ……回数0？　じゃあ振らなーーーーい！"
+            else:
+                print(str(r)+"回"+str(m)+"面")
+                print("○サイコロ振ります（*'∀'人）")
+                for var in range(0, r):
+                    num = random.randint(1, m)
+                    num = str(num)
+                    try:
+                        if int(num) <= int(s):
+                            result="ｺﾛｺﾛ……"+num+"成功だよーー！！"
+                        else:
+                            result="ｺﾛｺﾛ……"+num+"失敗だよ……"
+                    except:
+                        result="ｺﾛｺﾛ……"+num
+                    l.append(result)
+                    n.append(int(num))
+                    x += int(num)
+                if r != 1:
+                    result=str(n)+" = "+str(x)
+                    l.append(result)
+                print(l)
+                result = '\n'.join(l)
+                if len(result) > 400:
+                    result = "文字数制限に引っ掛かっちゃった……"
+        except:
+            traceback.print_exc()
+            print("ちーん（昇天）")
+            result="ごめんね、その数字だとサイコロ振れないの……"
+        return result
 
 class count():
     timer_toot = 0
@@ -378,7 +401,6 @@ class count():
                 f.write(str(y))
                 f.close()
         pass
-
 
 def go():
     count.timer_hello = 1
