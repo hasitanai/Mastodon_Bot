@@ -61,7 +61,7 @@ class men_toot(StreamListener):
                     g_vis = status["visibility"]
                     t = threading.Timer(8, bot.toot, [toot_now, g_vis, status['id']])
                     t.start()
-                elif re.compile("\d+d(\d*)").search(status['content']):
+                elif re.compile("\d+[dD]\d+").search(status['content']):
                     inp = (re.sub("<span(.+)span>|<p>|</p>", "", str(status['content']).translate(non_bmp_map)))
                     result = bot.dice(inp)
                     g_vis = status["visibility"]
@@ -119,8 +119,9 @@ class bot():
         """visibility   これで公開範囲を指定できるよ！: public, unlisted, private, direct"""
 
     def res07(status):
-        if re.compile("ももな(.*)[1-5][dD](\d*)").search(status['content']):
+        if re.compile("ももな(.*)[1-5][dD]\d+").search(status['content']):
             print("○hitしました♪")
+            account = status["account"]
             non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
             coro = (re.sub("<p>|</p>", "", str(status['content']).translate(non_bmp_map)))
             toot_now="@"+str(account["acct"])+"\n"+bot.dice(coro)
@@ -312,38 +313,39 @@ class bot():
         mastodon.user_stream(listener)
 
     def dice(inp):
-        l=[]
-        n=[]
-        x=0
-        r = re.search("\d+[dD]", str(inp))
-        r = re.sub("[dD]", "", str(r.group()))
-        if re.compile("(\d*):(\d*)").search(inp):
-            s = re.sub("(.*)[dD](\d*):", "", str(inp))
-            s = re.sub("[^\d]", "", str(s))
-            print(str(s))
+        rr = re.search("\d+[dD]", str(inp))
+        r = re.sub("[dD]", "", str(rr.group()))
+        if re.compile("(\d*)[:<>](\d+)").search(inp):
+            ss = re.search("(.*)[dD](\d+)([:<>])(\d+)([^\d]*)", str(inp))
+            print(str(ss.group(4)))
+            s = str(ss.group(4))
         m = re.search("[dD](\d*)", str(inp))
         m = re.sub("[dD]", "", str(m.group(1)))
         m = int(m)
         r = int(r)
         if m == 0:
             result = "面が0の数字は振れないよ……"
-        elif m >= 1000:
-            result = "そんなめちゃくちゃな面のダイスは持ってないよ……"
         elif r >= 51:
             result = "回数が長すぎるとめんどくさいから振らないよ……？"
         elif r == 0:
             result = "えっ……回数0？　じゃあ振らなーーーーい！"
         else:
-            print(str(r)+"回"+str(m)+"面")
+            print(str(m),str(r))
             print("○サイコロ振ります（*'∀'人）")
             for var in range(0, r):
                 num = random.randint(1, m)
                 num = str(num)
                 try:
-                    if int(num) <= int(s):
-                        result="ｺﾛｺﾛ……"+num+"成功だよーー！！"
+                    if str(ss.group(3)) == ">":
+                        if int(num) >= int(s):
+                            result="ｺﾛｺﾛ……"+num+"[成功だよ！！]"
+                        else:
+                            result="ｺﾛｺﾛ……"+num+"[失敗だよ……]"
                     else:
-                        result="ｺﾛｺﾛ……"+num+"失敗だよ……"
+                        if int(num) <= int(s):
+                            result="ｺﾛｺﾛ……"+num+"[成功だよ！！]"
+                        else:
+                            result="ｺﾛｺﾛ……"+num+"[失敗だよ……]"
                 except:
                     result="ｺﾛｺﾛ……"+num
                 l.append(result)
