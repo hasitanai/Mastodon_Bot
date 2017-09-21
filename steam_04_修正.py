@@ -315,11 +315,11 @@ class bot():
     def dice(inp):
         rr = re.search("\d+[dD]", str(inp))
         r = re.sub("[dD]", "", str(rr.group()))
-        if re.compile("(\d*)[:<>](\d+)").search(inp):
+        if re.compile("(\d+)[:<>](\d+)").search(inp):
             ss = re.search("(.*)[dD](\d+)([:<>])(\d+)([^\d]*)", str(inp))
             print(str(ss.group(4)))
             s = str(ss.group(4))
-        m = re.search("[dD](\d*)", str(inp))
+        m = re.search("[dD](\d+)", str(inp))
         m = re.sub("[dD]", "", str(m.group(1)))
         m = int(m)
         r = int(r)
