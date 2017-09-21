@@ -40,7 +40,7 @@ class men_toot(StreamListener):
             print("---")
             print(
                 str(account["display_name"]).translate(non_bmp_map) + "@" + str(account["acct"]).translate(non_bmp_map))
-            print((re.sub("<p>|</p>", "", str(content).translate(non_bmp_map))))
+            print((re.sub("<span class(.+)</span></a></span>|<p>|</p>", "", str(content).translate(non_bmp_map))))
             print(str(mentions).translate(non_bmp_map))
             print("---")
             bot.n_sta = status
@@ -62,7 +62,7 @@ class men_toot(StreamListener):
                     t = threading.Timer(8, bot.toot, [toot_now, g_vis, status['id']])
                     t.start()
                 elif re.compile("\d+[dD]\d+").search(status['content']):
-                    inp = (re.sub("<span(.+)span>|<p>|</p>", "", str(status['content']).translate(non_bmp_map)))
+                    inp = (re.sub("<span class(.+)</span></a></span>|<p>|</p>", "", str(status['content']).translate(non_bmp_map)))
                     result = bot.dice(inp)
                     g_vis = status["visibility"]
                     toot_now="@"+str(account["acct"])+"\n"+result
@@ -315,8 +315,8 @@ class bot():
     def dice(inp):
         rr = re.search("\d+[dD]", str(inp))
         r = re.sub("[dD]", "", str(rr.group()))
-        if re.compile("(\d+)[:<>](\d+)").search(inp):
-            ss = re.search("(.*)[dD](\d+)([:<>])(\d+)([^\d]*)", str(inp))
+        if re.compile("(\d+)[:<>]|&lt;|&gt;(\d+)").search(inp):
+            ss = re.search("(.*)[dD](\d+)([:<>]|&lt;|&gt;)(\d+)([^\d]*)", str(inp))
             print(str(ss.group(4)))
             s = str(ss.group(4))
         m = re.search("[dD](\d+)", str(inp))
@@ -336,7 +336,7 @@ class bot():
                 num = random.randint(1, m)
                 num = str(num)
                 try:
-                    if str(ss.group(3)) == ">":
+                    if str(ss.group(3)) == ">" and str(ss.group(3)) == "&gt;":
                         if int(num) >= int(s):
                             result="ｺﾛｺﾛ……"+num+"[成功だよ！！]"
                         else:
