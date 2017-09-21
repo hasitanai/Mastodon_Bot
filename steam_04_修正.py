@@ -98,7 +98,7 @@ class res_toot(StreamListener):
         bot.fav01(status)
         bot.res01(status)
         bot.res06(status)
-        bot.res07(status)
+        #bot.res07(status)
         bot.check02(status)
         #f = codecs.open('log\\' + 'log_' + '.txt', 'a', 'UTF-8')
         #f.write(str(status) + "\n")
@@ -313,51 +313,68 @@ class bot():
         mastodon.user_stream(listener)
 
     def dice(inp):
-        rr = re.search("\d+[dD]", str(inp))
-        r = re.sub("[dD]", "", str(rr.group()))
-        if re.compile("(\d+)[:<>]|&lt;|&gt;(\d+)").search(inp):
-            ss = re.search("(.*)[dD](\d+)([:<>]|&lt;|&gt;)(\d+)([^\d]*)", str(inp))
-            print(str(ss.group(4)))
-            s = str(ss.group(4))
-        m = re.search("[dD](\d+)", str(inp))
-        m = re.sub("[dD]", "", str(m.group(1)))
-        m = int(m)
-        r = int(r)
-        if m == 0:
-            result = "面が0の数字は振れないよ……"
-        elif r >= 51:
-            result = "回数が長すぎるとめんどくさいから振らないよ……？"
-        elif r == 0:
-            result = "えっ……回数0？　じゃあ振らなーーーーい！"
-        else:
-            print(str(m),str(r))
-            print("○サイコロ振ります（*'∀'人）")
-            for var in range(0, r):
-                num = random.randint(1, m)
-                num = str(num)
-                try:
-                    if str(ss.group(3)) == ">" and str(ss.group(3)) == "&gt;":
-                        if int(num) >= int(s):
-                            result="ｺﾛｺﾛ……"+num+"[成功だよ！！]"
-                        else:
-                            result="ｺﾛｺﾛ……"+num+"[失敗だよ……]"
+        l=[]
+        n=[]
+        m=[]
+        x=0
+        try:
+            inp = re.sub("&lt;", "<", str(inp))
+            inp = re.sub("&gt;", ">", str(inp))
+            com = re.search("(\d+)[dD](\d+)([:<>]*)(\d*)([\+\-\*/\d]*)(.*)", str(inp)) 
+            print(str(com.group()))
+            for v in range(1,7):
+                m.append(com.group(v))
+            print(m)
+            if int(m[1]) == 0:
+                result = "面が0の数字は振れないよ……"
+            elif int(m[0]) >= 51:
+                result = "回数が長すぎるとめんどくさいから振らないよ……？"
+            elif int(m[0]) == 0:
+                result = "えっ……回数0？　じゃあ振らなーーーーい！"
+            else:
+                print("○サイコロ振ります（*'∀'人）")
+                for var in range(0, int(m[0])):
+                    num = random.randint(1, int(m[1]))
+                    num = str(num)
+                    print(num)
+                    if m[4] == True:
+                        ad = m[4]
                     else:
-                        if int(num) <= int(s):
-                            result="ｺﾛｺﾛ……"+num+"[成功だよ！！]"
+                        ad = ""
+                    try:
+                        if ad == "":
+                            dd = 0
                         else:
-                            result="ｺﾛｺﾛ……"+num+"[失敗だよ……]"
-                except:
-                    result="ｺﾛｺﾛ……"+num
-                l.append(result)
-                n.append(int(num))
-                x += int(num)
-            if r != 1:
-                result=str(n)+" = "+str(x)
-                l.append(result)
-            print(l)
-            result = '\n'.join(l)
-            if len(result) > 400:
-                result = "文字数制限に引っ掛かっちゃった……"
+                            dd = int(ad)
+                        if m[5] == "":
+                            fd = "["+m[3]+m[4]+"]→"
+                        else:
+                            fd = "["+m[5]+"("+m[3]+m[4]+")]→"
+                        sd = ad+fd
+                        if str(m[2]) == ">":
+                            if int(num) >= int(m[3])+dd:
+                                result="ｺﾛｺﾛ……"+num+sd+"成功だよ！！"
+                            else:
+                                result="ｺﾛｺﾛ……"+num+sd+"失敗だよ……"
+                        else:
+                            if int(num)+dd <= int(m[3])+dd:
+                                result="ｺﾛｺﾛ……"+num+sd+"成功だよ！！"
+                            else:
+                                result="ｺﾛｺﾛ……"+num+sd+"失敗だよ……"
+                    except:
+                        result="ｺﾛｺﾛ……"+num
+                    l.append(result)
+                    n.append(int(num))
+                    x += int(num)
+                if ad != "":
+                    x += int(ad)
+                if int(m[0]) != 1:
+                    result=str(n)+str(ad)+" = "+str(x)
+                    l.append(result)
+                print(l)
+                result = '\n'.join(l)
+                if len(result) > 400:
+                    result = "文字数制限に引っ掛かっちゃった……"
         return result
 
 class count():
@@ -406,9 +423,9 @@ def go():
 
 if __name__ == '__main__':
     count()
-    u = threading.Timer(0, bot.t_local)
-    l = threading.Timer(0, bot.t_user)
-    u.start()
-    l.start()
-    f = threading.Timer(0, count.emo01, [10800])
-    f.start()
+    uuu = threading.Timer(0, bot.t_local)
+    lll = threading.Timer(0, bot.t_user)
+    uuu.start()
+    lll.start()
+    fff = threading.Timer(0, count.emo01, [10800])
+    fff.start()
