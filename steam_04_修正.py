@@ -225,7 +225,7 @@ class bot():
     def res06(status):
         account = status["account"]
         if account["acct"] != "JC":
-            if re.compile("(.+)とマストドン(どちら|どっち)が大切か分かってない").search(status['content']):
+            if re.compile("(.+)とマストドン(どちら|どっち)が大[切事]か[分わ]かってない").search(status['content']):
                 print("○hitしました♪")
                 print("○だったら")
                 toot_now = (re.sub("<p>|とマストドン(.*)", "", str(status['content']))) + "しながらマストドンして❤"
@@ -375,6 +375,8 @@ class bot():
                 result = '\n'.join(l)
                 if len(result) > 400:
                     result = "文字数制限に引っ掛かっちゃった……"
+        except:
+            result = "えっ？"
         return result
 
 class count():
@@ -423,6 +425,7 @@ def go():
 
 if __name__ == '__main__':
     count()
+    go()
     uuu = threading.Timer(0, bot.t_local)
     lll = threading.Timer(0, bot.t_user)
     uuu.start()
