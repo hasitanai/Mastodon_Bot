@@ -95,9 +95,7 @@ class res_toot(StreamListener):
         print((re.sub("<p>|</p>", "", str(mentions).translate(non_bmp_map))))
         bot.check01(status)
         print("   ")
-        bot.fav01(status)
-        bot.res01(status)
-        bot.res06(status)
+        bot.block01(status)
         #bot.res07(status)
         bot.check02(status)
         #f = codecs.open('log\\' + 'log_' + '.txt', 'a', 'UTF-8')
@@ -117,6 +115,16 @@ class bot():
     def toot(toot_now, g_vis, rep=None):
         mastodon.status_post(status=toot_now, visibility=g_vis, in_reply_to_id=rep)
         """visibility   これで公開範囲を指定できるよ！: public, unlisted, private, direct"""
+
+    def block01(status):
+        status=status
+        account = status["account"]
+        if re.compile("ドピュドピュ|まんこ|ちんこ|えっち|中出し|せっくす|セックス").search(status['content']):
+            bot.thank(account, -1)
+        else:
+            bot.fav01(status)
+            bot.res01(status)
+            bot.res06(status)
 
     def res07(status):
         if re.compile("ももな(.*)[1-5][dD]\d+").search(status['content']):
