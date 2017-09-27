@@ -68,6 +68,12 @@ class men_toot(StreamListener):
                     toot_now="@"+str(account["acct"])+"\n"+result
                     t = threading.Timer(5, bot.toot, [toot_now, g_vis, status['id']])
                     t.start()
+                elif re.compile("アラーム(\d+)").search(status['content']):
+                    com = re.search("アラーム(\d+)", status['content'])
+                    toot_now = "@" + str(account["acct"]) + " " + "（*'∀'人）時間だよーー♪"
+                    g_vis = status["visibility"]
+                    t = threading.Timer(int(com.group(1)), bot.toot, [toot_now, g_vis, status['id']])
+                    t.start()    
             account = status["account"]
             v = threading.Timer(5, bot.fav_now)
             v.start()
@@ -119,7 +125,7 @@ class bot():
     def block01(status):
         status=status
         account = status["account"]
-        if re.compile("ドピュドピュ|まんこ|ちんこ|えっち|中出し|せっくす|セックス").search(status['content']):
+        if re.compile("ドピュドピュ|まんこ|ちんこ|えっち|中出し|せっくす|セックス|クンニ").search(status['content']):
             bot.thank(account, -1)
         else:
             bot.fav01(status)
