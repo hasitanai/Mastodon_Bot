@@ -1,20 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from mastodon import *
+import time,re,sys,os,json,random
+import threading,requests,pprint,codecs
 from time import sleep
-import time
-import warnings
-import re
-import sys
-import threading
-import requests
-import pprint
-import json
-import codecs
-import random
 from datetime import datetime
-import os
-import traceback
+import warnings,traceback
 
 warnings.simplefilter("ignore", UnicodeWarning)
 
@@ -69,9 +60,20 @@ class men_toot(StreamListener):
                     t = threading.Timer(5, bot.toot, [toot_now, g_vis, status['id']])
                     t.start()
                 elif re.compile("アラーム(\d+)").search(status['content']):
-                    com = re.search("アラーム(\d+)", status['content'])
-                    toot_now = "@" + str(account["acct"]) + " " + "（*'∀'人）時間だよーー♪"
+                    non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
+                    content = str(status['content']).translate(non_bmp_map)
+                    account=status['account']
+                    com = re.search("(アラーム|[Aa][Rr][Aa][Mm])(\d+)([秒分]?)", content)
+                    sec = int(com.group(2))
+                    clo = com.group(3)
+                    if clo == "分":
+                        sec = sec*60
+                    else:
+                        pass
+                    print(str(sec))
+                    toot_now = "@" + account["acct"] + " " + "指定した時間が来たのでお知らせします。"
                     g_vis = status["visibility"]
+                    in_reply_to_id = status["id"]
                     t = threading.Timer(int(com.group(1)), bot.toot, [toot_now, g_vis, status['id']])
                     t.start()    
             account = status["account"]
@@ -170,21 +172,21 @@ class bot():
                         if not re.compile("[寝ね]る(人|ひと)").search(status['content']):
                             print("○hitしました♪")
                             print("○おやすみします（*'∀'人）")
-                            toot_now = account['display_name'] + "\n" + '(ृ 　 ु *`ω､)ु ⋆゜おやすみーーーー♪'
+                            toot_now = ":@"+account['acct']+":"+account['display_name'] + "\n" + '(ृ 　 ु *`ω､)ु ⋆゜おやすみーーーー♪'
                             g_vis = "public"
                             t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
                             t1.start()        
                     elif re.compile("[いイ行逝]って(くる|きます|[きキ]マストドン)|出かけて|おでかけ|(出勤|離脱)し[てま]").search(status['content']):
                         print("○hitしました♪")
                         print("○見送ります（*'∀'人）")
-                        toot_now = account['display_name'] + "\n" + 'いってらーーーー！！'
+                        toot_now = ":@"+account['acct']+":"+account['display_name'] + "\n" + 'いってらーーーー！！'
                         g_vis = "public"
                         t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
                         t1.start()
                     elif re.compile("ただいま|ただいマストドン").search(status['content']):
                         print("○hitしました♪")
                         print("○優しく迎えます（*'∀'人）")
-                        toot_now = account['display_name'] + "\n" + '( 〃 ❛ᴗ❛ 〃 )おかえりおかえりーー！！'
+                        toot_now = ":@"+account['acct']+":"+account['display_name'] + "\n" + '( 〃 ❛ᴗ❛ 〃 )おかえりおかえりーー！！'
                         g_vis = "public"
                         t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
                         t1.start()
@@ -210,9 +212,9 @@ class bot():
                                     to_r = bot.rand_w('time\\oha.txt')
                                 print("○あいさつします（*'∀'人）")
                                 if account['display_name'] == "":
-                                    toot_now = account['acct'] + "\n" + to_r
+                                    toot_now = ":@"+account['acct']+":"+account['acct'] + "\n" + to_r
                                 else:
-                                    toot_now = account['display_name'] + "\n" + to_r
+                                    toot_now = ":@"+account['acct']+":"+account['display_name'] + "\n" + to_r
                                 g_vis = "public"
                                 t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
                                 t1.start()
@@ -220,16 +222,16 @@ class bot():
                             print("○初あいさつします（*'∀'人）")
                             if account['statuses_count'] <= 2:
                                 if account['display_name'] == "":
-                                    toot_now = "@" + str(account["acct"]) + "\n" + account[
+                                    toot_now = " :@"+account['acct']+": @" + account['acct'] + "\n" + account[
                                         'acct'] + "\n" + 'ようこそようこそーーーー♪'
                                 else:
-                                    toot_now = "@" + str(account["acct"]) + "\n" + account[
+                                    toot_now = " :@"+account['acct']+": @" + account['acct'] + "\n" + account[
                                         'display_name'] + "\n" + 'ようこそようこそーーーー♪'
                             else:
                                 if account['display_name'] == "":
-                                    toot_now = account['acct'] + "\n" + 'いらっしゃーーーーい♪'
+                                    toot_now = " :@"+account['acct']+": @" + account['acct'] + "\n" + 'いらっしゃーーーーい♪'
                                 else:
-                                    toot_now = account['display_name'] + "\n" + 'いらっしゃーーーーい♪'
+                                    toot_now = " :@"+account['acct']+": @" + account['acct'] + "\n" + 'いらっしゃーーーーい♪'
                             g_vis = "public"
                             t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
                             t1.start()
@@ -249,7 +251,7 @@ class bot():
                 count.timer_hello = 1
 
     def fav01(status):
-        if re.compile("ももな").search(status['content']):
+        if re.compile("ももな|:@JC:").search(status['content']):
             bot.n_sta = status
             account = status["account"]
             bot.thank(account, 8)
