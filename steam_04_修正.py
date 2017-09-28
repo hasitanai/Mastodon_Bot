@@ -212,7 +212,12 @@ class bot():
                             now_time = datetime.strptime(tstr, '%Y-%m-%dT%H:%M:%S')
                             delta = now_time - last_time
                             print(delta)
-                            if delta.total_seconds() >= 10800:
+                            if delta.total_seconds() >= 453600:
+                                toot_now = " :@"+account['acct']+":\n" + account['acct'] + "\n" + "（*'∀'人）おひさひさーーーー♪"
+                                g_vis = "public"
+                                t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
+                                t1.start()    
+                            elif delta.total_seconds() >= 10800:
                                 if now_time.hour in range(3, 9):
                                     to_r = bot.rand_w('time\\kon.txt')
                                 elif now_time.hour in range(9, 19):
