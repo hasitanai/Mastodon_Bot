@@ -56,7 +56,7 @@ class men_toot(StreamListener):
                     inp = (re.sub("<span class(.+)</span></a></span>|<p>|</p>", "", str(status['content']).translate(non_bmp_map)))
                     result = bot.dice(inp)
                     g_vis = status["visibility"]
-                    toot_now="@"+str(account["acct"])+"\n"+result
+                    toot_now=":@"+str(account["acct"])+": @"+account["acct"]+"\n"+result
                     t = threading.Timer(5, bot.toot, [toot_now, g_vis, status['id']])
                     t.start()
                 elif re.compile("アラーム(\d+)").search(status['content']):
@@ -71,7 +71,7 @@ class men_toot(StreamListener):
                     else:
                         pass
                     print(str(sec))
-                    toot_now = "@" + account["acct"] + " " + "指定した時間が来たのでお知らせします。"
+                    toot_now = "@" + account["acct"] + " " + "（*'∀'人）時間だよーー♪♪"
                     g_vis = status["visibility"]
                     in_reply_to_id = status["id"]
                     t = threading.Timer(int(com.group(1)), bot.toot, [toot_now, g_vis, status['id']])
@@ -104,7 +104,7 @@ class res_toot(StreamListener):
         bot.check01(status)
         print("   ")
         bot.block01(status)
-        #bot.res07(status)
+        bot.res07(status)
         bot.check02(status)
         #f = codecs.open('log\\' + 'log_' + '.txt', 'a', 'UTF-8')
         #f.write(str(status) + "\n")
@@ -135,19 +135,28 @@ class bot():
             bot.res06(status)
 
     def res07(status):
-        if re.compile("ももな(.*)[1-5][dD]\d+").search(status['content']):
-            print("○hitしました♪")
-            account = status["account"]
-            non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
-            coro = (re.sub("<p>|</p>", "", str(status['content']).translate(non_bmp_map)))
-            toot_now="@"+str(account["acct"])+"\n"+bot.dice(coro)
-            t = threading.Timer(5, bot.toot, [toot_now, g_vis])
-            t.start()
-        elif re.compile("ももな(.*)([6-9]|\d{2})[dD](\d*)").search(status['content']):
-            toot_now = "６回以上の回数は畳む内容だからメンションの方で送ってーー！！"
-            g_vis = status["visibility"]
-            t = threading.Timer(5, bot.toot, [toot_now, g_vis])
-            t.start()
+        account = status["account"]
+        if account['acct'] != "kiri_bot01":
+            if not bot.timer_toot:
+                if re.compile("ももな(.*)[1-5][dD]\d+").search(status['content']):
+                    print("○hitしました♪")
+                    non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
+                    coro = (re.sub("<p>|</p>", "", str(status['content']).translate(non_bmp_map)))
+                    toot_now=":@"+account["acct"]+": @"+account["acct"]+"\n"+bot.dice(coro)
+                    g_vis = status["visibility"]
+                    t = threading.Timer(5, bot.toot, [toot_now, g_vis])
+                    t.start()
+                    w = threading.Timer(30, bot.time_res)
+                    w.start()
+                    bot.timer_toot = True
+                elif re.compile("ももな(.*)([6-9]|\d{2})[dD](\d*)").search(status['content']):
+                    toot_now = "６回以上の回数は畳む内容だからメンションの方で送ってーー！！"
+                    g_vis = status["visibility"]
+                    t = threading.Timer(5, bot.toot, [toot_now, g_vis])
+                    t.start()
+                    w = threading.Timer(60, bot.time_res)
+                    w.start()
+                    bot.timer_toot = True
 
     def res01(status):
         account = status["account"]
@@ -168,7 +177,7 @@ class bot():
                         t1.start()
                         count.timer_hello = 1
                 else:
-                    if re.compile("[寝ね](ます|る|マス)(.*)[ぽお]や[すし]み|ももな(.*)[ぽお]や[すし]").search(status['content']):
+                    if re.compile("[寝ね](ます|る|マス)(.*)[ぽお]や[すし]|ももな(.*)[ぽお]や[すし]").search(status['content']):
                         if not re.compile("[寝ね]る(人|ひと)").search(status['content']):
                             print("○hitしました♪")
                             print("○おやすみします（*'∀'人）")
@@ -302,7 +311,7 @@ class bot():
             print("現在の評価値:" + str(0))
 
     def time_res():
-        bot.timer_toot = 0
+        bot.timer_toot = False
         print("「(๑•̀ㅁ•́๑)✧＜tootｽﾃﾝﾊﾞｰｲ」")
 
     def fav_now():  # ニコります
@@ -442,6 +451,7 @@ def go():
 if __name__ == '__main__':
     count()
     go()
+    bot.timer_toot = False
     uuu = threading.Timer(0, bot.t_local)
     lll = threading.Timer(0, bot.t_user)
     uuu.start()
