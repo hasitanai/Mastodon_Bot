@@ -105,6 +105,7 @@ class res_toot(StreamListener):
         print("   ")
         bot.block01(status)
         bot.res07(status)
+        bot.check00(status)
         bot.check02(status)
         #f = codecs.open('log\\' + 'log_' + '.txt', 'a', 'UTF-8')
         #f.write(str(status) + "\n")
@@ -158,6 +159,43 @@ class bot():
                     w.start()
                     bot.timer_toot = True
 
+    def check00(status):
+        account = status["account"]
+        ct = account["statuses_count"]
+        path = 'thank\\' + account["acct"] + '.txt'
+        if os.path.exists(path):
+            f = open(path, 'r')
+            x = f.read()
+            f.close()
+        if int(x) >= -10:
+            if account["acct"] == "JC":
+                ct += 1
+                if re.match('^\d+000$', str(ct)):
+                    toot_now = "°˖✧◝(⁰▿⁰)◜✧˖" + str(ct) + 'toot達成ーーーー♪♪'
+                    g_vis = "public"
+                    t = threading.Timer(5, bot.toot, [toot_now, g_vis])
+                    t.start()
+            else:
+                if re.match('^\d+0000$', str(ct)):
+                    toot_now = " :@"+account['acct']+": @" + account['acct'] + "\n°˖✧◝(⁰▿⁰)◜✧˖" + str(ct) + 'tootおめでとーーーー♪♪'
+                    g_vis = "public"
+                    t = threading.Timer(5, bot.toot, [toot_now, g_vis])
+                    t.start()
+                elif re.match('^\d000$', str(ct)):
+                    toot_now = " :@"+account['acct']+": @" + account['acct'] + "\n（*'∀'人）" + str(ct) + 'tootおめでとーー♪'
+                    g_vis = "public"
+                    t = threading.Timer(5, bot.toot, [toot_now, g_vis])
+                    t.start()
+            if account["acct"] == "lamazeP": #ラマーズＰ監視隊
+                ct += 5
+                if re.match('^\d+000$', str(ct)):
+                    toot_now = "(๑•̀ㅁ•́๑)" + str(ct) + 'tootまであと5だよ！！！！'
+                    g_vis = "direct"
+                    t = threading.Timer(5, bot.toot, [toot_now, g_vis, status['id']])
+                    t.start()
+        else:
+            pass
+
     def res01(status):
         account = status["account"]
         path = 'thank\\' + account["acct"] + '.txt'
@@ -185,7 +223,7 @@ class bot():
                             g_vis = "public"
                             t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
                             t1.start()        
-                    elif re.compile("[いイ行逝]って(くる|きます|[きキ]マストドン)|出かけて|おでかけ|(出勤|離脱)し[てま]").search(status['content']):
+                    elif re.compile("[いイ行逝]って(くる|きます|[きキ]マストドン)|出かけて[きく]|おでかけ[しす]|(出勤|離脱)(す|し[てま])").search(status['content']):
                         print("○hitしました♪")
                         print("○見送ります（*'∀'人）")
                         toot_now = ":@"+account['acct']+":"+account['display_name'] + "\n" + 'いってらーーーー！！'
