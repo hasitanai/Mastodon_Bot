@@ -198,6 +198,7 @@ class bot():
 
     def res01(status):
         account = status["account"]
+        content = re.sub("<p>|</p>", "", str(status['content']))
         path = 'thank\\' + account["acct"] + '.txt'
         if os.path.exists(path):
             f = open(path, 'r')
@@ -206,7 +207,7 @@ class bot():
         if int(x) >= -10:
             if account["acct"] != "JC":
                 if count.timer_hello == 0:
-                    if re.compile("ももな(.*)おは|ももな(.*)おあひょ").search(status['content']):
+                    if re.compile("ももな(.*)おは|ももな(.*)おあひょ").search(content):
                         print("○hitしました♪")
                         print("○あいさつします（*'∀'人）")
                         toot_now = "(๑•̀ㅁ•́๑)✧おはありでーーーーす♪"
@@ -215,7 +216,7 @@ class bot():
                         t1.start()
                         count.timer_hello = 1
                 else:
-                    if re.compile("[寝ね](ます|る|マス)(.*)[ぽお]や[すし]|ももな(.*)[ぽお]や[すし]").search(status['content']):
+                    if re.compile("[寝ね](ます|る|マス)(.*)[ぽお]や[すし]|ももな(.*)[ぽお]や[すし]").search(content):
                         if not re.compile("[寝ね]る(人|ひと)").search(status['content']):
                             print("○hitしました♪")
                             print("○おやすみします（*'∀'人）")
@@ -223,14 +224,14 @@ class bot():
                             g_vis = "public"
                             t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
                             t1.start()        
-                    elif re.compile("[いイ行逝]って(くる|きます|[きキ]マストドン)|出かけて[きく]|おでかけ[しす]|(出勤|離脱)(す|し[てま])").search(status['content']):
+                    elif re.compile("[いイ行逝]って(くる|きます|[きキ]マストドン)|出かけて(くる|きます|[きキ]マストドン)|おでかけ(する|します|[しシ]マストドン)|(出勤|離脱)(する|します|[しシ]マストドン)|^(出勤|離脱)$").search(content):
                         print("○hitしました♪")
                         print("○見送ります（*'∀'人）")
                         toot_now = ":@"+account['acct']+":"+account['display_name'] + "\n" + 'いってらーーーー！！'
                         g_vis = "public"
                         t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
                         t1.start()
-                    elif re.compile("ただいま|ただいマストドン").search(status['content']):
+                    elif re.compile("ただいま|ただいマストドン").search(content):
                         print("○hitしました♪")
                         print("○優しく迎えます（*'∀'人）")
                         toot_now = ":@"+account['acct']+":"+account['display_name'] + "\n" + '( 〃 ❛ᴗ❛ 〃 )おかえりおかえりーー！！'
