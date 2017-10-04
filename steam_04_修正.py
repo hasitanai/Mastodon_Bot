@@ -21,96 +21,111 @@ mastodon = Mastodon(
 
 class men_toot(StreamListener):
     def on_notification(self, notification):
-        print("===通知が来ました===")
-        non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
-        if notification["type"] == "mention":
-            status = notification["status"]
-            account = status["account"]
-            mentions = status["mentions"]
-            content = status["content"]
-            print("---")
-            print(
-                str(account["display_name"]).translate(non_bmp_map) + "@" + str(account["acct"]).translate(non_bmp_map))
-            print((re.sub("<span class(.+)</span></a></span>|<p>|</p>", "", str(content).translate(non_bmp_map))))
-            print(str(mentions).translate(non_bmp_map))
-            print("---")
-            bot.n_sta = status
-            bot.thank(account, 64)
-            if mentions:
-                if re.compile("おは|おあひょ").search(status['content']):
-                    toot_now = "@" + str(account["acct"]) + " " + "（*'∀'人）おあひょーーーー♪"
-                    g_vis = status["visibility"]
-                    t = threading.Timer(8, bot.toot, [toot_now, g_vis, status['id']])
-                    t.start()
-                elif re.compile("こんに").search(status['content']):
-                    toot_now = "@" + str(account["acct"]) + " " + "（*'∀'人）こんにちはーーーー♪"
-                    g_vis = status["visibility"]
-                    t = threading.Timer(8, bot.toot, [toot_now, g_vis, status['id']])
-                    t.start()
-                elif re.compile("こんば").search(status['content']):
-                    toot_now = "@" + str(account["acct"]) + " " + "（*'∀'人）こんばんはーーーー♪"
-                    g_vis = status["visibility"]
-                    t = threading.Timer(8, bot.toot, [toot_now, g_vis, status['id']])
-                    t.start()
-                elif re.compile("\d+[dD]\d+").search(status['content']):
-                    inp = (re.sub("<span class(.+)</span></a></span>|<p>|</p>", "", str(status['content']).translate(non_bmp_map)))
-                    result = bot.dice(inp)
-                    g_vis = status["visibility"]
-                    toot_now=":@"+str(account["acct"])+": @"+account["acct"]+"\n"+result
-                    t = threading.Timer(5, bot.toot, [toot_now, g_vis, status['id']])
-                    t.start()
-                elif re.compile("アラーム(\d+)").search(status['content']):
-                    non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
-                    content = str(status['content']).translate(non_bmp_map)
-                    account=status['account']
-                    com = re.search("(アラーム|[Aa][Rr][Aa][Mm])(\d+)([秒分]?)", content)
-                    sec = int(com.group(2))
-                    clo = com.group(3)
-                    if clo == "分":
-                        sec = sec*60
-                    else:
-                        pass
-                    print(str(sec))
-                    toot_now = "@" + account["acct"] + " " + "（*'∀'人）時間だよーー♪♪"
-                    g_vis = status["visibility"]
-                    in_reply_to_id = status["id"]
-                    t = threading.Timer(int(com.group(1)), bot.toot, [toot_now, g_vis, status['id']])
-                    t.start()    
-            account = status["account"]
-            v = threading.Timer(5, bot.fav_now)
-            v.start()
-        elif notification["type"] == "favourite":
-            account = notification["account"]
-            print(str(account["display_name"]).translate(non_bmp_map) + "@" + str(
-                account["acct"]) + "からニコってくれたよ₍₍ ◝(●˙꒳˙●)◜ ₎₎")
-            print()
-            bot.thank(account, 32)
-            print("---")
-        pass
-
+        try:
+            print("===通知が来ました===")
+            non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
+            if notification["type"] == "mention":
+                status = notification["status"]
+                account = status["account"]
+                mentions = status["mentions"]
+                content = status["content"]
+                print("---")
+                print(
+                    str(account["display_name"]).translate(non_bmp_map) + "@" + str(account["acct"]).translate(non_bmp_map))
+                print((re.sub("<span class(.+)</span></a></span>|<p>|</p>", "", str(content).translate(non_bmp_map))))
+                print(str(mentions).translate(non_bmp_map))
+                print("---")
+                bot.n_sta = status
+                bot.thank(account, 64)
+                if mentions:
+                    if re.compile("おは|おあひょ").search(status['content']):
+                        toot_now = "@" + str(account["acct"]) + " " + "（*'∀'人）おあひょーーーー♪"
+                        g_vis = status["visibility"]
+                        t = threading.Timer(8, bot.toot, [toot_now, g_vis, status['id']])
+                        t.start()
+                    elif re.compile("こんに").search(status['content']):
+                        toot_now = "@" + str(account["acct"]) + " " + "（*'∀'人）こんにちはーーーー♪"
+                        g_vis = status["visibility"]
+                        t = threading.Timer(8, bot.toot, [toot_now, g_vis, status['id']])
+                        t.start()
+                    elif re.compile("こんば").search(status['content']):
+                        toot_now = "@" + str(account["acct"]) + " " + "（*'∀'人）こんばんはーーーー♪"
+                        g_vis = status["visibility"]
+                        t = threading.Timer(8, bot.toot, [toot_now, g_vis, status['id']])
+                        t.start()
+                    elif re.compile("\d+[dD]\d+").search(status['content']):
+                        inp = (re.sub("<span class(.+)</span></a></span>|<p>|</p>", "", str(status['content']).translate(non_bmp_map)))
+                        result = bot.dice(inp)
+                        g_vis = status["visibility"]
+                        toot_now=":@"+str(account["acct"])+": @"+account["acct"]+"\n"+result
+                        t = threading.Timer(5, bot.toot, [toot_now, g_vis, status['id']])
+                        t.start()
+                    elif re.compile("アラーム(\d+)").search(status['content']):
+                        non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
+                        content = str(status['content']).translate(non_bmp_map)
+                        account=status['account']
+                        com = re.search("(アラーム|[Aa][Rr][Aa][Mm])(\d+)([秒分]?)", content)
+                        sec = int(com.group(2))
+                        clo = com.group(3)
+                        if clo == "分":
+                            sec = sec*60
+                        else:
+                            pass
+                        print(str(sec))
+                        toot_now = "@" + account["acct"] + " " + "（*'∀'人）時間だよーー♪♪"
+                        g_vis = status["visibility"]
+                        in_reply_to_id = status["id"]
+                        t = threading.Timer(int(com.group(1)), bot.toot, [toot_now, g_vis, status['id']])
+                        t.start()    
+                account = status["account"]
+                v = threading.Timer(5, bot.fav_now)
+                v.start()
+            elif notification["type"] == "favourite":
+                account = notification["account"]
+                print(str(account["display_name"]).translate(non_bmp_map) + "@" + str(
+                    account["acct"]) + "からニコってくれたよ₍₍ ◝(●˙꒳˙●)◜ ₎₎")
+                print()
+                bot.thank(account, 32)
+                print("---")
+            pass
+        except Exception as e:
+            print("エラー情報\n" + traceback.format_exc())
+            with open('error.log', 'a') as f:
+                traceback.print_exc(file=f)
+        except:
+            print("例外情報\n" + traceback.format_exc())
+            pass
 
 class res_toot(StreamListener):
     def on_update(self, status):
-        print("===タイムライン===")
-        account = status["account"]
-        mentions = status["mentions"]
-        content = status["content"]
-        non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
-        print((re.sub("<p>|</p>", "",
-                      str(account["display_name"]).translate(non_bmp_map) + "@" + str(account["acct"]).translate(
-                          non_bmp_map))))
-        print((re.sub("<p>|</p>", "", str(content).translate(non_bmp_map))))
-        print((re.sub("<p>|</p>", "", str(mentions).translate(non_bmp_map))))
-        bot.check01(status)
-        print("   ")
-        bot.block01(status)
-        bot.res07(status)
-        bot.check00(status)
-        bot.check02(status)
-        #f = codecs.open('log\\' + 'log_' + '.txt', 'a', 'UTF-8')
-        #f.write(str(status) + "\n")
-        #f.close()
-        pass
+        try:
+            print("===タイムライン===")
+            account = status["account"]
+            mentions = status["mentions"]
+            content = status["content"]
+            non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
+            print((re.sub("<p>|</p>", "",
+                          str(account["display_name"]).translate(non_bmp_map) + "@" + str(account["acct"]).translate(
+                              non_bmp_map))))
+            print((re.sub("<p>|</p>", "", str(content).translate(non_bmp_map))))
+            print((re.sub("<p>|</p>", "", str(mentions).translate(non_bmp_map))))
+            bot.check01(status)
+            print("   ")
+            bot.block01(status)
+            bot.res07(status)
+            bot.check00(status)
+            bot.check02(status)
+            #f = codecs.open('log\\' + 'log_' + '.txt', 'a', 'UTF-8')
+            #f.write(str(status) + "\n")
+            #f.close()
+            pass
+        except Exception as e:
+            print("エラー情報\n" + traceback.format_exc())
+            with open('error.log', 'a') as f:
+                traceback.print_exc(file=f)
+        except:
+            print("例外情報\n" + traceback.format_exc())
+            pass
 
     def on_delete(self, status_id):
         print("===削除されました===")
@@ -297,7 +312,7 @@ class bot():
             if re.compile("(.+)とマストドン(どちら|どっち)が大[切事]か[分わ]かってない").search(status['content']):
                 print("○hitしました♪")
                 print("○だったら")
-                toot_now = (re.sub("<p>|とマストドン(.*)", "", str(status['content']))) + "しながらマストドンして❤"
+                toot_now = (re.sub('<span(.+)span>|<p>|とマストドン(.*)', "", str(status['content']))) + "しながらマストドンして❤"
                 g_vis = "public"
                 t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
                 t1.start()
