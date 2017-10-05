@@ -5,6 +5,7 @@ import time, re, sys, os, json, random
 import threading, requests, pprint, codecs
 from time import sleep
 from datetime import datetime
+from pytz import timezone
 import warnings, traceback
 
 warnings.simplefilter("ignore", UnicodeWarning)
@@ -33,7 +34,7 @@ class men_toot(StreamListener):
                 print(
                     str(account["display_name"]).translate(non_bmp_map) + "@" + str(account["acct"]).translate(
                         non_bmp_map))
-                print((re.sub("<(.+)>", "", str(content).translate(non_bmp_map))))
+                print((re.sub("<p>|</p>", "", str(content).translate(non_bmp_map))))
                 print(str(mentions).translate(non_bmp_map))
                 print("---")
                 bot.n_sta = status
@@ -55,7 +56,7 @@ class men_toot(StreamListener):
                         t = threading.Timer(8, bot.toot, [toot_now, g_vis, status['id']])
                         t.start()
                     elif re.compile("\d+[dD]\d+").search(status['content']):
-                        inp = (re.sub("<span class(.+)</span></a></span>|<(.+)>", "",
+                        inp = (re.sub("<span class(.+)</span></a></span>|<p>|</p>", "",
                                       str(status['content']).translate(non_bmp_map)))
                         result = bot.dice(inp)
                         g_vis = status["visibility"]
@@ -94,8 +95,6 @@ class men_toot(StreamListener):
             print("エラー情報\n" + traceback.format_exc())
             with open('error.log', 'a') as f:
                 traceback.print_exc(file=f)
-        except:
-            print("例外情報\n" + traceback.format_exc())
             pass
 
 
@@ -107,11 +106,11 @@ class res_toot(StreamListener):
             mentions = status["mentions"]
             content = status["content"]
             non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
-            print((re.sub("<(.+)>", "",
+            print((re.sub("<p>|</p>", "",
                           str(account["display_name"]).translate(non_bmp_map) + "@" + str(account["acct"]).translate(
                               non_bmp_map))))
-            print((re.sub("<(.+)>", "", str(content).translate(non_bmp_map))))
-            print((re.sub("<(.+)>", "", str(mentions).translate(non_bmp_map))))
+            print((re.sub("<p>|</p>", "", str(content).translate(non_bmp_map))))
+            print((re.sub("<p>|</p>", "", str(mentions).translate(non_bmp_map))))
             bot.check01(status)
             print("   ")
             bot.block01(status)
@@ -126,8 +125,6 @@ class res_toot(StreamListener):
             print("エラー情報\n" + traceback.format_exc())
             with open('error.log', 'a') as f:
                 traceback.print_exc(file=f)
-        except:
-            print("例外情報\n" + traceback.format_exc())
             pass
 
     def on_delete(self, status_id):
@@ -146,7 +143,7 @@ class bot():
     def block01(status):
         status = status
         account = status["account"]
-        if re.compile("ドピュドピュ|まんこ|ちんこ|えっち|中出し|せっくす|セックス|クンニ").search(status['content']):
+        if re.compile("ドピュドピュ|まんこ|ちんこ|えっち|中出し|せっくす|セックス|クンニ|オナニー|あそこガン見").search(status['content']):
             bot.thank(account, -1)
         else:
             bot.fav01(status)
@@ -160,7 +157,7 @@ class bot():
                 if re.compile("ももな(.*)[1-5][dD]\d+").search(status['content']):
                     print("○hitしました♪")
                     non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
-                    coro = (re.sub("<(.+)>", "", str(status['content']).translate(non_bmp_map)))
+                    coro = (re.sub("<p>|</p>", "", str(status['content']).translate(non_bmp_map)))
                     toot_now = ":@" + account["acct"] + ": @" + account["acct"] + "\n" + bot.dice(coro)
                     g_vis = status["visibility"]
                     t = threading.Timer(5, bot.toot, [toot_now, g_vis])
@@ -217,7 +214,7 @@ class bot():
 
     def res01(status):
         account = status["account"]
-        content = re.sub("<(.+)>", "", str(status['content']))
+        content = re.sub("<p>|</p>", "", str(status['content']))
         path = 'thank\\' + account["acct"] + '.txt'
         if os.path.exists(path):
             f = open(path, 'r')
@@ -398,12 +395,32 @@ class bot():
         return l[s - 1]
 
     def t_local():
-        listener = res_toot()
-        mastodon.local_stream(listener)
+        try:
+            listener = res_toot()
+            mastodon.local_stream(listener)
+        except:
+            print("例外情報\n" + traceback.format_exc())
+            with open('except.log', 'a') as f:
+                jst_now = datetime.now(timezone('Asia/Tokyo'))
+                f.white(jst_now)
+                traceback.print_exc(file=f)
+            sleep(60)
+            bot.t_local()
+            pass
 
     def t_user():
-        listener = men_toot()
-        mastodon.user_stream(listener)
+        try:
+            listener = men_toot()
+            mastodon.user_stream(listener)
+        except:
+            print("例外情報\n" + traceback.format_exc())
+            with open('except.log', 'a') as f:
+                jst_now = datetime.now(timezone('Asia/Tokyo'))
+                f.white(jst_now)
+                traceback.print_exc(file=f)
+            sleep(60)
+            bot.t_user()
+            pass
 
     def dice(inp):
         l = []
