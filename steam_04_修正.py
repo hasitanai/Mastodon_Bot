@@ -143,8 +143,8 @@ class bot():
     def block01(status):
         status = status
         account = status["account"]
-        if re.compile("ドピュドピュ|まんこ|ちんこ|えっち|中出し|せっくす|セックス|クンニ|オナニー|あそこガン見").search(status['content']):
-            bot.thank(account, -1)
+        if re.compile("ドピュドピュ|まんこ|ちんこ|えっち|中出し|せっくす|セックス|クンニ|オナニー|あそこガン見|しこしこ|ﾌﾞﾘﾌﾞﾘ").search(status['content']):
+            bot.thank(account, -8)
         else:
             bot.fav01(status)
             bot.res01(status)
@@ -402,7 +402,7 @@ class bot():
             print("例外情報\n" + traceback.format_exc())
             with open('except.log', 'a') as f:
                 jst_now = datetime.now(timezone('Asia/Tokyo'))
-                f.white(jst_now)
+                f.write(str(jst_now))
                 traceback.print_exc(file=f)
             sleep(60)
             bot.t_local()
@@ -416,7 +416,7 @@ class bot():
             print("例外情報\n" + traceback.format_exc())
             with open('except.log', 'a') as f:
                 jst_now = datetime.now(timezone('Asia/Tokyo'))
-                f.white(jst_now)
+                f.write(str(jst_now))
                 traceback.print_exc(file=f)
             sleep(60)
             bot.t_user()
