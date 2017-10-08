@@ -152,8 +152,8 @@ class bot():
         """visibility   これで公開範囲を指定できるよ！: public, unlisted, private, direct"""
 
     def block01(status):
-        if re.compile("ドピュドピュ|まんこ|ちんこ|えっち|中出し|せっくす|セックス|クンニ|オナニー|あそこガン見|しこしこ|ﾌﾞﾘﾌﾞﾘ|スケベ|中に出し|キメセク").search(status):
-            bot.thank(account, -16)
+        if re.compile("ドピュドピュ|まんこ|ちんこ|えっち|中出し|せっくす|セックス|クンニ|オナニー|あそこガン見|しこしこ|ﾌﾞﾘﾌﾞﾘ|スケベ|中に出し|キメセク|四肢切断").search(status["content"]):
+            bot.thank(status["account"], -16)
             return True
         else:
             return False
@@ -325,7 +325,7 @@ class bot():
         if account["acct"] != "JC":
             if re.compile("(.+)とマストドン(どちら|どっち)が大[切事]か[分わ]かってない").search(status['content']):
                 print("○hitしました♪")
-                sekuhara = bot.block01(status['content'])
+                sekuhara = bot.block01(status)
                 if not sekuhara:
                     print("○だったら")
                     toot_now = (re.sub('<span(.+)span>|<p>|とマストドン(.*)', "", str(status['content']))) + "しながらマストドンして❤"
