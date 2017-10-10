@@ -350,15 +350,11 @@ class bot():
     def fav01(status):
         account = status["account"]
         if re.compile("ももな|:@JC:").search(status['content']):
-            sekuhara = bot.block01(account['display_name'])
-            if not sekuhara:
-                bot.n_sta = status
-                bot.thank(account, 8)
-                v = threading.Timer(5, bot.fav_now)
-                v.start()
-            else:
-                pass
-
+            bot.n_sta = status
+            bot.thank(account, 8)
+            v = threading.Timer(5, bot.fav_now)
+            v.start()
+                
     def check01(status):
         account = status["account"]
         created_at = status['created_at']
