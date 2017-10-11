@@ -157,7 +157,7 @@ class bot():
         for x in f:
             l.append(x.rstrip("\r\n"))
         f.close()
-        m = len(l)+1
+        m = len(l)
         for x in range(m):
             if re.compile(str(l[x])).search(re.sub("<p>|</p>", "",str(status))):
                 j = True
