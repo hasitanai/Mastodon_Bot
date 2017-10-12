@@ -90,11 +90,11 @@ class men_toot(StreamListener):
                         in_reply_to_id = status["id"]
                         t = threading.Timer(8, bot.toot, [toot_now, g_vis, status['id']])
                         t.start()
-                    elif re.compile("(メッセージ|Message|めっせーじ).*<br />(.+)").search(content):
+                    elif re.compile("(Message|めっせーじ).*<br />(.+)").search(content) and status["visibility"] == "direct":
                         print("○受け取りました")
-                        com = re.search("(メッセージ|Message|めっせーじ).*<br />(.+)", str(content))
+                        com = re.search("(Message|めっせーじ).*<br />(.+)", str(content))
                         messe = com.group(2)
-                        toot_now = messe + "\n（:" + account["acct"] + ":からのリクエストでした）"
+                        toot_now = messe
                         g_vis = "public"
                         t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
                         t1.start()
@@ -263,8 +263,12 @@ class bot():
                         if not re.compile("[寝ね]る(人|ひと)").search(status['content']):
                             print("○hitしました♪")
                             print("○おやすみします（*'∀'人）")
-                            toot_now = ":@" + account['acct'] + ":" + account[
-                                'display_name'] + "\n" + '(ृ 　 ु *`ω､)ु ⋆゜おやすみーーーー♪'
+                            if account['acct'] == "5": #やなちゃん専用挨拶
+                                print("○やなちゃんだ！！（*'∀'人）")
+                                toot_now = ":@" + account['acct'] + ":" + "やなちゃん！！！！！！" + "\n" + '(｡>﹏<｡)あとで一緒に寝るーーーー！！！！'
+                            else:
+                                toot_now = ":@" + account['acct'] + ":" + account[
+                                    'display_name'] + "\n" + '(ृ 　 ु *`ω､)ु ⋆゜おやすみーーーー♪'
                             g_vis = "public"
                             t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
                             t1.start()
@@ -273,15 +277,23 @@ class bot():
                             content):
                         print("○hitしました♪")
                         print("○見送ります（*'∀'人）")
-                        toot_now = ":@" + account['acct'] + ":" + account['display_name'] + "\n" + 'いってらーーーー！！'
+                        if account['acct'] == "5": #やなちゃん専用挨拶
+                            print("○やなちゃんだ！！（*'∀'人）")
+                            toot_now = ":@" + account['acct'] + ":" + "やなちゃん！！！！！！" + "\n" + '(*>_<*)ﾉいってらいってらーーーー！！！！'
+                        else:
+                            toot_now = ":@" + account['acct'] + ":" + account['display_name'] + "\n" + 'いってらーーーー！！'
                         g_vis = "public"
                         t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
                         t1.start()
                     elif re.compile("ただいま|ただいマストドン").search(content):
                         print("○hitしました♪")
                         print("○優しく迎えます（*'∀'人）")
-                        toot_now = ":@" + account['acct'] + ":" + account[
-                            'display_name'] + "\n" + '( 〃 ❛ᴗ❛ 〃 )おかえりおかえりーー！！'
+                        if account['acct'] == "5": #やなちゃん専用挨拶
+                            print("○やなちゃんだ！！（*'∀'人）")
+                            toot_now = ":@" + account['acct'] + ":" + "やなちゃん！！！！！！" + "\n" + '٩(๑❛ᴗ❛๑)۶おかえりおかえりーー！！'
+                        else:
+                            toot_now = ":@" + account['acct'] + ":" + account[
+                                'display_name'] + "\n" + '( 〃 ❛ᴗ❛ 〃 )おかえりおかえりーー！！'
                         g_vis = "public"
                         t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
                         t1.start()
@@ -299,8 +311,12 @@ class bot():
                             delta = now_time - last_time
                             print(delta)
                             if delta.total_seconds() >= 604800:
-                                toot_now = " :@" + account['acct'] + ":\n" + account[
-                                    'acct'] + "\n" + "（*'∀'人）おひさひさーーーー♪"
+                                if account['acct'] == "5": #やなちゃん専用挨拶
+                                    print("○やなちゃんだ！！（*'∀'人）")
+                                    toot_now = ":@" + account['acct'] + ":" + "やなちゃん！！！！！！" + "\n" + "（*'∀'人）おひさひさーーーー♪"
+                                else:
+                                    toot_now = " :@" + account['acct'] + ":\n" + account[
+                                        'acct'] + "\n" + "（*'∀'人）おひさひさーーーー♪"
                                 g_vis = "public"
                                 t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
                                 t1.start()
@@ -311,12 +327,16 @@ class bot():
                                     to_r = bot.rand_w('time\\kob.txt')
                                 else:
                                     to_r = bot.rand_w('time\\oha.txt')
-                                print("○あいさつします（*'∀'人）")
-                                if account['display_name'] == "":
-                                    toot_now = ":@" + account['acct'] + ":" + account['acct'] + "\n" + to_r
+                                if account['acct'] == "5": #やなちゃん専用挨拶
+                                    print("○やなちゃんだ！！（*'∀'人）")
+                                    toot_now = ":@" + account['acct'] + ":" + "やなちゃん！！！！！！" + "\n" + to_r
                                 else:
-                                    toot_now = ":@" + account['acct'] + ":" + account['display_name'] + "\n" + to_r
-                                g_vis = "public"
+                                    print("○あいさつします（*'∀'人）")
+                                    if account['display_name'] == "":
+                                        toot_now = ":@" + account['acct'] + ":" + account['acct'] + "\n" + to_r
+                                    else:
+                                        toot_now = ":@" + account['acct'] + ":" + account['display_name'] + "\n" + to_r
+                                    g_vis = "public"
                                 t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
                                 t1.start()
                         except:
