@@ -90,14 +90,15 @@ class men_toot(StreamListener):
                         in_reply_to_id = status["id"]
                         t = threading.Timer(8, bot.toot, [toot_now, g_vis, status['id']])
                         t.start()
-                    elif re.compile("(Message|めっせーじ).*<br />(.+)").search(content) and status["visibility"] == "direct":
-                        print("○受け取りました")
-                        com = re.search("(Message|めっせーじ).*<br />(.+)", str(content))
-                        messe = com.group(2)
-                        toot_now = messe
-                        g_vis = "public"
-                        t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
-                        t1.start()
+                    elif re.compile("(xxxx)<br />(.+)").search(content): #悪用されないように変えてます
+                        if status["visibility"] == "direct":
+                            print("○受け取りました")
+                            com = re.search("(xxxx).*<br />(.+)", str(content))
+                            messe = com.group(2)
+                            toot_now = messe
+                            g_vis = "public"
+                            t1 = threading.Timer(1, bot.toot, [toot_now, g_vis])
+                            t1.start()
                     else:
                         pass
                 v = threading.Timer(5, bot.fav_now)
@@ -366,17 +367,23 @@ class bot():
             if re.compile("(.+)とマストドン(どちら|どっち)が大[切事]か[分わ]かってない").search(content):
                 print("○hitしました♪")
                 sekuhara = bot.block01(status)
-                if not sekuhara:
-                    print("○だったら")
-                    toot_now = (re.sub('<span(.+)span>|<p>|とマストドン(.*)', "", str(content))) + "しながらマストドンして❤"
+                if len(status) > 200:
+                    toot_now = "٩(๑`^´๑)۶長い！！！！！！"
                     g_vis = "public"
                     t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
                     t1.start()
                 else:
-                    toot_now = "そんなセクハラ分かりません\n(* ,,Ծ‸Ծ,, )ﾌﾟｰ"
-                    g_vis = "public"
-                    t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
-                    t1.start()
+                    if not sekuhara:
+                        print("○だったら")
+                        toot_now = (re.sub('<span(.+)span>|<p>|とマストドン(.*)', "", str(content))) + "しながらマストドンして❤"
+                        g_vis = "public"
+                        t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
+                        t1.start()
+                    else:
+                        toot_now = "そんなセクハラ分かりません\n(* ,,Ծ‸Ծ,, )ﾌﾟｰ"
+                        g_vis = "public"
+                        t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
+                        t1.start()
                 count.timer_hello = 1 
 
     def fav01(status):
