@@ -19,6 +19,9 @@ mastodon = Mastodon(
     access_token="auth.txt",
     api_base_url=url_ins)  # インスタンス
 
+class Re1(): #Content整頓用関数
+    def text(text):
+        return (re.sub('<p>|</p>|<a.+"tag">|<a.+"_blank">|<a.+mention">|<span>|</span>|</a>|<span class="[a-z-]+">', "", str(text)))
 
 class men_toot(StreamListener):
     def on_notification(self, notification):
@@ -29,12 +32,12 @@ class men_toot(StreamListener):
                 status = notification["status"]
                 account = status["account"]
                 mentions = status["mentions"]
-                content = status["content"]
+                content = Re1.text(status["content"])
                 print("---")
                 print(
                     str(account["display_name"]).translate(non_bmp_map) + "@" + str(account["acct"]).translate(
                         non_bmp_map))
-                print((re.sub("<p>|</p>", "", str(content).translate(non_bmp_map))))
+                print(content.translate(non_bmp_map))
                 print(str(mentions).translate(non_bmp_map))
                 print("---")
                 bot.n_sta = status
@@ -87,6 +90,14 @@ class men_toot(StreamListener):
                         in_reply_to_id = status["id"]
                         t = threading.Timer(8, bot.toot, [toot_now, g_vis, status['id']])
                         t.start()
+                    elif re.compile("(メッセージ|Message|めっせーじ).*<br />(.+)").search(content):
+                        print("○受け取りました")
+                        com = re.search("(メッセージ|Message|めっせーじ).*<br />(.+)", str(content))
+                        messe = com.group(2)
+                        toot_now = messe + "\n（:" + account["acct"] + ":からのリクエストでした）"
+                        g_vis = "public"
+                        t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
+                        t1.start()
                     else:
                         pass
                 v = threading.Timer(5, bot.fav_now)
@@ -258,7 +269,7 @@ class bot():
                             t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
                             t1.start()
                     elif re.compile(
-                            "[いイ行逝]って(くる|きます|[きキ]マストドン)|出かけて(くる|きま[あぁー]*す|[きキ]マストドン)|おでかけ(する|しま[あぁー]*す|[しシ]マストドン)|(出勤|離脱|しゅっきん|りだつ)(する|しま[あぁー]*す|[しシ]マストドン)|^(出勤|離脱)$|(.+)して(くる|きま[あぁー]*す|[きキ]マストドン)").search(
+                            "[いイ行逝]って(くる|きます|[きキ]マストドン)|出かけて(くる|きま[あぁー]*す|[きキ]マストドン)|おでかけ(する|しま[あぁー]*す|[しシ]マストドン)|(出勤|離脱|しゅっきん|りだつ)(する|しま[あぁー]*す|[しシ]マストドン)|^(出勤|離脱)$|(.+)して(くる|きま[あぁー]*す|[きキ]マストドン)([ー～！。よぞね]|$)").search(
                             content):
                         print("○hitしました♪")
                         print("○見送ります（*'∀'人）")
@@ -287,7 +298,7 @@ class bot():
                             now_time = datetime.strptime(tstr, '%Y-%m-%dT%H:%M:%S')
                             delta = now_time - last_time
                             print(delta)
-                            if delta.total_seconds() >= 453600:
+                            if delta.total_seconds() >= 604800:
                                 toot_now = " :@" + account['acct'] + ":\n" + account[
                                     'acct'] + "\n" + "（*'∀'人）おひさひさーーーー♪"
                                 g_vis = "public"
@@ -330,18 +341,19 @@ class bot():
 
     def res06(status):
         account = status["account"]
+        content = Re1.text(status["content"])
         if account["acct"] != "JC":
-            if re.compile("(.+)とマストドン(どちら|どっち)が大[切事]か[分わ]かってない").search(status['content']):
+            if re.compile("(.+)とマストドン(どちら|どっち)が大[切事]か[分わ]かってない").search(content):
                 print("○hitしました♪")
                 sekuhara = bot.block01(status)
                 if not sekuhara:
                     print("○だったら")
-                    toot_now = (re.sub('<span(.+)span>|<p>|とマストドン(.*)', "", str(status['content']))) + "しながらマストドンして❤"
+                    toot_now = (re.sub('<span(.+)span>|<p>|とマストドン(.*)', "", str(content))) + "しながらマストドンして❤"
                     g_vis = "public"
                     t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
                     t1.start()
                 else:
-                    toot_now = "そんなセクハラ分かりません(* ,,Ծ‸Ծ,, )ﾌﾟｰ"
+                    toot_now = "そんなセクハラ分かりません\n(* ,,Ծ‸Ծ,, )ﾌﾟｰ"
                     g_vis = "public"
                     t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
                     t1.start()
