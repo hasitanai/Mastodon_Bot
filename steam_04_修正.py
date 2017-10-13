@@ -337,7 +337,7 @@ class bot():
                                         toot_now = ":@" + account['acct'] + ":" + account['acct'] + "\n" + to_r
                                     else:
                                         toot_now = ":@" + account['acct'] + ":" + account['display_name'] + "\n" + to_r
-                                    g_vis = "public"
+                                g_vis = "public"
                                 t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
                                 t1.start()
                         except:
@@ -367,7 +367,7 @@ class bot():
             if re.compile("(.+)とマストドン(どちら|どっち)が大[切事]か[分わ]かってない").search(content):
                 print("○hitしました♪")
                 sekuhara = bot.block01(status)
-                if len(status) > 200:
+                if len(content) > 60:
                     toot_now = "٩(๑`^´๑)۶長い！！！！！！"
                     g_vis = "public"
                     t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
@@ -375,7 +375,7 @@ class bot():
                 else:
                     if not sekuhara:
                         print("○だったら")
-                        toot_now = (re.sub('<span(.+)span>|<p>|とマストドン(.*)', "", str(content))) + "しながらマストドンして❤"
+                        toot_now = ":@" + account["acct"] + ":" + (re.sub('<span(.+)span>|<p>|とマストドン(.*)', "", str(content))) + "しながらマストドンして❤"
                         g_vis = "public"
                         t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
                         t1.start()
@@ -384,7 +384,9 @@ class bot():
                         g_vis = "public"
                         t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
                         t1.start()
-                count.timer_hello = 1 
+                bot.timer_toot = 1
+                t3 = threading.Timer(60, bot.time_res)
+                t3.start()
 
     def fav01(status):
         account = status["account"]
