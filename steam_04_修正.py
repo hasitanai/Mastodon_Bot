@@ -466,7 +466,7 @@ class bot():
             print("例外情報\n" + traceback.format_exc())
             with open('except.log', 'a') as f:
                 jst_now = datetime.now(timezone('Asia/Tokyo'))
-                f.write(str(jst_now))
+                f.write("【"+str(jst_now)+"】")
                 traceback.print_exc(file=f)
             sleep(180)
             bot.t_local()
@@ -480,7 +480,7 @@ class bot():
             print("例外情報\n" + traceback.format_exc())
             with open('except.log', 'a') as f:
                 jst_now = datetime.now(timezone('Asia/Tokyo'))
-                f.write(str(jst_now))
+                f.write("【"+str(jst_now)+"】")
                 traceback.print_exc(file=f)
             sleep(180)
             bot.t_user()
@@ -558,7 +558,7 @@ class count():
     timer_toot = 0
     timer_hello = 0
 
-    def emo01(time=0):  # 定期的に評価を下げまーーす♪（無慈悲）
+    def emo01(time=10800):  # 定期的に評価を下げまーーす♪（無慈悲）
         while 1:
             sleep(time)
             data_dir_path = u"./thank/"
@@ -592,6 +592,21 @@ class count():
                 f = open(abs_name, 'w')
                 f.write(str(y))
                 f.close()
+        pass
+
+    def emo03(user, point):
+        sleep(time)
+        data_dir_path = u"./thank/"
+        file_list = os.listdir(r'./thank/')
+        abs_name = data_dir_path + '/' + user + '.txt'
+        f = open(abs_name, 'r')
+        x = f.read()
+        y = int(x)
+        y += point
+        f.close()
+        f = open(abs_name, 'w')
+        f.write(str(y))
+        f.close()
         pass
 
 
