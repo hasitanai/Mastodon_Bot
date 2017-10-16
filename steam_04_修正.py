@@ -233,7 +233,7 @@ class bot():
             if account["acct"] == "lamazeP":  # ラマーズＰ監視隊
                 ct += 5
                 if re.match('^\d+000$', str(ct)):
-                    toot_now = "`lamazeP (๑•̀ㅁ•́๑)" + str(ct) + 'tootまであと5だよ！！！！'
+                    toot_now = "@lamazeP (๑•̀ㅁ•́๑)" + str(ct) + 'tootまであと5だよ！！！！'
                     g_vis = "direct"
                     t = threading.Timer(5, bot.toot, [toot_now, g_vis])
                     t.start()
