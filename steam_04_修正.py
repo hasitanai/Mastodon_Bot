@@ -88,10 +88,10 @@ class men_toot(StreamListener):
                         g_vis = status["visibility"]
                         in_reply_to_id = status["id"]
                         bot.rets(8, toot_now, g_vis, status['id'])
-                    elif re.compile("(こそこそ)<br />(.+)").search(content):  # 悪用されないように変えてます
+                    elif re.compile("(xxxx)<br />(.+)").search(content):  # 悪用されないように変えてます
                         if status["visibility"] == "direct":
                             print("○受け取りました")
-                            com = re.search("(こそこそ).*<br />(.+)", str(content))
+                            com = re.search("(xxxx).*<br />(.+)", str(content))
                             messe = com.group(2)
                             toot_now = messe
                             g_vis = "public"
