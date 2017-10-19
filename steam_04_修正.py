@@ -168,12 +168,12 @@ class bot():
         self.g_sta = None
         self.n_sta = None
 
-    def rets(sec, toot_now, g_vis, rep=None):
-        t = threading.Timer(sec, bot.toot, [toot_now, g_vis, rep])
+    def rets(sec, toot_now, g_vis, rep=None, spo=None):
+        t = threading.Timer(sec, bot.toot, [toot_now, g_vis, rep, spo])
         t.start()
 
-    def toot(toot_now, g_vis, rep=None):
-        mastodon.status_post(status=toot_now, visibility=g_vis, in_reply_to_id=rep)
+    def toot(toot_now, g_vis, rep=None, spo=None):
+        mastodon.status_post(status=toot_now, visibility=g_vis, in_reply_to_id=rep, spoiler_text=spo)
         """visibility   これで公開範囲を指定できるよ！: public, unlisted, private, direct"""
 
     def block01(status):
@@ -540,7 +540,8 @@ class game():
                 0] + "\n" + poe4[0] + "\n(by:@" + poe0[1] + ":-:@" + poe1[1] + ":-:@" + poe2[
                     1] + ":-:@" + poe3[1] + ":-:@"+poe4[1] + ":)\n#ぽえむげーむ"
             g_vis = "public"
-            bot.rets(5, toot_now, g_vis)
+            spo = ":@" + account["acct"] + ":さんにぽえむ♪♪"
+            bot.rets(5, toot_now, g_vis, None, spo)
         pass
 
     def senryu(status):
@@ -574,7 +575,7 @@ class game():
             h1 = word2[1]
             h2 = word2[2]
             h3 = word2[3]
-            toot_now = h0[0] + "\n" + h1[1] + "\n" + h2[2] + "\n 作者:@" + h3[3] + ":\n:@" + account[
+            toot_now = h0[0] + "\n" + h1[1] + "\n" + h2[2] + "\n（作者：:@" + h3[3] + ":）\n:@" + account[
                 "acct"] +":さんからのリクエストでした❤\n#川柳げーむ"
             g_vis = "public"
             bot.rets(5, toot_now, g_vis)
