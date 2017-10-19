@@ -527,18 +527,19 @@ class game():
             f.close()
             m = len(word1)
             word2 = []
-            for x in range(4):
+            for x in range(5):
                 s = random.randint(0, m-1)
                 word2.append((word1[s]).split(','))
             poe0 = word2[0]
             poe1 = word2[1]
             poe2 = word2[2]
             poe3 = word2[3]
-            toot_now = poe0[0] + "(by:@" + poe0[1] + ":)\n" + poe1[
-                0] + "(by:@" + poe1[1] + ":)\n" + poe2[0] + "(by:@" + poe2[
-                    1] + ":)\n" + poe3[0] + "(by:@" + poe3[1] + ":)\n#ぽえむげーむ"
+            poe4 = word2[4]
+            toot_now = poe0[0] + "\n" + poe1[0] + "\n" + poe2[0] + "\n" + poe3[
+                0] + "\n" + poe4[0] + "\n(by:@" + poe0[1]+":-:@"+poe1[1]+":-:@"+poe2[
+                    1]+":-:@"+poe3[1]+":-:@"+poe4[1] + ":)\n#ぽえむげーむ"
             g_vis = "public"
-            bot.rets(8, toot_now, g_vis)
+            bot.rets(5, toot_now, g_vis)
         pass
     
     def dice(inp):
