@@ -24,6 +24,9 @@ class Re1():  # Content整頓用関数
     def text(text):
         return (re.sub('<p>|</p>|<a.+"tag">|<a.+"_blank">|<a.+mention">|<span>|</span>|</a>|<span class="[a-z-]+">', "",
                        str(text)))
+        text = re.sub('&gt;','>', str(text))
+        text = re.sub('&amp;','&', str(text))
+        return text
 
 class men_toot(StreamListener):
     def on_notification(self, notification):
@@ -550,6 +553,7 @@ class game():
             if re.compile("(ぽえむ|ポエム)(ゲーム|げーむ)[：:]").search(content):
                 poes = re.search("(ぽえむ|ポエム)(ゲーム|げーむ)[：:]<br />(.*)", str(content))
                 Poe = poes.group(3)
+                Poe = Re1.html(Poe)
                 if len(content) > 60:
                         toot_now = "٩(๑`^´๑)۶長い！！！！！！"
                         g_vis = "public"
