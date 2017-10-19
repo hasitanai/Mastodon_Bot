@@ -164,7 +164,7 @@ class res_toot(StreamListener):
 
     def on_delete(self, status_id):
         print("===削除されました===")
-
+        
 
 class bot():
     def _init_(self):
@@ -501,7 +501,6 @@ class game():
 
         toot = bot.toot
         toot("٩(๑❛ᴗ❛๑)۶今から連想ゲームを始めます！！", "")
-
         
         
 　　　　"""
@@ -556,7 +555,7 @@ class game():
                         g_vis = "public"
                         bot.rets(5, toot_now, g_vis)
                 else:
-                    Poe = re.sub("<br />", "\\n", Poe) 
+                    Poe = re.sub("<br />", "\\\\n", Poe) 
                     f = codecs.open('game\\poem_word.txt', 'a', 'UTF-8')
                     f.write(str(Poe) + "," + account["acct"] + "\r\n" )
                     f.close()
