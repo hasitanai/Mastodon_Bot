@@ -19,9 +19,11 @@ mastodon = Mastodon(
     access_token="auth.txt",
     api_base_url=url_ins)  # インスタンス
 
-class Re1(): #Content整頓用関数
+
+class Re1():  # Content整頓用関数
     def text(text):
-        return (re.sub('<p>|</p>|<a.+"tag">|<a.+"_blank">|<a.+mention">|<span>|</span>|</a>|<span class="[a-z-]+">', "", str(text)))
+        return (re.sub('<p>|</p>|<a.+"tag">|<a.+"_blank">|<a.+mention">|<span>|</span>|</a>|<span class="[a-z-]+">', "",
+                       str(text)))
 
 class men_toot(StreamListener):
     def on_notification(self, notification):
@@ -46,26 +48,22 @@ class men_toot(StreamListener):
                     if re.compile("おは|おあひょ").search(content):
                         toot_now = "@" + str(account["acct"]) + " " + "（*'∀'人）おあひょーーーー♪"
                         g_vis = status["visibility"]
-                        t = threading.Timer(8, bot.toot, [toot_now, g_vis, status['id']])
-                        t.start()
+                        bot.rets(8, toot_now, g_vis, status['id'])
                     elif re.compile("こんに").search(content):
                         toot_now = "@" + str(account["acct"]) + " " + "（*'∀'人）こんにちはーーーー♪"
                         g_vis = status["visibility"]
-                        t = threading.Timer(8, bot.toot, [toot_now, g_vis, status['id']])
-                        t.start()
+                        bot.rets(8, toot_now, g_vis, status['id'])
                     elif re.compile("こんば").search(content):
                         toot_now = "@" + str(account["acct"]) + " " + "（*'∀'人）こんばんはーーーー♪"
                         g_vis = status["visibility"]
-                        t = threading.Timer(8, bot.toot, [toot_now, g_vis, status['id']])
-                        t.start()
+                        bot.rets(8, toot_now, g_vis, status['id'])
                     elif re.compile("\d+[dD]\d+").search(content):
                         inp = (re.sub("<span class(.+)</span></a></span>|<p>|</p>", "",
                                       str(status['content']).translate(non_bmp_map)))
-                        result = bot.dice(inp)
+                        result = game.dice(inp)
                         g_vis = status["visibility"]
                         toot_now = ":@" + str(account["acct"]) + ": @" + account["acct"] + "\n" + result
-                        t = threading.Timer(5, bot.toot, [toot_now, g_vis, status['id']])
-                        t.start()
+                        bot.rets(5, toot_now, g_vis, status['id'])
                     elif re.compile("アラーム(\d+)").search(content):
                         non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
                         content = str(status['content']).translate(non_bmp_map)
@@ -81,24 +79,33 @@ class men_toot(StreamListener):
                         toot_now = "@" + account["acct"] + " " + "（*'∀'人）時間だよーー♪♪"
                         g_vis = status["visibility"]
                         in_reply_to_id = status["id"]
-                        t = threading.Timer(int(com.group(1)), bot.toot, [toot_now, g_vis, status['id']])
-                        t.start()
-                    elif re.compile("(フォロー|follow)(して|く[うぅー]*ださ[あぁー]*い|お願[あぁー]*い|おねが[あぁー]*い|頼[むみ]|たの[むみ]|ぷりーず|プリーズ|please)").search(content):
+                        bot.rets(int(com.group(1)),toot_now, g_vis, status['id'])
+                    elif re.compile(
+                            "(フォロー|follow)(して|く[うぅー]*ださ[あぁー]*い|お願[あぁー]*い|おねが[あぁー]*い|頼[むみ]|たの[むみ]|ぷりーず|プリーズ|please)").search(
+                            content):
                         mastodon.account_follow(account["id"])
                         toot_now = "@" + account["acct"] + " " + "（*'∀'人）フォローしました♪♪"
                         g_vis = status["visibility"]
                         in_reply_to_id = status["id"]
-                        t = threading.Timer(8, bot.toot, [toot_now, g_vis, status['id']])
-                        t.start()
-                    elif re.compile("(xxxx)<br />(.+)").search(content): #悪用されないように変えてます
+                        bot.rets(8, toot_now, g_vis, status['id'])
+                    elif re.compile("(こそこそ)<br />(.+)").search(content):  # 悪用されないように変えてます
                         if status["visibility"] == "direct":
                             print("○受け取りました")
-                            com = re.search("(xxxx).*<br />(.+)", str(content))
+                            com = re.search("(こそこそ).*<br />(.+)", str(content))
                             messe = com.group(2)
                             toot_now = messe
                             g_vis = "public"
-                            t1 = threading.Timer(1, bot.toot, [toot_now, g_vis])
-                            t1.start()
+                            bot.rets(1, toot_now, g_vis)
+                    elif re.compile("連想ゲーム開始").search(content):
+                        if rensou_time:
+                            toot_now = "@" + account["acct"] + " " + "（*'∀'人）ごめんね、今開催中なの♪♪"
+                            g_vis = status["visibility"]
+                            in_reply_to_id = status["id"]
+                            bot.rets(5, toot_now, g_vis, status['id'])
+                        else:
+                            t = threading.Timer(0, game.rensou)
+                            t.start()
+                            rensou_time = True
                     else:
                         pass
                 v = threading.Timer(5, bot.fav_now)
@@ -133,13 +140,14 @@ class res_toot(StreamListener):
             print((re.sub("<p>|</p>", "", str(mentions).translate(non_bmp_map))))
             bot.check01(status)
             print("   ")
-            #bot.block01(status)
+            # bot.block01(status)
             bot.res01(status)
             bot.res06(status)
             bot.res07(status)
             bot.fav01(status)
             bot.check00(status)
             bot.check02(status)
+            game.poem(status)
             # f = codecs.open('log\\' + 'log_' + '.txt', 'a', 'UTF-8')
             # f.write(str(status) + "\n")
             # f.close()
@@ -159,6 +167,10 @@ class bot():
         self.g_sta = None
         self.n_sta = None
 
+    def rets(sec, toot_now, g_vis, rep=None):
+        t = threading.Timer(sec, bot.toot, [toot_now, g_vis, rep])
+        t.start()
+
     def toot(toot_now, g_vis, rep=None):
         mastodon.status_post(status=toot_now, visibility=g_vis, in_reply_to_id=rep)
         """visibility   これで公開範囲を指定できるよ！: public, unlisted, private, direct"""
@@ -171,7 +183,7 @@ class bot():
         f.close()
         m = len(l)
         for x in range(m):
-            if re.compile(str(l[x])).search(re.sub("<p>|</p>", "",str(status))):
+            if re.compile(str(l[x])).search(re.sub("<p>|</p>", "", str(status))):
                 j = True
                 break
             else:
@@ -186,18 +198,16 @@ class bot():
                     print("○hitしました♪")
                     non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
                     coro = (re.sub("<p>|</p>", "", str(status['content']).translate(non_bmp_map)))
-                    toot_now = ":@" + account["acct"] + ": @" + account["acct"] + "\n" + bot.dice(coro)
+                    toot_now = ":@" + account["acct"] + ": @" + account["acct"] + "\n" + game.dice(coro)
                     g_vis = status["visibility"]
-                    t = threading.Timer(5, bot.toot, [toot_now, g_vis])
-                    t.start()
+                    bot.rets(5, toot_now, g_vis)
                     w = threading.Timer(30, bot.time_res)
                     w.start()
                     bot.timer_toot = True
                 elif re.compile("ももな(.*)([6-9]|\d{2})[dD](\d*)").search(status['content']):
                     toot_now = "６回以上の回数は畳む内容だからメンションの方で送ってーー！！"
                     g_vis = status["visibility"]
-                    t = threading.Timer(5, bot.toot, [toot_now, g_vis])
-                    t.start()
+                    bot.rets(5, toot_now, g_vis)
                     w = threading.Timer(60, bot.time_res)
                     w.start()
                     bot.timer_toot = True
@@ -216,27 +226,23 @@ class bot():
                 if re.match('^\d+000$', str(ct)):
                     toot_now = "°˖✧◝(⁰▿⁰)◜✧˖" + str(ct) + 'toot達成ーーーー♪♪'
                     g_vis = "public"
-                    t = threading.Timer(5, bot.toot, [toot_now, g_vis])
-                    t.start()
+                    bot.rets(5, toot_now, g_vis)
             else:
                 if re.match('^\d+0000$', str(ct)):
                     toot_now = " :@" + account['acct'] + ": @" + account['acct'] + "\n°˖✧◝(⁰▿⁰)◜✧˖" + str(
                         ct) + 'tootおめでとーーーー♪♪'
                     g_vis = "public"
-                    t = threading.Timer(5, bot.toot, [toot_now, g_vis])
-                    t.start()
+                    bot.rets(5, toot_now, g_vis)
                 elif re.match('^\d000$', str(ct)):
                     toot_now = " :@" + account['acct'] + ": @" + account['acct'] + "\n（*'∀'人）" + str(ct) + 'tootおめでとーー♪'
                     g_vis = "public"
-                    t = threading.Timer(5, bot.toot, [toot_now, g_vis])
-                    t.start()
+                    bot.rets(5, toot_now, g_vis)
             if account["acct"] == "lamazeP":  # ラマーズＰ監視隊
                 ct += 5
                 if re.match('^\d+000$', str(ct)):
                     toot_now = "@lamazeP (๑•̀ㅁ•́๑)" + str(ct) + 'tootまであと5だよ！！！！'
                     g_vis = "direct"
-                    t = threading.Timer(5, bot.toot, [toot_now, g_vis])
-                    t.start()
+                    bot.rets(5, toot_now, g_vis)
         else:
             pass
 
@@ -256,48 +262,45 @@ class bot():
                         print("○あいさつします（*'∀'人）")
                         toot_now = "(๑•̀ㅁ•́๑)✧おはありでーーーーす♪"
                         g_vis = "public"
-                        t1 = threading.Timer(20, bot.toot, [toot_now, g_vis])
-                        t1.start()
+                        bot.rets(20, toot_now, g_vis)
                         count.timer_hello = 1
                 else:
                     if re.compile("[寝ね](ます|る|マス)(.*)[ぽお]や[すし]|ももな(.*)[ぽお]や[すし]").search(content):
                         if not re.compile("[寝ね]る(人|ひと)").search(status['content']):
                             print("○hitしました♪")
                             print("○おやすみします（*'∀'人）")
-                            if account['acct'] == "5": #やなちゃん専用挨拶
+                            if account['acct'] == "5":  # やなちゃん専用挨拶
                                 print("○やなちゃんだ！！（*'∀'人）")
-                                toot_now = ":@" + account['acct'] + ":" + "やなちゃん！！！！！！" + "\n" + '(｡>﹏<｡)あとで一緒に寝るーーーー！！！！'
+                                toot_now = ":@" + account[
+                                    'acct'] + ":" + "やなちゃん！！！！！！" + "\n" + '(｡>﹏<｡)あとで一緒に寝るーーーー！！！！'
                             else:
                                 toot_now = ":@" + account['acct'] + ":" + account[
                                     'display_name'] + "\n" + '(ृ 　 ु *`ω､)ु ⋆゜おやすみーーーー♪'
                             g_vis = "public"
-                            t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
-                            t1.start()
+                            bot.rets(5, toot_now, g_vis)
                     elif re.compile(
                             "[いイ行逝]って(くる|きます|[きキ]マストドン)|出かけて(くる|きま[あぁー]*す|[きキ]マストドン)|おでかけ(する|しま[あぁー]*す|[しシ]マストドン)|(出勤|離脱|しゅっきん|りだつ)(する|しま[あぁー]*す|[しシ]マストドン)|^(出勤|離脱)$|(.+)して(くる|きま[あぁー]*す|[きキ]マストドン)([ー～！。よぞね]|$)").search(
-                            content):
+                        content):
                         print("○hitしました♪")
                         print("○見送ります（*'∀'人）")
-                        if account['acct'] == "5": #やなちゃん専用挨拶
+                        if account['acct'] == "5":  # やなちゃん専用挨拶
                             print("○やなちゃんだ！！（*'∀'人）")
                             toot_now = ":@" + account['acct'] + ":" + "やなちゃん！！！！！！" + "\n" + '(*>_<*)ﾉいってらいってらーーーー！！！！'
                         else:
                             toot_now = ":@" + account['acct'] + ":" + account['display_name'] + "\n" + 'いってらーーーー！！'
                         g_vis = "public"
-                        t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
-                        t1.start()
+                        bot.rets(5, toot_now, g_vis)
                     elif re.compile("ただいま|ただいマストドン").search(content):
                         print("○hitしました♪")
                         print("○優しく迎えます（*'∀'人）")
-                        if account['acct'] == "5": #やなちゃん専用挨拶
+                        if account['acct'] == "5":  # やなちゃん専用挨拶
                             print("○やなちゃんだ！！（*'∀'人）")
                             toot_now = ":@" + account['acct'] + ":" + "やなちゃん！！！！！！" + "\n" + '٩(๑❛ᴗ❛๑)۶おかえりおかえりーー！！'
                         else:
                             toot_now = ":@" + account['acct'] + ":" + account[
                                 'display_name'] + "\n" + '( 〃 ❛ᴗ❛ 〃 )おかえりおかえりーー！！'
                         g_vis = "public"
-                        t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
-                        t1.start()
+                        bot.rets(5, toot_now, g_vis)
                     else:
                         try:
                             f = codecs.open('at_time\\' + account["acct"] + '.txt', 'r', 'UTF-8')
@@ -312,15 +315,14 @@ class bot():
                             delta = now_time - last_time
                             print(delta)
                             if delta.total_seconds() >= 604800:
-                                if account['acct'] == "5": #やなちゃん専用挨拶
+                                if account['acct'] == "5":  # やなちゃん専用挨拶
                                     print("○やなちゃんだ！！（*'∀'人）")
                                     toot_now = ":@" + account['acct'] + ":" + "やなちゃん！！！！！！" + "\n" + "（*'∀'人）おひさひさーーーー♪"
                                 else:
                                     toot_now = " :@" + account['acct'] + ":\n" + account[
                                         'acct'] + "\n" + "（*'∀'人）おひさひさーーーー♪"
                                 g_vis = "public"
-                                t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
-                                t1.start()
+                                bot.rets(5, toot_now, g_vis)
                             elif delta.total_seconds() >= 10800:
                                 if now_time.hour in range(3, 9):
                                     to_r = bot.rand_w('time\\kon.txt')
@@ -328,7 +330,7 @@ class bot():
                                     to_r = bot.rand_w('time\\kob.txt')
                                 else:
                                     to_r = bot.rand_w('time\\oha.txt')
-                                if account['acct'] == "5": #やなちゃん専用挨拶
+                                if account['acct'] == "5":  # やなちゃん専用挨拶
                                     print("○やなちゃんだ！！（*'∀'人）")
                                     toot_now = ":@" + account['acct'] + ":" + "やなちゃん！！！！！！" + "\n" + to_r
                                 else:
@@ -338,8 +340,7 @@ class bot():
                                     else:
                                         toot_now = ":@" + account['acct'] + ":" + account['display_name'] + "\n" + to_r
                                 g_vis = "public"
-                                t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
-                                t1.start()
+                                bot.rets(5, toot_now, g_vis)
                         except:
                             print("○初あいさつします（*'∀'人）")
                             if account['statuses_count'] <= 2:
@@ -355,8 +356,7 @@ class bot():
                                 else:
                                     toot_now = " :@" + account['acct'] + ": @" + account['acct'] + "\n" + 'いらっしゃーーーーい♪'
                             g_vis = "public"
-                            t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
-                            t1.start()
+                            bot.rets(5, toot_now, g_vis)
         else:
             print("○反応がない人なので挨拶しません（*'∀'人）")
 
@@ -370,20 +370,18 @@ class bot():
                 if len(content) > 60:
                     toot_now = "٩(๑`^´๑)۶長い！！！！！！"
                     g_vis = "public"
-                    t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
-                    t1.start()
+                    bot.rets(5, toot_now, g_vis)
                 else:
                     if not sekuhara:
                         print("○だったら")
-                        toot_now = ":@" + account["acct"] + ":" + (re.sub('<span(.+)span>|<p>|とマストドン(.*)', "", str(content))) + "しながらマストドンして❤"
+                        toot_now = ":@" + account["acct"] + ":" + (
+                        re.sub('<span(.+)span>|<p>|とマストドン(.*)', "", str(content))) + "しながらマストドンして❤"
                         g_vis = "public"
-                        t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
-                        t1.start()
+                        bot.rets(5, toot_now, g_vis)
                     else:
                         toot_now = "そんなセクハラ分かりません\n(* ,,Ծ‸Ծ,, )ﾌﾟｰ"
                         g_vis = "public"
-                        t1 = threading.Timer(5, bot.toot, [toot_now, g_vis])
-                        t1.start()
+                        bot.rets(5, toot_now, g_vis)
                 bot.timer_toot = 1
                 t3 = threading.Timer(60, bot.time_res)
                 t3.start()
@@ -395,7 +393,7 @@ class bot():
             bot.thank(account, 8)
             v = threading.Timer(5, bot.fav_now)
             v.start()
-                
+
     def check01(status):
         account = status["account"]
         created_at = status['created_at']
@@ -466,7 +464,7 @@ class bot():
             print("例外情報\n" + traceback.format_exc())
             with open('except.log', 'a') as f:
                 jst_now = datetime.now(timezone('Asia/Tokyo'))
-                f.write("【"+str(jst_now)+"】")
+                f.write("【" + str(jst_now) + "】")
                 traceback.print_exc(file=f)
             sleep(180)
             bot.t_local()
@@ -480,12 +478,69 @@ class bot():
             print("例外情報\n" + traceback.format_exc())
             with open('except.log', 'a') as f:
                 jst_now = datetime.now(timezone('Asia/Tokyo'))
-                f.write("【"+str(jst_now)+"】")
+                f.write("【" + str(jst_now) + "】")
                 traceback.print_exc(file=f)
             sleep(180)
             bot.t_user()
             pass
 
+
+class game():
+    rensou_time = False
+
+    def fav(id):
+        mastodon.status_favourite(id)
+    
+    def rensou(status):
+        """
+
+        toot = bot.toot
+        toot("٩(๑❛ᴗ❛๑)۶今から連想ゲームを始めます！！", "")
+
+        
+        
+　　　　"""
+        pass
+
+    def poem(status):
+        account = status["account"]
+        content = Re1.text(status["content"])
+        if re.compile("(ぽえむ|ポエム)(ゲーム|げーむ)[：:]").search(content):
+            poes = re.search("(ぽえむ|ポエム)(ゲーム|げーむ)[：:]<br />(.*)", str(content))
+            Poe = poes.group(3)
+            if len(content) > 60:
+                    toot_now = "٩(๑`^´๑)۶長い！！！！！！"
+                    g_vis = "public"
+                    bot.rets(5, toot_now, g_vis)
+            else:
+                Poe = re.sub("<br />", "\\n", Poe) 
+                f = codecs.open('game\\poem_word.txt', 'a', 'UTF-8')
+                f.write(str(Poe) + "," + account["acct"] + "\r\n" )
+                f.close()
+                v = threading.Timer(5, game.fav, [status["id"]])
+                v.start()
+        elif re.compile("ももな.*(ぽえむ|ポエム)(ゲーム|げーむ).*(ひとつ|おねがい)").search(content):
+            f = codecs.open('game\\poem_word.txt', 'r', 'utf-8')
+            word1 = []
+            for x in f:
+                word1.append(x.rstrip("\r\n").replace('\\n', '\n'))
+            f.close()
+            m = len(word1)
+            word2 = []
+            for x in range(4):
+                s = random.randint(0, m-1)
+                word2.append((word1[s]).split(','))
+            poe0 = word2[0]
+            poe1 = word2[1]
+            poe2 = word2[2]
+            poe3 = word2[3]
+            toot_now = poe0[0] + "(by:@" + poe0[1] + ":)\n" + poe1[
+                0] + "(by:@" + poe1[1] + ":)\n" + poe2[0] + "(by:@" + poe2[
+                    1] + ":)\n" + poe3[0] + "(by:@" + poe3[1] + ":)\n#ぽえむげーむ"
+            g_vis = "public"
+            bot.rets(8, toot_now, g_vis)
+        pass
+    
     def dice(inp):
         l = []
         n = []
