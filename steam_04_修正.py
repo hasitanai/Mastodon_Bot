@@ -148,6 +148,7 @@ class res_toot(StreamListener):
             bot.check00(status)
             bot.check02(status)
             game.poem(status)
+            game.senryu(status)
             # f = codecs.open('log\\' + 'log_' + '.txt', 'a', 'UTF-8')
             # f.write(str(status) + "\n")
             # f.close()
@@ -536,8 +537,45 @@ class game():
             poe3 = word2[3]
             poe4 = word2[4]
             toot_now = poe0[0] + "\n" + poe1[0] + "\n" + poe2[0] + "\n" + poe3[
-                0] + "\n" + poe4[0] + "\n(by:@" + poe0[1]+":-:@"+poe1[1]+":-:@"+poe2[
-                    1]+":-:@"+poe3[1]+":-:@"+poe4[1] + ":)\n#ぽえむげーむ"
+                0] + "\n" + poe4[0] + "\n(by:@" + poe0[1] + ":-:@" + poe1[1] + ":-:@" + poe2[
+                    1] + ":-:@" + poe3[1] + ":-:@"+poe4[1] + ":)\n#ぽえむげーむ"
+            g_vis = "public"
+            bot.rets(5, toot_now, g_vis)
+        pass
+
+    def senryu(status):
+        account = status["account"]
+        content = Re1.text(status["content"])
+        if re.compile("(せんりゅう|川柳)(ゲーム|げーむ)[：:]<br />(.+)<br />(.+)<br />(.+)").search(content):
+            poes = re.search("(せんりゅう|川柳)(ゲーム|げーむ)[：:]<br />(.+)<br />(.+)<br />(.+)", str(content))
+            sen1 = poes.group(3)
+            sen2 = poes.group(4)
+            sen3 = poes.group(5)
+            if len(sen1) > 6 or len(sen2) > 8 or len(sen3) > 6:
+                pass
+            else:
+                f = codecs.open('game\\senryu_word.txt', 'a', 'UTF-8')
+                f.write(str(sen1) + "," + str(sen2) + "," + str(sen3) + "," + account["acct"] + "\r\n" )
+                f.close()
+                v = threading.Timer(5, game.fav, [status["id"]])
+                v.start()
+        elif re.compile("ももな.*(せんりゅう|川柳)(ゲーム|げーむ).*(一句|ひとつ|おねがい)").search(content):
+            f = codecs.open('game\\senryu_word.txt', 'r', 'utf-8')
+            word1 = []
+            for x in f:
+                word1.append(x.rstrip("\r\n").replace('\\n', '\n'))
+            f.close()
+            m = len(word1)
+            word2 = []
+            for x in range(4):
+                s = random.randint(0, m-1)
+                word2.append((word1[s]).split(','))
+            h0 = word2[0]
+            h1 = word2[1]
+            h2 = word2[2]
+            h3 = word2[3]
+            toot_now = h0[0] + "\n" + h1[1] + "\n" + h2[2] + "\n 作者:@" + h3[3] + ":\n:@" + account[
+                "acct"] +":さんからのリクエストでした❤\n#川柳げーむ"
             g_vis = "public"
             bot.rets(5, toot_now, g_vis)
         pass
