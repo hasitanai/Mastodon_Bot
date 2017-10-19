@@ -106,6 +106,9 @@ class men_toot(StreamListener):
                             t = threading.Timer(0, game.rensou)
                             t.start()
                             rensou_time = True
+                    elif account["acct"] == "twotwo":
+                        if re.compile("").search(content):
+                            pass
                     else:
                         pass
                 v = threading.Timer(5, bot.fav_now)
@@ -195,23 +198,24 @@ class bot():
         account = status["account"]
         if account['acct'] != "kiri_bot01":
             if not bot.timer_toot:
-                if re.compile("ももな(.*)[1-5][dD]\d+").search(status['content']):
-                    print("○hitしました♪")
-                    non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
-                    coro = (re.sub("<p>|</p>", "", str(status['content']).translate(non_bmp_map)))
-                    toot_now = ":@" + account["acct"] + ": @" + account["acct"] + "\n" + game.dice(coro)
-                    g_vis = status["visibility"]
-                    bot.rets(5, toot_now, g_vis)
-                    w = threading.Timer(30, bot.time_res)
-                    w.start()
-                    bot.timer_toot = True
-                elif re.compile("ももな(.*)([6-9]|\d{2})[dD](\d*)").search(status['content']):
-                    toot_now = "６回以上の回数は畳む内容だからメンションの方で送ってーー！！"
-                    g_vis = status["visibility"]
-                    bot.rets(5, toot_now, g_vis)
-                    w = threading.Timer(60, bot.time_res)
-                    w.start()
-                    bot.timer_toot = True
+                if account["acct"] != "JC":
+                    if re.compile("ももな(.*)[1-5][dD]\d+").search(status['content']):
+                        print("○hitしました♪")
+                        non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
+                        coro = (re.sub("<p>|</p>", "", str(status['content']).translate(non_bmp_map)))
+                        toot_now = ":@" + account["acct"] + ": @" + account["acct"] + "\n" + game.dice(coro)
+                        g_vis = status["visibility"]
+                        bot.rets(5, toot_now, g_vis)
+                        w = threading.Timer(30, bot.time_res)
+                        w.start()
+                        bot.timer_toot = True
+                    elif re.compile("ももな(.*)([6-9]|\d{2})[dD](\d*)").search(status['content']):
+                        toot_now = "６回以上の回数は畳む内容だからメンションの方で送ってーー！！"
+                        g_vis = status["visibility"]
+                        bot.rets(5, toot_now, g_vis)
+                        w = threading.Timer(60, bot.time_res)
+                        w.start()
+                        bot.timer_toot = True
 
     def check00(status):
         account = status["account"]
@@ -506,79 +510,151 @@ class game():
     def poem(status):
         account = status["account"]
         content = Re1.text(status["content"])
-        if re.compile("(ぽえむ|ポエム)(ゲーム|げーむ)[：:]").search(content):
-            poes = re.search("(ぽえむ|ポエム)(ゲーム|げーむ)[：:]<br />(.*)", str(content))
-            Poe = poes.group(3)
-            if len(content) > 60:
-                    toot_now = "٩(๑`^´๑)۶長い！！！！！！"
-                    g_vis = "public"
-                    bot.rets(5, toot_now, g_vis)
-            else:
-                Poe = re.sub("<br />", "\\n", Poe) 
-                f = codecs.open('game\\poem_word.txt', 'a', 'UTF-8')
-                f.write(str(Poe) + "," + account["acct"] + "\r\n" )
+        if account["acct"] == "twotwo":
+            if re.compile("ﾄｩﾄｩﾄｩﾄｩｰﾄｩ[：:]").search(content):
+                poes = re.search("(ﾄｩﾄｩﾄｩ)(ﾄｩｰﾄｩ)[：:]<br />(.*)", str(content))
+                Poe = poes.group(3)
+                if len(content) > 60:
+                        toot_now = "٩(๑`^´๑)۶ﾄｩﾄｩ！！！！！！"
+                        g_vis = "public"
+                        bot.rets(5, toot_now, g_vis)
+                else:
+                    Poe = re.sub("<br />", "\\n", Poe) 
+                    f = codecs.open('game\\poem_word.txt', 'a', 'UTF-8')
+                    f.write(str(Poe) + "," + account["acct"] + "\r\n" )
+                    f.close()
+                    v = threading.Timer(5, game.fav, [status["id"]])
+                    v.start()
+            elif re.compile("ﾄｩﾄｩﾄｩﾄｩｰﾄｩﾄｩ!").search(content):
+                f = codecs.open('game\\poem_word.txt', 'r', 'utf-8')
+                word1 = []
+                for x in f:
+                    word1.append(x.rstrip("\r\n").replace('\\n', '\n'))
                 f.close()
-                v = threading.Timer(5, game.fav, [status["id"]])
-                v.start()
-        elif re.compile("ももな.*(ぽえむ|ポエム)(ゲーム|げーむ).*(ひとつ|おねがい)").search(content):
-            f = codecs.open('game\\poem_word.txt', 'r', 'utf-8')
-            word1 = []
-            for x in f:
-                word1.append(x.rstrip("\r\n").replace('\\n', '\n'))
-            f.close()
-            m = len(word1)
-            word2 = []
-            for x in range(5):
-                s = random.randint(0, m-1)
-                word2.append((word1[s]).split(','))
-            poe0 = word2[0]
-            poe1 = word2[1]
-            poe2 = word2[2]
-            poe3 = word2[3]
-            poe4 = word2[4]
-            toot_now = poe0[0] + "\n" + poe1[0] + "\n" + poe2[0] + "\n" + poe3[
-                0] + "\n" + poe4[0] + "\n(by:@" + poe0[1] + ":-:@" + poe1[1] + ":-:@" + poe2[
-                    1] + ":-:@" + poe3[1] + ":-:@"+poe4[1] + ":)\n#ぽえむげーむ"
-            g_vis = "public"
-            spo = ":@" + account["acct"] + ":さんにぽえむ♪♪"
-            bot.rets(5, toot_now, g_vis, None, spo)
+                m = len(word1)
+                word2 = []
+                for x in range(5):
+                    s = random.randint(0, m-1)
+                    word2.append((word1[s]).split(','))
+                poe0 = word2[0]
+                poe1 = word2[1]
+                poe2 = word2[2]
+                poe3 = word2[3]
+                poe4 = word2[4]
+                toot_now = poe0[0] + "\n" + poe1[0] + "\n" + poe2[0] + "\n" + poe3[
+                    0] + "\n" + poe4[0] + "\n(by:@" + poe0[1] + ":-:@" + poe1[1] + ":-:@" + poe2[
+                        1] + ":-:@" + poe3[1] + ":-:@"+poe4[1] + ":)\n#ぽえむげーむ"
+                g_vis = "public"
+                spo = ":@" + account["acct"] + ":トゥートゥー♪♪"
+                bot.rets(5, toot_now, g_vis, None, spo)
+        else:
+            if re.compile("(ぽえむ|ポエム)(ゲーム|げーむ)[：:]").search(content):
+                poes = re.search("(ぽえむ|ポエム)(ゲーム|げーむ)[：:]<br />(.*)", str(content))
+                Poe = poes.group(3)
+                if len(content) > 60:
+                        toot_now = "٩(๑`^´๑)۶長い！！！！！！"
+                        g_vis = "public"
+                        bot.rets(5, toot_now, g_vis)
+                else:
+                    Poe = re.sub("<br />", "\\n", Poe) 
+                    f = codecs.open('game\\poem_word.txt', 'a', 'UTF-8')
+                    f.write(str(Poe) + "," + account["acct"] + "\r\n" )
+                    f.close()
+                    v = threading.Timer(5, game.fav, [status["id"]])
+                    v.start()
+            elif re.compile("ももな.*(ぽえむ|ポエム)(ゲーム|げーむ).*(ひとつ|おねがい)").search(content):
+                f = codecs.open('game\\poem_word.txt', 'r', 'utf-8')
+                word1 = []
+                for x in f:
+                    word1.append(x.rstrip("\r\n").replace('\\n', '\n'))
+                f.close()
+                m = len(word1)
+                word2 = []
+                for x in range(5):
+                    s = random.randint(0, m-1)
+                    word2.append((word1[s]).split(','))
+                poe0 = word2[0]
+                poe1 = word2[1]
+                poe2 = word2[2]
+                poe3 = word2[3]
+                poe4 = word2[4]
+                toot_now = poe0[0] + "\n" + poe1[0] + "\n" + poe2[0] + "\n" + poe3[
+                    0] + "\n" + poe4[0] + "\n(by:@" + poe0[1] + ":-:@" + poe1[1] + ":-:@" + poe2[
+                        1] + ":-:@" + poe3[1] + ":-:@"+poe4[1] + ":)\n#ぽえむげーむ"
+                g_vis = "public"
+                spo = ":@" + account["acct"] + ":さんにぽえむ♪♪"
+                bot.rets(5, toot_now, g_vis, None, spo)
         pass
 
     def senryu(status):
         account = status["account"]
         content = Re1.text(status["content"])
-        if re.compile("(せんりゅう|川柳)(ゲーム|げーむ)[：:]<br />(.+)<br />(.+)<br />(.+)").search(content):
-            poes = re.search("(せんりゅう|川柳)(ゲーム|げーむ)[：:]<br />(.+)<br />(.+)<br />(.+)", str(content))
-            sen1 = poes.group(3)
-            sen2 = poes.group(4)
-            sen3 = poes.group(5)
-            if len(sen1) > 6 or len(sen2) > 8 or len(sen3) > 6:
-                pass
-            else:
-                f = codecs.open('game\\senryu_word.txt', 'a', 'UTF-8')
-                f.write(str(sen1) + "," + str(sen2) + "," + str(sen3) + "," + account["acct"] + "\r\n" )
+        if account["acct"] == "twotwo":
+            if re.compile("ﾄｩｰﾄｩｰﾄｩｰﾄｩ[：:]<br />(.+)<br />(.+)<br />(.+)").search(content):
+                poes = re.search("(ﾄｩｰﾄｩｰ)(ﾄｩｰﾄｩ)[：:]<br />(.+)<br />(.+)<br />(.+)", str(content))
+                sen1 = poes.group(3)
+                sen2 = poes.group(4)
+                sen3 = poes.group(5)
+                if len(sen1) > 6 or len(sen2) > 8 or len(sen3) > 6:
+                    pass
+                else:
+                    f = codecs.open('game\\senryu_word.txt', 'a', 'UTF-8')
+                    f.write(str(sen1) + "," + str(sen2) + "," + str(sen3) + "," + account["acct"] + "\r\n" )
+                    f.close()
+                    v = threading.Timer(5, game.fav, [status["id"]])
+                    v.start()
+            elif re.compile("ﾄｩﾄｩﾄｩ-ﾄｩｰﾄｩ!").search(content):
+                f = codecs.open('game\\senryu_word.txt', 'r', 'utf-8')
+                word1 = []
+                for x in f:
+                    word1.append(x.rstrip("\r\n").replace('\\n', '\n'))
                 f.close()
-                v = threading.Timer(5, game.fav, [status["id"]])
-                v.start()
-        elif re.compile("ももな.*(せんりゅう|川柳)(ゲーム|げーむ).*(一句|ひとつ|おねがい)").search(content):
-            f = codecs.open('game\\senryu_word.txt', 'r', 'utf-8')
-            word1 = []
-            for x in f:
-                word1.append(x.rstrip("\r\n").replace('\\n', '\n'))
-            f.close()
-            m = len(word1)
-            word2 = []
-            for x in range(4):
-                s = random.randint(0, m-1)
-                word2.append((word1[s]).split(','))
-            h0 = word2[0]
-            h1 = word2[1]
-            h2 = word2[2]
-            h3 = word2[3]
-            toot_now = h0[0] + "\n" + h1[1] + "\n" + h2[2] + "\n（作者：:@" + h3[3] + ":）\n:@" + account[
-                "acct"] +":さんからのリクエストでした❤\n#川柳げーむ"
-            g_vis = "public"
-            bot.rets(5, toot_now, g_vis)
+                m = len(word1)
+                word2 = []
+                for x in range(4):
+                    s = random.randint(0, m-1)
+                    word2.append((word1[s]).split(','))
+                h0 = word2[0]
+                h1 = word2[1]
+                h2 = word2[2]
+                h3 = word2[3]
+                toot_now = h0[0] + "\n" + h1[1] + "\n" + h2[2] + "\n（作者：:@" + h3[3] + ":）\n:@" + account[
+                    "acct"] +":ﾄｩｰﾄｩﾄｩﾄｩｰﾄｩ❤\n#川柳げーむ"
+                g_vis = "public"
+                bot.rets(5, toot_now, g_vis)
+        else:
+            if re.compile("(せんりゅう|川柳)(ゲーム|げーむ)[：:]<br />(.+)<br />(.+)<br />(.+)").search(content):
+                poes = re.search("(せんりゅう|川柳)(ゲーム|げーむ)[：:]<br />(.+)<br />(.+)<br />(.+)", str(content))
+                sen1 = poes.group(3)
+                sen2 = poes.group(4)
+                sen3 = poes.group(5)
+                if len(sen1) > 6 or len(sen2) > 8 or len(sen3) > 6:
+                    pass
+                else:
+                    f = codecs.open('game\\senryu_word.txt', 'a', 'UTF-8')
+                    f.write(str(sen1) + "," + str(sen2) + "," + str(sen3) + "," + account["acct"] + "\r\n" )
+                    f.close()
+                    v = threading.Timer(5, game.fav, [status["id"]])
+                    v.start()
+            elif re.compile("ももな.*(せんりゅう|川柳)(ゲーム|げーむ).*(一句|ひとつ|おねがい)").search(content):
+                f = codecs.open('game\\senryu_word.txt', 'r', 'utf-8')
+                word1 = []
+                for x in f:
+                    word1.append(x.rstrip("\r\n").replace('\\n', '\n'))
+                f.close()
+                m = len(word1)
+                word2 = []
+                for x in range(4):
+                    s = random.randint(0, m-1)
+                    word2.append((word1[s]).split(','))
+                h0 = word2[0]
+                h1 = word2[1]
+                h2 = word2[2]
+                h3 = word2[3]
+                toot_now = h0[0] + "\n" + h1[1] + "\n" + h2[2] + "\n（作者：:@" + h3[3] + ":）\n:@" + account[
+                    "acct"] +":さんからのリクエストでした❤\n#川柳げーむ"
+                g_vis = "public"
+                bot.rets(5, toot_now, g_vis)
         pass
     
     def dice(inp):
@@ -586,66 +662,67 @@ class game():
         n = []
         m = []
         x = 0
-        try:
-            inp = re.sub("&lt;", "<", str(inp))
-            inp = re.sub("&gt;", ">", str(inp))
-            com = re.search("(\d+)[dD](\d+)([:<>]*)(\d*)([\+\-\*/\d]*)(.*)", str(inp))
-            print(str(com.group()))
-            for v in range(1, 7):
-                m.append(com.group(v))
-            print(m)
-            if int(m[1]) == 0:
-                result = "面が0の数字は振れないよ……"
-            elif int(m[0]) >= 51:
-                result = "回数が長すぎるとめんどくさいから振らないよ……？"
-            elif int(m[0]) == 0:
-                result = "えっ……回数0？　じゃあ振らなーーーーい！"
-            else:
-                print("○サイコロ振ります（*'∀'人）")
-                for var in range(0, int(m[0])):
-                    num = random.randint(1, int(m[1]))
-                    num = str(num)
-                    print(num)
-                    if m[4] == True:
-                        ad = m[4]
-                    else:
-                        ad = ""
-                    try:
-                        if ad == "":
-                            dd = 0
+        if account["acct"] != "JC":
+            try:
+                inp = re.sub("&lt;", "<", str(inp))
+                inp = re.sub("&gt;", ">", str(inp))
+                com = re.search("(\d+)[dD](\d+)([:<>]*)(\d*)([\+\-\*/\d]*)(.*)", str(inp))
+                print(str(com.group()))
+                for v in range(1, 7):
+                    m.append(com.group(v))
+                print(m)
+                if int(m[1]) == 0:
+                    result = "面が0の数字は振れないよ……"
+                elif int(m[0]) >= 51:
+                    result = "回数が長すぎるとめんどくさいから振らないよ……？"
+                elif int(m[0]) == 0:
+                    result = "えっ……回数0？　じゃあ振らなーーーーい！"
+                else:
+                    print("○サイコロ振ります（*'∀'人）")
+                    for var in range(0, int(m[0])):
+                        num = random.randint(1, int(m[1]))
+                        num = str(num)
+                        print(num)
+                        if m[4] == True:
+                            ad = m[4]
                         else:
-                            dd = int(ad)
-                        if m[5] == "":
-                            fd = "[" + m[3] + m[4] + "]→"
-                        else:
-                            fd = "[" + m[5] + "(" + m[3] + m[4] + ")]→"
-                        sd = ad + fd
-                        if str(m[2]) == ">":
-                            if int(num) >= int(m[3]) + dd:
-                                result = "ｺﾛｺﾛ……" + num + sd + "成功だよ！！"
+                            ad = ""
+                        try:
+                            if ad == "":
+                                dd = 0
                             else:
-                                result = "ｺﾛｺﾛ……" + num + sd + "失敗だよ……"
-                        else:
-                            if int(num) + dd <= int(m[3]) + dd:
-                                result = "ｺﾛｺﾛ……" + num + sd + "成功だよ！！"
+                                dd = int(ad)
+                            if m[5] == "":
+                                fd = "[" + m[3] + m[4] + "]→"
                             else:
-                                result = "ｺﾛｺﾛ……" + num + sd + "失敗だよ……"
-                    except:
-                        result = "ｺﾛｺﾛ……" + num
-                    l.append(result)
-                    n.append(int(num))
-                    x += int(num)
-                if ad != "":
-                    x += int(ad)
-                if int(m[0]) != 1:
-                    result = str(n) + str(ad) + " = " + str(x)
-                    l.append(result)
-                print(l)
-                result = '\n'.join(l)
-                if len(result) > 400:
-                    result = "文字数制限に引っ掛かっちゃった……"
-        except:
-            result = "えっ？"
+                                fd = "[" + m[5] + "(" + m[3] + m[4] + ")]→"
+                            sd = ad + fd
+                            if str(m[2]) == ">":
+                                if int(num) >= int(m[3]) + dd:
+                                    result = "ｺﾛｺﾛ……" + num + sd + "成功だよ！！"
+                                else:
+                                    result = "ｺﾛｺﾛ……" + num + sd + "失敗だよ……"
+                            else:
+                                if int(num) + dd <= int(m[3]) + dd:
+                                    result = "ｺﾛｺﾛ……" + num + sd + "成功だよ！！"
+                                else:
+                                    result = "ｺﾛｺﾛ……" + num + sd + "失敗だよ……"
+                        except:
+                            result = "ｺﾛｺﾛ……" + num
+                        l.append(result)
+                        n.append(int(num))
+                        x += int(num)
+                    if ad != "":
+                        x += int(ad)
+                    if int(m[0]) != 1:
+                        result = str(n) + str(ad) + " = " + str(x)
+                        l.append(result)
+                    print(l)
+                    result = '\n'.join(l)
+                    if len(result) > 400:
+                        result = "文字数制限に引っ掛かっちゃった……"
+            except:
+                result = "えっ？"
         return result
 
 
