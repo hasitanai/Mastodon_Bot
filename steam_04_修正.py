@@ -24,8 +24,12 @@ class Re1():  # Content整頓用関数
     def text(text):
         return (re.sub('<p>|</p>|<a.+"tag">|<a.+"_blank">|<a.+mention">|<span>|</span>|</a>|<span class="[a-z-]+">', "",
                        str(text)))
+    def html(text):
+        text = re.sub('&lt;','<', str(text))
         text = re.sub('&gt;','>', str(text))
         text = re.sub('&amp;','&', str(text))
+        text = re.sub('&quot;','"', str(text))
+        text = re.sub('&nbsp;',' ', str(text))
         return text
 
 class men_toot(StreamListener):
@@ -495,9 +499,22 @@ class bot():
 
 class game():
     rensou_time = False
+    poem_time = False
+    senryu_time = False
 
     def fav(id):
         mastodon.status_favourite(id)
+
+    def time_res(time):  # クールタイムが終わる処理。
+        time = True
+        t = threading.Timer(15, game.forget, [time])
+        t.start()
+        pass
+
+    def forget(time):
+        time = False
+        print("◇tootの準備ができました")
+        pass
     
     def rensou(status):
         """
@@ -549,6 +566,7 @@ class game():
                 g_vis = "public"
                 spo = ":@" + account["acct"] + ":トゥートゥー♪♪"
                 bot.rets(5, toot_now, g_vis, None, spo)
+                game.time_res(game.poem_time)
         else:
             if re.compile("(ぽえむ|ポエム)(ゲーム|げーむ)[：:]").search(content):
                 poes = re.search("(ぽえむ|ポエム)(ゲーム|げーむ)[：:]<br />(.*)", str(content))
@@ -566,35 +584,36 @@ class game():
                     v = threading.Timer(5, game.fav, [status["id"]])
                     v.start()
             elif re.compile("ももな.*(ぽえむ|ポエム)(ゲーム|げーむ).*(ひとつ|おねがい)").search(content):
-                f = codecs.open('game\\poem_word.txt', 'r', 'utf-8')
-                word1 = []
-                for x in f:
-                    word1.append(x.rstrip("\r\n").replace('\\n', '\n'))
-                f.close()
-                m = len(word1)
-                word2 = []
-                for x in range(5):
-                    s = random.randint(0, m-1)
-                    word2.append((word1[s]).split(','))
-                poe0 = word2[0]
-                poe1 = word2[1]
-                poe2 = word2[2]
-                poe3 = word2[3]
-                poe4 = word2[4]
-                toot_now = poe0[0] + "\n" + poe1[0] + "\n" + poe2[0] + "\n" + poe3[
-                    0] + "\n" + poe4[0] + "\n(by:@" + poe0[1] + ":-:@" + poe1[1] + ":-:@" + poe2[
-                        1] + ":-:@" + poe3[1] + ":-:@"+poe4[1] + ":)\n#ぽえむげーむ"
-                g_vis = "public"
-                spo = ":@" + account["acct"] + ":さんにぽえむ♪♪"
-                bot.rets(5, toot_now, g_vis, None, spo)
-        pass
+                if not game.poem_time:
+                    f = codecs.open('game\\poem_word.txt', 'r', 'utf-8')
+                    word1 = []
+                    for x in f:
+                        word1.append(x.rstrip("\r\n").replace('\\n', '\n'))
+                    f.close()
+                    m = len(word1)
+                    word2 = []
+                    for x in range(5):
+                        s = random.randint(0, m-1)
+                        word2.append((word1[s]).split(','))
+                    poe0 = word2[0]
+                    poe1 = word2[1]
+                    poe2 = word2[2]
+                    poe3 = word2[3]
+                    poe4 = word2[4]
+                    toot_now = poe0[0] + "\n" + poe1[0] + "\n" + poe2[0] + "\n" + poe3[
+                        0] + "\n" + poe4[0] + "\n(by:@" + poe0[1] + ":-:@" + poe1[1] + ":-:@" + poe2[
+                            1] + ":-:@" + poe3[1] + ":-:@"+poe4[1] + ":)\n#ぽえむげーむ"
+                    g_vis = "public"
+                    spo = ":@" + account["acct"] + ":さんにぽえむ♪♪"
+                    bot.rets(5, toot_now, g_vis, None, spo)
+                    game.time_res(game.poem_time)
 
     def senryu(status):
         account = status["account"]
         content = Re1.text(status["content"])
         if account["acct"] == "twotwo":
             if re.compile("ﾄｩｰﾄｩｰﾄｩｰﾄｩ[：:]<br />(.+)<br />(.+)<br />(.+)").search(content):
-                poes = re.search("(ﾄｩｰﾄｩｰ)(ﾄｩｰﾄｩ)[：:]<br />(.+)<br />(.+)<br />(.+)", str(content))
+                poes = re.search("(ﾄｩｰﾄｩｰ)(ﾄhuｩｰﾄｩ)[：:]<br />(.+)<br />(.+)<br />(.+)", str(content))
                 sen1 = poes.group(3)
                 sen2 = poes.group(4)
                 sen3 = poes.group(5)
@@ -625,6 +644,7 @@ class game():
                     "acct"] +":ﾄｩｰﾄｩﾄｩﾄｩｰﾄｩ❤\n#川柳げーむ"
                 g_vis = "public"
                 bot.rets(5, toot_now, g_vis)
+                game.time_res(game.senryu_time)
         else:
             if re.compile("(せんりゅう|川柳)(ゲーム|げーむ)[：:]<br />(.+)<br />(.+)<br />(.+)").search(content):
                 poes = re.search("(せんりゅう|川柳)(ゲーム|げーむ)[：:]<br />(.+)<br />(.+)<br />(.+)", str(content))
@@ -658,6 +678,7 @@ class game():
                     "acct"] +":さんからのリクエストでした❤\n#川柳げーむ"
                 g_vis = "public"
                 bot.rets(5, toot_now, g_vis)
+                game.time_res(game.senryu_time)
         pass
     
     def dice(inp):
@@ -731,7 +752,7 @@ class game():
 
 class count():
     timer_toot = 0
-    timer_hello = 0
+    timer_hello = 0 
 
     def emo01(time=10800):  # 定期的に評価を下げまーーす♪（無慈悲）
         while 1:
