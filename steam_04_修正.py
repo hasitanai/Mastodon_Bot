@@ -7,6 +7,7 @@ from time import sleep
 from datetime import datetime
 from pytz import timezone
 import warnings, traceback
+from xml.sax.saxutils import unescape as unesc
 
 warnings.simplefilter("ignore", UnicodeWarning)
 
@@ -24,13 +25,6 @@ class Re1():  # Content整頓用関数
     def text(text):
         return (re.sub('<p>|</p>|<a.+"tag">|<a.+"_blank">|<a.+mention">|<span>|</span>|</a>|<span class="[a-z-]+">', "",
                        str(text)))
-    def html(text):
-        text = re.sub('&lt;','<', str(text))
-        text = re.sub('&gt;','>', str(text))
-        text = re.sub('&amp;','&', str(text))
-        text = re.sub('&quot;','"', str(text))
-        text = re.sub('&nbsp;',' ', str(text))
-        return text
 
 class men_toot(StreamListener):
     def on_notification(self, notification):
@@ -571,7 +565,7 @@ class game():
             if re.compile("(ぽえむ|ポエム)(ゲーム|げーむ)[：:]").search(content):
                 poes = re.search("(ぽえむ|ポエム)(ゲーム|げーむ)[：:]<br />(.*)", str(content))
                 Poe = poes.group(3)
-                Poe = Re1.html(Poe)
+                Poe = unesc(Poe)
                 if len(content) > 60:
                         toot_now = "٩(๑`^´๑)۶長い！！！！！！"
                         g_vis = "public"
@@ -621,7 +615,7 @@ class game():
                     pass
                 else:
                     f = codecs.open('game\\senryu_word.txt', 'a', 'UTF-8')
-                    f.write(str(sen1) + "," + str(sen2) + "," + str(sen3) + "," + account["acct"] + "\r\n" )
+                    f.write(unesc(sen1) + "," + unesc(sen2) + "," + unesc(sen3) + "," + account["acct"] + "\r\n" )
                     f.close()
                     v = threading.Timer(5, game.fav, [status["id"]])
                     v.start()
