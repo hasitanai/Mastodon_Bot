@@ -171,7 +171,7 @@ class bot():
         self.g_sta = None
         self.n_sta = None
 
-    def rets(sec, toot_now, g_vis, rep=None, spo=None):
+    def rets(sec, toot_now, g_vis, rep=None, spo=None, CD=0):
         delay = time.time() - count.CT
         loss = count.end - delay
         if loss < 0:
@@ -180,7 +180,7 @@ class bot():
         t = threading.Timer(sec, bot.toot, [toot_now, g_vis, rep, spo])
         t.start()
         count.CT = time.time()
-        count.end += sec+3
+        count.end += sec+CD
 
     def toot(toot_now, g_vis, rep=None, spo=None):
         mastodon.status_post(status=toot_now, visibility=g_vis, in_reply_to_id=rep, spoiler_text=spo)
@@ -223,7 +223,7 @@ class bot():
                     elif re.compile("ももな(.*)([6-9]|\d{2})[dD](\d*)").search(status['content']):
                         toot_now = "６回以上の回数は畳む内容だからメンションの方で送ってーー！！"
                         g_vis = status["visibility"]
-                        bot.rets(5, toot_now, g_vis)
+                        bot.rets(6, toot_now, g_vis, CT=1)
 
     def check00(status):
         account = status["account"]
@@ -546,7 +546,7 @@ class game():
                             1] + ":-:@" + poe3[1] + ":-:@"+poe4[1] + ":)\n#ぽえむげーむ"
                     g_vis = "public"
                     spo = ":@" + account["acct"] + ":トゥートゥー♪♪"
-                    bot.rets(5, toot_now, g_vis, None, spo)
+                    bot.rets(6, toot_now, g_vis, None, spo, 2)
         else:
             if re.compile("(ぽえむ|ポエム)(ゲーム|げーむ)[：:]").search(content):
                 poes = re.search("(ぽえむ|ポエム)(ゲーム|げーむ)[：:]<br />(.*)", str(content))
@@ -585,7 +585,7 @@ class game():
                             1] + ":-:@" + poe3[1] + ":-:@"+poe4[1] + ":)\n#ぽえむげーむ"
                     g_vis = "public"
                     spo = ":@" + account["acct"] + ":さんにぽえむ♪♪"
-                    bot.rets(5, toot_now, g_vis, None, spo)
+                    bot.rets(6, toot_now, g_vis, None, spo, 2)
 
     def senryu(status):
         account = status["account"]
@@ -623,7 +623,7 @@ class game():
                     toot_now = h0[0] + "\n" + h1[1] + "\n" + h2[2] + "\n（作者：:@" + h3[3] + ":）\n:@" + account[
                         "acct"] +":ﾄｩｰﾄｩﾄｩﾄｩｰﾄｩ❤\n#川柳げーむ"
                     g_vis = "public"
-                    bot.rets(5, toot_now, g_vis)
+                    bot.rets(6, toot_now, g_vis, CT=2)
         else:
             if re.compile("(せんりゅう|川柳)(ゲーム|げーむ)[：:]<br />(.+)<br />(.+)<br />(.+)").search(content):
                 poes = re.search("(せんりゅう|川柳)(ゲーム|げーむ)[：:]<br />(.+)<br />(.+)<br />(.+)", str(content))
@@ -657,7 +657,7 @@ class game():
                     toot_now = h0[0] + "\n" + h1[1] + "\n" + h2[2] + "\n（作者：:@" + h3[3] + ":）\n:@" + account[
                         "acct"] +":さんからのリクエストでした❤\n#川柳げーむ"
                     g_vis = "public"
-                    bot.rets(5, toot_now, g_vis)
+                    bot.rets(6, toot_now, g_vis, CT=2)
         pass
     
     def dice(inp):
