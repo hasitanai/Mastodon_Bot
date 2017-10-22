@@ -135,13 +135,12 @@ class res_toot(StreamListener):
             print("===タイムライン===")
             account = status["account"]
             mentions = status["mentions"]
-            content = status["content"]
+            content = Re1.text(status["content"])
             non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
-            print((re.sub("<p>|</p>", "",
-                          str(account["display_name"]).translate(non_bmp_map) + "@" + str(account["acct"]).translate(
-                              non_bmp_map))))
-            print((re.sub("<p>|</p>", "", str(content).translate(non_bmp_map))))
-            print((re.sub("<p>|</p>", "", str(mentions).translate(non_bmp_map))))
+            print(str(account["display_name"]).translate(non_bmp_map) + "@" + str(
+                account["acct"]).translate(non_bmp_map))
+            print(str(content).translate(non_bmp_map))
+            print(str(mentions).translate(non_bmp_map))
             bot.check01(status)
             print("   ")
             # bot.block01(status)
@@ -173,11 +172,15 @@ class bot():
         self.n_sta = None
 
     def rets(sec, toot_now, g_vis, rep=None, spo=None):
+        delay = time.time() - count.CT
+        loss = count.end - delay
+        if loss < 0:
+            loss = 0
+        sec = sec + loss
         t = threading.Timer(sec, bot.toot, [toot_now, g_vis, rep, spo])
         t.start()
-        w = threading.Timer(20, bot.time_res)
-        w.start()
-        count.CT = True
+        count.CT = time.time()
+        count.end += sec+3
 
     def toot(toot_now, g_vis, rep=None, spo=None):
         mastodon.status_post(status=toot_now, visibility=g_vis, in_reply_to_id=rep, spoiler_text=spo)
@@ -727,7 +730,8 @@ class game():
 
 
 class count():
-    CT = False
+    CT = time.time()
+    end = 0
     timer_hello = 0 
 
     def emo01(time=10800):  # 定期的に評価を下げまーーす♪（無慈悲）
