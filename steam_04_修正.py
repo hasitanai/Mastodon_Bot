@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from mastodon import *
-import time, re, sys, os, json, random
 import time, re, sys, os, json, random, io
 import threading, requests, pprint, codecs
 from time import sleep
@@ -9,9 +8,13 @@ from datetime import datetime
 from pytz import timezone
 import warnings, traceback
 from xml.sax.saxutils import unescape as unesc
+import asyncio
 
+#Winのプロンプトから起動するならこれ追加ね↓
 """
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer,
+                              encoding=sys.stdout.encoding, 
+                              errors='backslashreplace', 
                               line_buffering=sys.stdout.line_buffering)
                               """
 warnings.simplefilter("ignore", UnicodeWarning)
@@ -31,6 +34,30 @@ class Re1():  # Content整頓用関数
         return (re.sub('<p>|</p>|<a.+"tag">|<a.+"_blank">|<a.+mention">|<span>|</span>|</a>|<span class="[a-z-]+">', "",
                        str(text)))
 
+class Log():  # toot記録用クラス٩(๑❛ᴗ❛๑)۶
+    def __init__(self, status):
+        self.account = status["account"]
+        self.mentions = status["mentions"]
+        self.content = unesc(Re1.text(status["content"]))
+        self.non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
+
+    def read(self):
+        name = self.account["display_name"]
+        acct = self.account["acct"]
+        non_bmp_map = self.non_bmp_map
+        print(str(name).translate(non_bmp_map) + "@" + str(
+            acct).translate(self.non_bmp_map))
+        print(str(self.content).translate(non_bmp_map))
+        print(str(self.mentions).translate(non_bmp_map))
+
+    def write(self):
+        text = self.content
+        acct = self.account["acct"]
+
+        f = codecs.open('log\\' + 'log_' + nowing + '.txt', 'a', 'UTF-8')
+        f.write(re.sub('<br />', '\\n', str(text)) + ',<acct="' + acct + '">\r\n')
+        f.close()
+
 class men_toot(StreamListener):
     def on_notification(self, notification):
         try:
@@ -41,14 +68,8 @@ class men_toot(StreamListener):
                 account = status["account"]
                 mentions = status["mentions"]
                 content = unesc(Re1.text(status["content"]))
-                print("---")
-                print(
-                    str(account["display_name"]).translate(non_bmp_map) + "@" + str(account["acct"]).translate(
-                        non_bmp_map))
-                print(content.translate(non_bmp_map))
-                print(str(mentions).translate(non_bmp_map))
-                print("---")
-                bot.n_sta = status
+                log = threading.Thread(Log(status).read())
+                log.run()
                 bot.thank(account, 64)
                 if mentions:
                     if re.compile("おは|おあひょ").search(content):
@@ -128,7 +149,7 @@ class men_toot(StreamListener):
                 print("---")
             pass
         except Exception as e:
-            print("エラー情報\n" + traceback.format_exc())
+            print("エラー情報【USER】\n" + traceback.format_exc())
             with open('error.log', 'a') as f:
                 traceback.print_exc(file=f)
             pass
@@ -138,31 +159,14 @@ class res_toot(StreamListener):
     def on_update(self, status):
         try:
             print("===タイムライン===")
-            account = status["account"]
-            mentions = status["mentions"]
-            content = unesc(Re1.text(status["content"]))
-            non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
-            print(str(account["display_name"]).translate(non_bmp_map) + "@" + str(
-                account["acct"]).translate(non_bmp_map))
-            print(str(content).translate(non_bmp_map))
-            print(str(mentions).translate(non_bmp_map))
-            bot.check01(status)
-            # bot.block01(status)
-            bot.res01(status)
-            bot.res06(status)
-            bot.res07(status)
-            bot.fav01(status)
-            bot.check00(status)
-            bot.check02(status)
-            game.poem(status)
-            game.senryu(status)
+            log = threading.Thread(Log(status).read())
+            log.run()
+            ltl = threading.Thread(LTL(status).read())
+            ltl.run()
             print("   ")
-            # f = codecs.open('log\\' + 'log_' + '.txt', 'a', 'UTF-8')
-            # f.write(str(status) + "\n")
-            # f.close()
             pass
         except Exception as e:
-            print("エラー情報\n" + traceback.format_exc())
+            print("エラー情報【LOCAL】\n" + traceback.format_exc())
             with open('error.log', 'a') as f:
                 traceback.print_exc(file=f)
             pass
@@ -171,9 +175,22 @@ class res_toot(StreamListener):
         print("===削除されました===")
         
 
+class LTL():
+    def __init__(self, status):
+        # 以下bot機能の一覧
+        bot.check01(status)
+        bot.res01(status)
+        bot.res06(status)
+        bot.res07(status)
+        bot.fav01(status)
+        bot.check00(status)
+        bot.check02(status)
+        game.poem(status)
+        game.senryu(status)
+        # ここまで
+
 class bot():
     def _init_(self):
-        self.g_sta = None
         self.n_sta = None
 
     def res(sec):
@@ -757,7 +774,6 @@ class count():
                     f.close()
 
     def emo02(point):
-        sleep(time)
         data_dir_path = u"./thank/"
         file_list = os.listdir(r'./thank/')
         for file_name in file_list:
@@ -775,7 +791,6 @@ class count():
         pass
 
     def emo03(user, point):
-        sleep(time)
         data_dir_path = u"./thank/"
         file_list = os.listdir(r'./thank/')
         abs_name = data_dir_path + '/' + user + '.txt'
@@ -790,17 +805,24 @@ class count():
         pass
 
 
+def enu():
+    threading.enumerate()
+
+
 def go():
     count.timer_hello = 1
+
+def stop():
+    count.timer_hello = 0
 
 
 if __name__ == '__main__':
     count()
     go()
     bot.timer_toot = False
-    uuu = threading.Timer(0, bot.t_local)
-    lll = threading.Timer(0, bot.t_user)
+    uuu = threading.Thread(bot.t_local)
+    lll = threading.Thread(bot.t_user)
+    fff = threading.Thread(Emo.emo01, [10800])
     uuu.start()
     lll.start()
-    fff = threading.Timer(0, count.emo01, [10800])
     fff.start()
