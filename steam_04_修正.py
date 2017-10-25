@@ -38,7 +38,8 @@ class Log():  # toot記録用クラス٩(๑❛ᴗ❛๑)۶
     def __init__(self, status):
         self.account = status["account"]
         self.mentions = status["mentions"]
-        self.content = unesc(Re1.text(status["content"]))
+        self.content = Re1.text(status["content"])
+        self.content = unesc(self.content)
         self.non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
 
     def read(self):
@@ -53,7 +54,6 @@ class Log():  # toot記録用クラス٩(๑❛ᴗ❛๑)۶
     def write(self):
         text = self.content
         acct = self.account["acct"]
-
         f = codecs.open('log\\' + 'log_' + nowing + '.txt', 'a', 'UTF-8')
         f.write(re.sub('<br />', '\\n', str(text)) + ',<acct="' + acct + '">\r\n')
         f.close()
@@ -161,7 +161,7 @@ class res_toot(StreamListener):
             print("===タイムライン===")
             log = threading.Thread(Log(status).read())
             log.run()
-            ltl = threading.Thread(LTL(status).read())
+            ltl = threading.Thread(LTL.LTL(status))
             ltl.run()
             print("   ")
             pass
@@ -176,13 +176,13 @@ class res_toot(StreamListener):
         
 
 class LTL():
-    def __init__(self, status):
+    def LTL(status):  # ここに受け取ったtootに対してどうするか追加してね（*'∀'人）
         # 以下bot機能の一覧
         bot.check01(status)
+        bot.fav01(status)
         bot.res01(status)
         bot.res06(status)
         bot.res07(status)
-        bot.fav01(status)
         bot.check00(status)
         bot.check02(status)
         game.poem(status)
@@ -198,7 +198,7 @@ class bot():
         if count.end < 0:
             count.end = 0
 
-    def rets(sec, toot_now, g_vis, rep=None, spo=None, CD=0):
+    def rets(sec, toot_now, g_vis, rep=None, spo=None):
         now = time.time()
         delay = now - count.CT
         loss = count.end - int(delay)
@@ -211,7 +211,7 @@ class bot():
         s = threading.Timer(sec, bot.res, [sec])
         s.start()
         count.CT = time.time()
-        count.end = count.end + sec + CD
+        count.end = count.end + sec
 
     def toot(toot_now, g_vis, rep=None, spo=None):
         mastodon.status_post(status=toot_now, visibility=g_vis, in_reply_to_id=rep, spoiler_text=spo)
@@ -231,6 +231,8 @@ class bot():
         for x in range(m):
             if re.compile(str(l[x])).search(re.sub("<p>|</p>", "", str(status))):
                 j = True
+                print(str(l[x]))
+                # bot.thank(account, -64)
                 break
             else:
                 j = False
@@ -250,7 +252,7 @@ class bot():
                 elif re.compile("ももな(.*)([6-9]|\d{2})[dD](\d*)").search(status['content']):
                     toot_now = "６回以上の回数は畳む内容だからメンションの方で送ってーー！！"
                     g_vis = status["visibility"]
-                    bot.rets(6, toot_now, g_vis, CD=1)
+                    bot.rets(6, toot_now, g_vis)
 
     def check00(status):
         account = status["account"]
@@ -540,13 +542,13 @@ class game():
                 poes = re.search("(ﾄｩﾄｩﾄｩ)(ﾄｩｰﾄｩ)[：:]<br />(.*)", str(content))
                 Poe = poes.group(3)
                 if len(content) > 60:
-                        toot_now = "٩(๑`^´๑)۶ﾄｩﾄｩ！！！！！！"
-                        g_vis = "public"
-                        bot.rets(5, toot_now, g_vis)
+                    toot_now = "٩(๑`^´๑)۶ﾄｩﾄｩ！！！！！！"
+                    g_vis = "public"
+                    bot.rets(5, toot_now, g_vis)
                 else:
                     Poe = re.sub("<br />", "\\n", Poe) 
                     f = codecs.open('game\\poem_word.txt', 'a', 'UTF-8')
-                    f.write(str(Poe) + "," + account["acct"] + "\r\n" )
+                    f.write(str(Poe) + " &,@" + account["acct"] + "\r\n" )
                     f.close()
                     v = threading.Timer(5, game.fav, [status["id"]])
                     v.start()
@@ -560,7 +562,7 @@ class game():
                 word2 = []
                 for x in range(5):
                     s = random.randint(0, m-1)
-                    word2.append((word1[s]).split(','))
+                    word2.append((word1[s]).split(' &,@'))
                 poe0 = word2[0]
                 poe1 = word2[1]
                 poe2 = word2[2]
@@ -571,20 +573,25 @@ class game():
                         1] + ":-:@" + poe3[1] + ":-:@"+poe4[1] + ":)\n#ぽえむげーむ"
                 g_vis = "public"
                 spo = ":@" + account["acct"] + ":トゥートゥー♪♪"
-                bot.rets(6, toot_now, g_vis, None, spo, 2)
+                bot.rets(6, toot_now, g_vis, None, spo)
         else:
             if re.compile("(ぽえむ|ポエム)(ゲーム|げーむ)[：:]").search(content):
                 poes = re.search("(ぽえむ|ポエム)(ゲーム|げーむ)[：:]<br />(.*)", str(content))
                 Poe = poes.group(3)
                 Poe = unesc(Poe)
+                sekuhara = bot.block01(status)
+                if sekuhara:
+                    toot_now = "٩(๑`^´๑)۶えっちなのはよくない！！！！"
+                    g_vis = "public"
+                    bot.rets(5, toot_now, g_vis)
                 if len(content) > 60:
-                        toot_now = "٩(๑`^´๑)۶長い！！！！！！"
-                        g_vis = "public"
-                        bot.rets(5, toot_now, g_vis)
+                    toot_now = "٩(๑`^´๑)۶長い！！！！！！"
+                    g_vis = "public"
+                    bot.rets(5, toot_now, g_vis)
                 else:
                     Poe = re.sub("<br />", "\\\\n", Poe) 
                     f = codecs.open('game\\poem_word.txt', 'a', 'UTF-8')
-                    f.write(str(Poe) + "," + account["acct"] + "\r\n" )
+                    f.write(str(Poe) + " &,@" + account["acct"] + "\r\n" )
                     f.close()
                     v = threading.Timer(5, game.fav, [status["id"]])
                     v.start()
@@ -598,7 +605,7 @@ class game():
                 word2 = []
                 for x in range(5):
                     s = random.randint(0, m-1)
-                    word2.append((word1[s]).split(','))
+                    word2.append((word1[s]).split(' &,@'))
                 poe0 = word2[0]
                 poe1 = word2[1]
                 poe2 = word2[2]
@@ -609,7 +616,7 @@ class game():
                         1] + ":-:@" + poe3[1] + ":-:@"+poe4[1] + ":)\n#ぽえむげーむ"
                 g_vis = "public"
                 spo = ":@" + account["acct"] + ":さんにぽえむ♪♪"
-                bot.rets(6, toot_now, g_vis, None, spo, 2)
+                bot.rets(6, toot_now, g_vis, None, spo)
 
     def senryu(status):
         account = status["account"]
@@ -624,7 +631,7 @@ class game():
                     pass
                 else:
                     f = codecs.open('game\\senryu_word.txt', 'a', 'UTF-8')
-                    f.write(unesc(sen1) + "," + unesc(sen2) + "," + unesc(sen3) + "," + account["acct"] + "\r\n" )
+                    f.write(unesc(sen1) + ">>>" + unesc(sen2) + ">>>" + unesc(sen3) + ">>>" + account["acct"] + "\r\n" )
                     f.close()
                     v = threading.Timer(5, game.fav, [status["id"]])
                     v.start()
@@ -638,7 +645,7 @@ class game():
                 word2 = []
                 for x in range(4):
                     s = random.randint(0, m-1)
-                    word2.append((word1[s]).split(','))
+                    word2.append((word1[s]).split('>>>'))
                 h0 = word2[0]
                 h1 = word2[1]
                 h2 = word2[2]
@@ -646,18 +653,23 @@ class game():
                 toot_now = h0[0] + "\n" + h1[1] + "\n" + h2[2] + "\n（作者：:@" + h3[3] + ":）\n:@" + account[
                     "acct"] +":ﾄｩｰﾄｩﾄｩﾄｩｰﾄｩ❤\n#川柳げーむ"
                 g_vis = "public"
-                bot.rets(6, toot_now, g_vis, CD=2)
+                bot.rets(6, toot_now, g_vis)
         else:
             if re.compile("(せんりゅう|川柳)(ゲーム|げーむ)[：:]<br />(.+)<br />(.+)<br />(.+)").search(content):
                 poes = re.search("(せんりゅう|川柳)(ゲーム|げーむ)[：:]<br />(.+)<br />(.+)<br />(.+)", str(content))
                 sen1 = poes.group(3)
                 sen2 = poes.group(4)
                 sen3 = poes.group(5)
+                sekuhara = bot.block01(status)
+                if sekuhara:
+                    toot_now = "٩(๑`^´๑)۶えっちなのはよくない！！！！"
+                    g_vis = "public"
+                    bot.rets(5, toot_now, g_vis)
                 if len(sen1) > 6 or len(sen2) > 8 or len(sen3) > 6:
                     pass
                 else:
                     f = codecs.open('game\\senryu_word.txt', 'a', 'UTF-8')
-                    f.write(str(sen1) + "," + str(sen2) + "," + str(sen3) + "," + account["acct"] + "\r\n" )
+                    f.write(str(sen1) + ">>>" + str(sen2) + ">>>" + str(sen3) + ">>>" + account["acct"] + "\r\n" )
                     f.close()
                     v = threading.Timer(5, game.fav, [status["id"]])
                     v.start()
@@ -671,7 +683,7 @@ class game():
                 word2 = []
                 for x in range(4):
                     s = random.randint(0, m-1)
-                    word2.append((word1[s]).split(','))
+                    word2.append((word1[s]).split('>>>'))
                 h0 = word2[0]
                 h1 = word2[1]
                 h2 = word2[2]
@@ -679,7 +691,7 @@ class game():
                 toot_now = h0[0] + "\n" + h1[1] + "\n" + h2[2] + "\n（作者：:@" + h3[3] + ":）\n:@" + account[
                     "acct"] +":さんからのリクエストでした❤\n#川柳げーむ"
                 g_vis = "public"
-                bot.rets(6, toot_now, g_vis, CD=2)
+                bot.rets(6, toot_now, g_vis)
         pass
     
     def dice(inp):
@@ -808,7 +820,6 @@ class count():
 def enu():
     threading.enumerate()
 
-
 def go():
     count.timer_hello = 1
 
@@ -820,9 +831,9 @@ if __name__ == '__main__':
     count()
     go()
     bot.timer_toot = False
-    uuu = threading.Thread(bot.t_local)
-    lll = threading.Thread(bot.t_user)
-    fff = threading.Thread(Emo.emo01, [10800])
+    uuu = threading.Thread(target=bot.t_local)
+    lll = threading.Thread(target=bot.t_user)
+    fff = threading.Thread(target=count.emo01)
     uuu.start()
     lll.start()
     fff.start()
