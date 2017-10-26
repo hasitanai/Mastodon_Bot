@@ -1,14 +1,21 @@
 # -*- coding: utf-8 -*-
 
 from mastodon import *
-import time, re, sys, os
+import time, re, sys, os, io
 import threading, codecs
 from time import sleep
 import warnings, traceback
 from xml.sax.saxutils import unescape as unesc
-import JCbot as bot
+import JCbot as JC
 
+"""
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer,
+                              encoding=sys.stdout.encoding,
+                              errors='backslashreplace',
+                              line_buffering=sys.stdout.line_buffering)
 warnings.simplefilter("ignore", UnicodeWarning)
+"""
+
 
 """ログイントークン取得済みで動かしてね（*'∀'人）"""
 
@@ -31,7 +38,7 @@ class Log():  # toot記録用クラス٩(๑❛ᴗ❛๑)۶
     def __init__(self, status):
         self.account = status["account"]
         self.mentions = status["mentions"]
-        self.content = Re1.text(status["content"])
+        self.content = unsec(Re1.text(status["content"]))
         self.non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
 
     def read(self):
@@ -48,20 +55,24 @@ class Log():  # toot記録用クラス٩(๑❛ᴗ❛๑)۶
         acct = self.account["acct"]
 
         f = codecs.open('log\\' + 'log_' + nowing + '.txt', 'a', 'UTF-8')
-        f.write(unesc(re.sub('<br />', '\\n', str(text)) + ',<acct="' + acct + '">\r\n'))
+        f.write(re.sub('<br />', '\\n', str(text)) + ',<acct="' + acct + '">\r\n')
         f.close()
 
 
-class men_toot(StreamListener):  # 通知監視クラス(๑・ .̫ ・๑)
+class men_toot(StreamListener):  # 通知&ホーム監視クラス(๑・ .̫ ・๑)
     def on_notification(self, notification):
         try:
             print("===通知が来ました===", "タイプ:" + str(notification["type"]))
             if notification["type"] == "mention":
                 status = notification["status"]
+                account = status["account"]
+                mentions = status["mentions"]
+                content = unesc(Re1.text(status["content"]))
                 log = threading.Thread(Log(status).read())
                 log.run()
+                men = threading.Thread(JC.MEN(status))
+                men.run()
                 bot.thank(account, 64)  # 好感度が上がります
-                if mentions:
             elif notification["type"] == "favourite":
                 account = notification["account"]
                 non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
@@ -76,13 +87,30 @@ class men_toot(StreamListener):  # 通知監視クラス(๑・ .̫ ・๑)
             pass
         print("   ")
 
+    def on_update(self, status):
+        try:
+            print("===タイムライン【ホーム】===")
+            log = threading.Thread(Log(status).read())
+            log.run()
+            ltl = threading.Thread(JC.TL(status))
+            ltl.run()
+            pass
+        except Exception as e:
+            print("エラー情報\n" + traceback.format_exc())
+            with open('error.log', 'a') as f:
+                traceback.print_exc(file=f)
+            pass
+        print("   ")
+
 
 class res_toot(StreamListener):  # LTL監視クラス((ヾ(๑ゝω･)ﾉ♡
     def on_update(self, status):
         try:
-            print("===タイムライン===")
+            print("===タイムライン【ローカル】===")
             log = threading.Thread(Log(status).read())
             log.run()
+            ltl = threading.Thread(JC.LTL(status))
+            ltl.run()
             pass
         except Exception as e:
             print("エラー情報\n" + traceback.format_exc())
