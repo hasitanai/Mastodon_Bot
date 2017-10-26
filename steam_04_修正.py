@@ -59,6 +59,16 @@ class Log():  # toot記録用クラス٩(๑❛ᴗ❛๑)۶
         f.close()
 
 class men_toot(StreamListener):
+    def on_update(self, status):
+        try:
+            HTL.HTL(status)
+            pass
+        except Exception as e:
+            print("エラー情報【USER】\n" + traceback.format_exc())
+            with open('error.log', 'a') as f:
+                traceback.print_exc(file=f)
+            pass
+
     def on_notification(self, notification):
         try:
             print("===通知が来ました===")
@@ -174,6 +184,10 @@ class res_toot(StreamListener):
     def on_delete(self, status_id):
         print("===削除されました===")
         
+class HTL():
+    def HTL(status):
+        bot.check03(status)
+
 
 class LTL():
     def LTL(status):  # ここに受け取ったtootに対してどうするか追加してね（*'∀'人）
@@ -287,6 +301,41 @@ class bot():
                     bot.rets(4, toot_now, g_vis)
         else:
             pass
+
+    def check03(status):
+        account = status["account"]
+        ct = account["statuses_count"]
+        if account["acct"] == "Knzk":  # 神崎おにいさん監視隊
+            ct += 5
+            if re.match('^\d+000$', str(ct)):
+                toot_now = "@yzhsn (๑•̀ㅁ•́๑)神崎おにいさん！！\n" + str(ct) + 'tootまであと5だよ！！！！'
+                g_vis = "direct"
+                bot.rets(4, toot_now, g_vis)
+        if account["acct"] == "5":  # やなちゃん監視隊
+            ct += 5
+            if re.match('^\d+000$', str(ct)):
+                toot_now = "@5 (๑•̀ㅁ•́๑)やなちゃん！！\n" + str(ct) + 'tootまであと5だよ！！！！'
+                g_vis = "direct"
+                bot.rets(4, toot_now, g_vis)
+        if account["acct"] == "yzhsn":  # 裾野監視隊
+            ct += 5
+            if re.match('^\d+000$', str(ct)):
+                toot_now = "@yzhsn (๑•̀ㅁ•́๑)おい裾野！！\n" + str(ct) + 'tootまであと5だよ！！！！'
+                g_vis = "direct"
+                bot.rets(4, toot_now, g_vis)
+        if account["acct"] == "lamazeP":  # ラマーズＰ監視隊
+            ct += 5
+            if re.match('^\d+000$', str(ct)):
+                toot_now = "@lamazeP (๑•̀ㅁ•́๑)" + str(ct) + 'tootまであと5だよ！！！！'
+                g_vis = "direct"
+                bot.rets(4, toot_now, g_vis)
+        else:  # テスト
+            ct += 5
+            if re.match('^\d+000$', str(ct)):
+                toot_now = "@" + account["acct"] + " (๑•̀ㅁ•́๑)ただいまフォローしてる方にテスト中！\n" + str(
+                    ct) + 'tootまであと5だよ！！！！'
+                g_vis = "direct"
+                bot.rets(4, toot_now, g_vis)
 
     def res01(status):
         account = status["account"]
@@ -596,27 +645,28 @@ class game():
                     v = threading.Timer(5, game.fav, [status["id"]])
                     v.start()
             elif re.compile("ももな.*(ぽえむ|ポエム)(ゲーム|げーむ).*(ひとつ|おねがい|お願い|１つ|一つ)").search(content):
-                f = codecs.open('game\\poem_word.txt', 'r', 'utf-8')
-                word1 = []
-                for x in f:
-                    word1.append(x.rstrip("\r\n").replace('\\n', '\n'))
-                f.close()
-                m = len(word1)
-                word2 = []
-                for x in range(5):
-                    s = random.randint(0, m-1)
-                    word2.append((word1[s]).split(' &,@'))
-                poe0 = word2[0]
-                poe1 = word2[1]
-                poe2 = word2[2]
-                poe3 = word2[3]
-                poe4 = word2[4]
-                toot_now = poe0[0] + "\n" + poe1[0] + "\n" + poe2[0] + "\n" + poe3[
-                    0] + "\n" + poe4[0] + "\n(by:@" + poe0[1] + ":-:@" + poe1[1] + ":-:@" + poe2[
-                        1] + ":-:@" + poe3[1] + ":-:@"+poe4[1] + ":)\n#ぽえむげーむ"
-                g_vis = "public"
-                spo = ":@" + account["acct"] + ":さんにぽえむ♪♪"
-                bot.rets(6, toot_now, g_vis, None, spo)
+                if account["acct"] != "JC":
+                    f = codecs.open('game\\poem_word.txt', 'r', 'utf-8')
+                    word1 = []
+                    for x in f:
+                        word1.append(x.rstrip("\r\n").replace('\\n', '\n'))
+                    f.close()
+                    m = len(word1)
+                    word2 = []
+                    for x in range(5):
+                        s = random.randint(0, m-1)
+                        word2.append((word1[s]).split(' &,@'))
+                    poe0 = word2[0]
+                    poe1 = word2[1]
+                    poe2 = word2[2]
+                    poe3 = word2[3]
+                    poe4 = word2[4]
+                    toot_now = poe0[0] + "\n" + poe1[0] + "\n" + poe2[0] + "\n" + poe3[
+                        0] + "\n" + poe4[0] + "\n(by:@" + poe0[1] + ":-:@" + poe1[1] + ":-:@" + poe2[
+                            1] + ":-:@" + poe3[1] + ":-:@"+poe4[1] + ":)\n#ぽえむげーむ"
+                    g_vis = "public"
+                    spo = ":@" + account["acct"] + ":にぽえむ♪♪"
+                    bot.rets(6, toot_now, g_vis, None, spo)
 
     def senryu(status):
         account = status["account"]
@@ -674,24 +724,25 @@ class game():
                     v = threading.Timer(5, game.fav, [status["id"]])
                     v.start()
             elif re.compile("ももな.*(せんりゅう|川柳)(ゲーム|げーむ).*(一句|ひとつ|おねがい|お願い|一つ|１つ)").search(content):
-                f = codecs.open('game\\senryu_word.txt', 'r', 'utf-8')
-                word1 = []
-                for x in f:
-                    word1.append(x.rstrip("\r\n").replace('\\n', '\n'))
-                f.close()
-                m = len(word1)
-                word2 = []
-                for x in range(4):
-                    s = random.randint(0, m-1)
-                    word2.append((word1[s]).split('>>>'))
-                h0 = word2[0]
-                h1 = word2[1]
-                h2 = word2[2]
-                h3 = word2[3]
-                toot_now = h0[0] + "\n" + h1[1] + "\n" + h2[2] + "\n（作者：:@" + h3[3] + ":）\n:@" + account[
-                    "acct"] +":さんからのリクエストでした❤\n#川柳げーむ"
-                g_vis = "public"
-                bot.rets(6, toot_now, g_vis)
+                if account["acct"] != "JC":
+                    f = codecs.open('game\\senryu_word.txt', 'r', 'utf-8')
+                    word1 = []
+                    for x in f:
+                        word1.append(x.rstrip("\r\n").replace('\\n', '\n'))
+                    f.close()
+                    m = len(word1)
+                    word2 = []
+                    for x in range(4):
+                        s = random.randint(0, m-1)
+                        word2.append((word1[s]).split('>>>'))
+                    h0 = word2[0]
+                    h1 = word2[1]
+                    h2 = word2[2]
+                    h3 = word2[3]
+                    toot_now = h0[0] + "\n" + h1[1] + "\n" + h2[2] + "\n（作者：:@" + h3[3] + ":）\n:@" + account[
+                        "acct"] +":からのリクエストでした❤\n#川柳げーむ"
+                    g_vis = "public"
+                    bot.rets(6, toot_now, g_vis)
         pass
     
     def dice(inp):
