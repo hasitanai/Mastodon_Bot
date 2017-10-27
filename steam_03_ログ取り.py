@@ -33,14 +33,16 @@ class res_toot(StreamListener):
     def on_update(self, status):
         try:
             account = status["account"]
-            path = 'thank\\' + account["acct"] + '.txt'
+            path = '\\thank\\' + account["acct"] + '.txt'
             if os.path.exists(path):
                 f = open(os.path.abspath(os.path.dirname(__file__)) + path, 'r')
                 x = f.read()
                 f.close()
+            else:
+                x = 0
             if int(x) >= -10:
                 mentions = Re1.text(status["mentions"])
-                content = Re1.text(status["content"])
+                content = unesc(Re1.text(status["content"]))
                 non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0x0000)
                 """
                 print((re.sub("<p>|</p>", "", str(account["display_name"]).translate(non_bmp_map)+ "@" + str(account["acct"]).translate(non_bmp_map)))) 
