@@ -186,7 +186,9 @@ class res_toot(StreamListener):
         
 class HTL():
     def HTL(status):
-        bot.check03(status)
+        account = status["account"]
+        if account["acct"] != "JC": 
+            bot.check03(status)
 
 
 class LTL():
@@ -293,12 +295,6 @@ class bot():
                     toot_now = " :@" + account['acct'] + ": @" + account['acct'] + "\n（*'∀'人）" + str(ct) + 'tootおめでとーー♪'
                     g_vis = "public"
                     bot.rets(4, toot_now, g_vis)
-            if account["acct"] == "lamazeP":  # ラマーズＰ監視隊
-                ct += 5
-                if re.match('^\d+000$', str(ct)):
-                    toot_now = "@lamazeP (๑•̀ㅁ•́๑)" + str(ct) + 'tootまであと5だよ！！！！'
-                    g_vis = "direct"
-                    bot.rets(4, toot_now, g_vis)
         else:
             pass
 
@@ -311,19 +307,19 @@ class bot():
                 toot_now = "@yzhsn (๑•̀ㅁ•́๑)神崎おにいさん！！\n" + str(ct) + 'tootまであと5だよ！！！！'
                 g_vis = "direct"
                 bot.rets(4, toot_now, g_vis)
-        if account["acct"] == "5":  # やなちゃん監視隊
+        elif account["acct"] == "5":  # やなちゃん監視隊
             ct += 5
             if re.match('^\d+000$', str(ct)):
                 toot_now = "@5 (๑•̀ㅁ•́๑)やなちゃん！！\n" + str(ct) + 'tootまであと5だよ！！！！'
                 g_vis = "direct"
                 bot.rets(4, toot_now, g_vis)
-        if account["acct"] == "yzhsn":  # 裾野監視隊
+        elif account["acct"] == "yzhsn":  # 裾野監視隊
             ct += 5
             if re.match('^\d+000$', str(ct)):
                 toot_now = "@yzhsn (๑•̀ㅁ•́๑)おい裾野！！\n" + str(ct) + 'tootまであと5だよ！！！！'
                 g_vis = "direct"
                 bot.rets(4, toot_now, g_vis)
-        if account["acct"] == "lamazeP":  # ラマーズＰ監視隊
+        elif account["acct"] == "lamazeP":  # ラマーズＰ監視隊
             ct += 5
             if re.match('^\d+000$', str(ct)):
                 toot_now = "@lamazeP (๑•̀ㅁ•́๑)" + str(ct) + 'tootまであと5だよ！！！！'
@@ -476,7 +472,7 @@ class bot():
 
     def fav01(status):
         account = status["account"]
-        if re.compile("ももな|:@JC:").search(status['content']):
+        if re.compile("(ももな|:@JC:)").search(status['content']):
             bot.n_sta = status
             bot.thank(account, 8)
             v = threading.Timer(5, bot.fav_now)
