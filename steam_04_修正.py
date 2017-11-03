@@ -101,7 +101,7 @@ class men_toot(StreamListener):
                         g_vis = status["visibility"]
                         toot_now = ":@" + str(account["acct"]) + ": @" + account["acct"] + "\n" + result
                         bot.rets(5, toot_now, g_vis, status['id'])
-                    elif re.compile("アラーム(\d+)").search(content):
+                    elif re.compile("(アラーム|[Aa][Rr][Aa][Mm])(\d+)").search(content):
                         non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
                         content = str(status['content']).translate(non_bmp_map)
                         account = status['account']
@@ -113,10 +113,16 @@ class men_toot(StreamListener):
                         else:
                             pass
                         print(str(sec))
-                        toot_now = "@" + account["acct"] + " " + "（*'∀'人）時間だよーー♪♪"
+                        if re.compile("(アラーム|[Aa][Rr][Aa][Mm])(.*)「(.*)」").search(content):
+                            mes = re.search("「(.*)」", content)
+                            toot_now = "@" + account["acct"] + " " + "（*'∀'人）時間だよーー♪♪\n「" + mes.group(1) + "」"
+                        else:
+                            toot_now = "@" + account["acct"] + " " + "（*'∀'人）時間だよーー♪♪"
                         g_vis = status["visibility"]
                         in_reply_to_id = status["id"]
-                        bot.rets(int(com.group(1)),toot_now, g_vis, status['id'])
+                        t = threading.Timer(sec, bot.toot, [toot_now, g_vis, status['id']])
+                        t.start()
+                        #bot.rets(sec,toot_now, g_vis,status['id'] )
                     elif re.compile(
                             "(フォロー|follow)(して|く[うぅー]*ださ[あぁー]*い|お願[あぁー]*い|おねが[あぁー]*い|頼[むみ]|たの[むみ]|ぷりーず|プリーズ|please)").search(
                             content):
@@ -148,7 +154,7 @@ class men_toot(StreamListener):
                             pass
                     else:
                         pass
-                v = threading.Timer(5, bot.fav_now)
+                v = threading.Timer(5, bot.fav_now,[status["id"]])
                 v.start()
             elif notification["type"] == "favourite":
                 account = notification["account"]
@@ -207,7 +213,7 @@ class LTL():
 
 class bot():
     def _init_(self):
-        self.n_sta = None
+        pass
 
     def res(sec):
         count.end = count.end - sec
@@ -309,7 +315,7 @@ class bot():
                 bot.rets(4, toot_now, g_vis)
         elif account["acct"] == "5":  # やなちゃん監視隊
             ct += 5
-            if re.match('^\d+000$', str(ct)):
+            if re.match('^\d+0000$', str(ct)):
                 toot_now = "@5 (๑•̀ㅁ•́๑)やなちゃん！！\n" + str(ct) + 'tootまであと5だよ！！！！'
                 g_vis = "direct"
                 bot.rets(4, toot_now, g_vis)
@@ -473,9 +479,8 @@ class bot():
     def fav01(status):
         account = status["account"]
         if re.compile("(ももな|:@JC:)").search(status['content']):
-            bot.n_sta = status
             bot.thank(account, 8)
-            v = threading.Timer(5, bot.fav_now)
+            v = threading.Timer(5, bot.fav_now,[status["id"]])
             v.start()
 
     def check01(status):
@@ -521,8 +526,7 @@ class bot():
             f.close()  # ファイルを閉じる
             print("現在の評価値:" + str(0))
 
-    def fav_now():  # ニコります
-        fav = bot.n_sta["id"]
+    def fav_now(fav):  # ニコります
         mastodon.status_favourite(fav)
         print("◇Fav")
 
@@ -577,6 +581,10 @@ class game():
         
         
 　　　　"""
+        pass
+
+    def quiz(status):
+        
         pass
 
     def poem(status):
