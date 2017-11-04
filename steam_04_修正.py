@@ -28,6 +28,10 @@ mastodon = Mastodon(
     access_token="auth.txt",
     api_base_url=url_ins)  # インスタンス
 
+jst_now = datetime.now(timezone('Asia/Tokyo'))
+nowing = str(jst_now.strftime("%Y%m%d%H%M%S"))
+with open('log\\' + 'log_' + nowing + '.txt', 'w') as f:
+    f.write(str(jst_now))
 
 class Re1():  # Content整頓用関数
     def text(text):
@@ -52,6 +56,7 @@ class Log():  # toot記録用クラス٩(๑❛ᴗ❛๑)۶
         print(str(self.mentions).translate(non_bmp_map))
 
     def write(self):
+        global nowing
         text = self.content
         acct = self.account["acct"]
         f = codecs.open('log\\' + 'log_' + nowing + '.txt', 'a', 'UTF-8')
@@ -177,6 +182,7 @@ class res_toot(StreamListener):
             print("===タイムライン===")
             log = threading.Thread(Log(status).read())
             log.run()
+            Log(status).write()
             ltl = threading.Thread(LTL.LTL(status))
             ltl.run()
             print("   ")
@@ -193,7 +199,19 @@ class res_toot(StreamListener):
 class HTL():
     def HTL(status):
         account = status["account"]
-        if account["acct"] != "JC": 
+        ct = account["statuses_count"]
+        if account["acct"] == "JC":
+            path = 'thank\\' + account["acct"] + '.txt'
+            if os.path.exists(path):
+                f = open(path, 'r')
+                x = f.read()
+                f.close()
+                ct += 1
+                if re.match('^\d+000$', str(ct)):
+                    toot_now = "°˖✧◝(⁰▿⁰)◜✧˖" + str(ct) + 'toot達成ーーーー♪♪'
+                    g_vis = "public"
+                    bot.rets(4, toot_now, g_vis)
+        else: 
             bot.check03(status)
 
 
@@ -286,11 +304,12 @@ class bot():
             f.close()
         if int(x) >= -10:
             if account["acct"] == "JC":
-                ct += 1
-                if re.match('^\d+000$', str(ct)):
-                    toot_now = "°˖✧◝(⁰▿⁰)◜✧˖" + str(ct) + 'toot達成ーーーー♪♪'
-                    g_vis = "public"
-                    bot.rets(4, toot_now, g_vis)
+                pass
+                #ct += 1
+                #if re.match('^\d+000$', str(ct)):
+                #    toot_now = "°˖✧◝(⁰▿⁰)◜✧˖" + str(ct) + 'toot達成ーーーー♪♪'
+                #    g_vis = "public"
+                #    bot.rets(4, toot_now, g_vis)
             else:
                 if re.match('^\d+0000$', str(ct)):
                     toot_now = " :@" + account['acct'] + ": @" + account['acct'] + "\n°˖✧◝(⁰▿⁰)◜✧˖" + str(
@@ -587,6 +606,9 @@ class game():
         
         pass
 
+    def memo(status):
+        pass
+
     def poem(status):
         account = status["account"]
         content = Re1.text(status["content"])
@@ -820,7 +842,7 @@ class game():
 class count():
     CT = time.time()
     end = 0
-    timer_hello = 0 
+    timer_hello = 0
 
     def emo01(time=10800):  # 定期的に評価を下げまーーす♪（無慈悲）
         while 1:
