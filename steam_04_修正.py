@@ -603,7 +603,10 @@ class game():
         pass
 
     def quiz(status):
-        
+        account = status["account"]
+        content = Re1.text(status["content"])
+        if re.compile("").search(content):
+            pass
         pass
 
     def memo(status):
