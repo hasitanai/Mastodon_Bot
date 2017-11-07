@@ -605,7 +605,15 @@ class game():
     def quiz(status):
         account = status["account"]
         content = Re1.text(status["content"])
-        if re.compile("").search(content):
+        if re.compile("クイズ(問題|もんだい)[：:]<br />").search(content):
+            try:
+                qz = re.search("クイズ(問題|もんだい)[：:]<br />[QqＱｑ][.．](.+)<br />[AaＡａ][.．](.+)", str(content))
+
+                #書き出し処理
+                
+            except:
+                return "失敗しました(｡>﹏<｡)"
+                pass
             pass
         pass
 
