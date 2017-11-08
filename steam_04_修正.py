@@ -608,11 +608,11 @@ class game():
         if re.compile("クイズ(問題|もんだい)[：:]<br />").search(content):
             try:
                 qz = re.search("クイズ(問題|もんだい)[：:]<br />[QqＱｑ][.．](.+)<br />[AaＡａ][.．](.+)", str(content))
-
-                #書き出し処理
                 
+                #書き出し処理
+                return "クイズ問題、登録しました（*'∀'人）"
             except:
-                return "失敗しました(｡>﹏<｡)"
+                return "クイズ問題、失敗しました(｡>﹏<｡)"
                 pass
             pass
         pass
