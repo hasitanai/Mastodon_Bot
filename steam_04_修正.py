@@ -622,7 +622,7 @@ class game():
         content = Re1.text(status["content"])
         if re.compile("(メモ|めも)[：:]").search(content):
             try:
-                qz = re.search("(メモ|めも)[：:]?(<br />)(.+)", str(content))
+                memo = re.search("(メモ|めも)[：:]?(<br />)(.+)", str(content))
                 
                 #書き出し処理
                 return "クイズ問題、登録しました（*'∀'人）"
