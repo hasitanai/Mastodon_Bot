@@ -377,7 +377,30 @@ class bot():
                         bot.rets(20, toot_now, g_vis)
                         count.timer_hello = 1
                 else:
-                    if re.compile("[寝ね](ます|る|マス)(.*)[ぽお]や[すし]|ももな(.*)[ぽお]や[すし]").search(content):
+                    if account["acct"] == "kiri_bot01":  # きりぼっとに参加
+                        try:
+                            f = codecs.open('at_time\\' + account["acct"] + '.txt', 'r', 'UTF-8')
+                            nstr = f.read()
+                            f.close
+                            print(nstr)
+                            tstr = re.sub("\....Z", "", nstr)
+                            last_time = datetime.strptime(tstr, '%Y-%m-%dT%H:%M:%S')
+                            nstr = status['created_at']
+                            tstr = re.sub("\....Z", "", nstr)
+                            now_time = datetime.strptime(tstr, '%Y-%m-%dT%H:%M:%S')
+                            delta = now_time - last_time
+                            print(delta)
+                            if delta.total_seconds() >= 300:
+                                n = re.search("(\d)～(\d)の中から好きな数字", str(content))
+                                num = random.randint(n.group(1), n.group(2))
+                                toot_now = "@kiri_bot01 " + str(num)
+                                g_vis = "direct"
+                                bot.rets(5, toot_now, g_vis)
+                            else:
+                                pass
+                        except:
+                            pass
+                    elif re.compile("[寝ね](ます|る|マス)(.*)[ぽお]や[すし]|ももな(.*)[ぽお]や[すし]").search(content):
                         if not re.compile("[寝ね]る(人|ひと)").search(status['content']):
                             print("○hitしました♪")
                             print("○おやすみします（*'∀'人）")
@@ -608,24 +631,24 @@ class game():
         if re.compile("クイズ(問題|もんだい)[：:]<br />").search(content):
             try:
                 qz = re.search("クイズ(問題|もんだい)[：:]<br />[QqＱｑ][.．](.+)<br />[AaＡａ][.．](.+)", str(content))
-                
                 #書き出し処理
                 return "クイズ問題、登録しました（*'∀'人）"
             except:
                 return "クイズ問題、失敗しました(｡>﹏<｡)"
                 pass
             pass
-        pass
+        elif re.compile("クイズ(回答|解答|かいとう)[：:]<br />").search(content):
+            pass
 
     def memo(status):
-               account = status["account"]
+        account = status["account"]
         content = Re1.text(status["content"])
         if re.compile("(メモ|めも)[：:]").search(content):
             try:
                 memo = re.search("(メモ|めも)[：:]?(<br />)(.+)", str(content))
-                
-                #書き出し処理
-                return "クイズ問題、登録しました（*'∀'人）"
+                #記録用の要素取り出し
+                #書き出し処理＆保存
+                return "メモしました（*'∀'人）"
             except:
                 return "クイズ問題、失敗しました(｡>﹏<｡)"
                 pass
