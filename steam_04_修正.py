@@ -329,7 +329,7 @@ class bot():
         if account["acct"] == "Knzk":  # 神崎おにいさん監視隊
             ct += 5
             if re.match('^\d+000$', str(ct)):
-                toot_now = "@yzhsn (๑•̀ㅁ•́๑)神崎おにいさん！！\n" + str(ct) + 'tootまであと5だよ！！！！'
+                toot_now = "@Knzk (๑•̀ㅁ•́๑)神崎おにいさん！！\n" + str(ct) + 'tootまであと5だよ！！！！'
                 g_vis = "direct"
                 bot.rets(4, toot_now, g_vis)
         elif account["acct"] == "5":  # やなちゃん監視隊
@@ -378,7 +378,6 @@ class bot():
                         count.timer_hello = 1
                 else:
                     if account["acct"] == "kiri_bot01":  # きりぼっとに参加
-                        try:
                             f = codecs.open('at_time\\' + account["acct"] + '.txt', 'r', 'UTF-8')
                             nstr = f.read()
                             f.close
@@ -395,11 +394,11 @@ class bot():
                                 num = random.randint(n.group(1), n.group(2))
                                 toot_now = "@kiri_bot01 " + str(num)
                                 g_vis = "direct"
-                                bot.rets(5, toot_now, g_vis)
-                            else:
-                                pass
-                        except:
-                            pass
+                                try:
+                                    bot.rets(5, toot_now, g_vis)
+                                except:
+                                    bot.toot("@lamazeP (｡>﹏<｡)失敗しました……", g_vis)
+                                    pass
                     elif re.compile("[寝ね](ます|る|マス)(.*)[ぽお]や[すし]|ももな(.*)[ぽお]や[すし]").search(content):
                         if not re.compile("[寝ね]る(人|ひと)").search(status['content']):
                             print("○hitしました♪")
@@ -485,13 +484,18 @@ class bot():
                                 else:
                                     toot_now = " :@" + account['acct'] + ": @" + account['acct'] + "\n" + account[
                                         'display_name'] + "\n" + 'ようこそようこそーーーー♪'
+                                shinki = True
                             else:
                                 if account['display_name'] == "":
                                     toot_now = " :@" + account['acct'] + ": @" + account['acct'] + "\n" + 'いらっしゃーーーーい♪'
                                 else:
                                     toot_now = " :@" + account['acct'] + ": @" + account['acct'] + "\n" + 'いらっしゃーーーーい♪'
+                                shinki = False
                             g_vis = "public"
                             bot.rets(5, toot_now, g_vis)
+                            if shinki is True:
+                                bot.toot("@lamazeP 新規さんが来たよーー（小声）\n【" + str(account['acct']) + "】", "direct", status["id"])
+                                
         else:
             print("○反応がない人なので挨拶しません（*'∀'人）")
 
@@ -631,13 +635,17 @@ class game():
         if re.compile("クイズ(問題|もんだい)[：:]<br />").search(content):
             try:
                 qz = re.search("クイズ(問題|もんだい)[：:]<br />[QqＱｑ][.．](.+)<br />[AaＡａ][.．](.+)", str(content))
-                #書き出し処理
-                return "クイズ問題、登録しました（*'∀'人）"
+                #ファイル読み書きモードで呼び出し
+                #lenを確認して番号振り
+                #書き出し処理＆保存
+                return ("クイズ問題、登録しました（*'∀'人）\n"
+                        "問題番号"+ "xxx")
             except:
                 return "クイズ問題、失敗しました(｡>﹏<｡)"
                 pass
             pass
         elif re.compile("クイズ(回答|解答|かいとう)[：:]<br />").search(content):
+            ans = re.search("クイズ(回答|解答|かいとう)[：:]<br />[QqＱｑ][.．](.+)<br />[AaＡａ][.．](.+)", str(content))
             pass
 
     def memo(status):
