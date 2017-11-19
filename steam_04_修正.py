@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from mastodon import *
-import time, re, sys, os, json, random, io
+import time, re, sys, os, json, random, io, gc
 import threading, requests, pprint, codecs
 from time import sleep
 from datetime import datetime
 from pytz import timezone
 import warnings, traceback
+import xlrd, xlsxwriter
 from xml.sax.saxutils import unescape as unesc
 import asyncio
 
@@ -250,6 +251,9 @@ class bot():
         print("【次までのロスタイム:" + str(count.end+sec) + "】")
         s = threading.Timer(sec, bot.res, [sec])
         s.start()
+        del t
+        del s
+        gc.collect()
         count.CT = time.time()
         count.end = count.end + sec
 
@@ -962,6 +966,10 @@ if __name__ == '__main__':
     count()
     go()
     bot.timer_toot = False
+    m = input("start: ")
+    if m is "1":
+        bot.rets(5, "(*ﾟ﹃ﾟ*)……はっ！！！！", "public")
+        bot.rets(5, "ううううううまた寝落ちしてたああああああ……", "public")
     uuu = threading.Thread(target=bot.t_local)
     lll = threading.Thread(target=bot.t_user)
     fff = threading.Thread(target=count.emo01)
