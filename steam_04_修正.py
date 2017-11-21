@@ -245,17 +245,17 @@ class bot():
         loss = count.end - int(delay)
         if loss < 0:
             loss = 0
-        sec = sec + loss
-        t = threading.Timer(sec, bot.toot, [toot_now, g_vis, rep, spo])
+        ing = sec + loss
+        t = threading.Timer(ing, bot.toot, [toot_now, g_vis, rep, spo])
         t.start()
         print("【次までのロスタイム:" + str(count.end+sec) + "】")
-        s = threading.Timer(sec, bot.res, [sec])
+        s = threading.Timer(ing, bot.res, [sec])
         s.start()
         del t
         del s
         gc.collect()
         count.CT = time.time()
-        count.end = count.end + sec
+        count.end = ing
 
     def toot(toot_now, g_vis, rep=None, spo=None):
         mastodon.status_post(status=toot_now, visibility=g_vis, in_reply_to_id=rep, spoiler_text=spo)
@@ -900,6 +900,7 @@ class game():
 class count():
     CT = time.time()
     end = 0
+    sec = 0
     timer_hello = 0
 
     def emo01(time=10800):  # 定期的に評価を下げまーーす♪（無慈悲）
@@ -967,9 +968,11 @@ if __name__ == '__main__':
     go()
     bot.timer_toot = False
     m = input("start: ")
-    if m is "1":
+    if m is "":
+        pass
+    else:
         bot.rets(5, "(*ﾟ﹃ﾟ*)……はっ！！！！", "public")
-        bot.rets(5, "ううううううまた寝落ちしてたああああああ……", "public")
+        bot.rets(5, m, "public")
     uuu = threading.Thread(target=bot.t_local)
     lll = threading.Thread(target=bot.t_user)
     fff = threading.Thread(target=count.emo01)
