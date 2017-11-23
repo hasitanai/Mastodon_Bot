@@ -622,6 +622,17 @@ class bot():
 class game():
     def fav(id):
         mastodon.status_favourite(id)
+
+    def world(status):
+        account = status["account"]
+        content = Re1.text(status["content"])
+        hitting = 'セカイが(.+)になっちゃった'
+        if re.compile(hitting).search(content):
+            wrd = re.search(hitting, str(content))
+            toot_now = 'セカイが' + wrd(1) + 'になっちゃった♪'
+            bot.rets(5, toot_now, "public")
+        else:
+            pass
     
     def rensou(status):
         """
