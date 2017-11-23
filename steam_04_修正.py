@@ -626,7 +626,7 @@ class game():
     def world(status):
         account = status["account"]
         content = Re1.text(status["content"])
-        hitting = 'セカイが(.+)になっちゃった'
+        hitting = 'セカイが(.+)になっちゃ(っ[たて]|いま[すし])'
         if re.compile(hitting).search(content):
             wrd = re.search(hitting, str(content))
             toot_now = 'セカイが' + wrd(1) + 'になっちゃった♪'
