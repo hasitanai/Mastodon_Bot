@@ -228,6 +228,7 @@ class LTL():
         bot.check02(status)
         game.poem(status)
         game.senryu(status)
+        game.cinema(status)
         # ここまで
 
 class bot():
@@ -623,6 +624,61 @@ class game():
     def fav(id):
         mastodon.status_favourite(id)
 
+    def cinema(status):
+        account = status["account"]
+        content = Re1.text(status["content"])
+        gameIn = ("(劇場|げきじょう|[Cc]inema|シネマ)(ゲーム|げーむ)[：:]"+
+                  "<br />【(.+)】<br />起[：:](.+)<br />承[：:](.+)<br />転[：:](.+)<br />結[：:](.+)")
+        gameOut = "(劇場|げきじょう|[Cc]inema|シネマ)(ゲーム|げーむ)"+".*(ひとつ|おねがい|お願い|[1１一]つ)"
+        if re.compile(gameIn).search(content):
+            print("○hitしました♪")
+            word = re.search(gameIn, str(content))
+            sekuhara = bot.block01(status)
+            if sekuhara:
+                bot.rets(5, "٩(๑`^´๑)۶えっちなのはよくない！！！！", "public")
+            else:
+                Title = word.group(3)
+                Ki = word.group(4)
+                Sho = word.group(5)
+                Ten = word.group(6)
+                Kets = word.group(7)
+                if len(Ki) > 60 or len(Sho) > 60 or len(Ten) > 60 or len(Kets) > 60 or len(Title) > 60:
+                    bot.rets(5, "٩(๑`^´๑)۶長い！！！！！！", "public")
+                    pass
+                else:
+                    f = codecs.open('game\\cinema_word.txt', 'a', 'UTF-8')
+                    f.write(Title+">>"+Ki+">>"+Sho+">>"+Ten+">>"+Kets+">>"+account["acct"]+"\r\n" )
+                    f.close()
+                    v = threading.Timer(5, game.fav, [status["id"]])
+                    v.start()
+                    print("◆　成功しました(∩´∀｀)∩　◆")
+            return
+        elif re.compile("ももな.*"+gameOut).search(content):
+            if account["acct"] != "JC":
+                f = codecs.open('game\\cinema_word.txt', 'r', 'utf-8')
+                word1 = []
+                for x in f:
+                    word1.append(x.rstrip("\r\n").replace('\\n', '\n'))
+                f.close()
+                m = len(word1)
+                word2 = []
+                name = []
+                for x in range(5):
+                    s = random.randint(0, m-1)
+                    word2.append((word1[s]).split('>>'))
+                c0 = word2[0]
+                c1 = word2[1]
+                c2 = word2[2]
+                c3 = word2[3]
+                c4 = word2[4]
+                c5 = [c0[5],c1[5],c2[5],c3[5],c4[5]]
+                cast = list(set(c5[1:]))
+                toot_now = ("【タイトル】\n"+c0[0]+"\n\n【あらすじ】\n"+c1[1]+"\n"+c2[2]+"\n"+c3[3]+"\n"+c4[4]+"\n\n"
+                            "【スタッフ】\n監督：:@"+c0[5]+":\n主演キャスト：:@"+str(": :@".join(cast)))+ ":"
+                spo = ":@" + account["acct"] + ":さんに上映開始のお知らせ"
+                return bot.rets(6, toot_now, "public", None, spo)
+        
+
     def world(status):
         account = status["account"]
         content = Re1.text(status["content"])
@@ -666,14 +722,17 @@ class game():
     def memo(status):
         account = status["account"]
         content = Re1.text(status["content"])
-        if re.compile("(メモ|めも)[：:]").search(content):
+        if re.compile("ももな.*(メモ|めも)[：:]").search(content):
             try:
-                memo = re.search("(メモ|めも)[：:]?(<br />)(.+)", str(content))
-                #記録用の要素取り出し
+                memo = re.search("ももな.*(メモ|めも)[：:]?(<br />)(.+)", str(content))
+                tex = memo.group(3)  #記録用の要素取り出し
                 #書き出し処理＆保存
+                f = codecs.open('game\\memo_word.txt', 'a', 'UTF-8')
+                f.write(tex + ">>" + account["acct"] + "\r\n" )
+                f.close()
                 return "メモしました（*'∀'人）"
             except:
-                return "クイズ問題、失敗しました(｡>﹏<｡)"
+                return "メモに失敗しました(｡>﹏<｡)"
                 pass
             pass
         pass
