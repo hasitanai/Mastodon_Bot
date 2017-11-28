@@ -518,6 +518,7 @@ class bot():
                 else:
                     if not sekuhara:
                         print("○だったら")
+                        # if re.compile("(.+)するのとマストドン(どちら|どっち)が大[切事]か[分わ]かってない").search(content):
                         toot_now = ":@" + account["acct"] + ":" + (
                         re.sub('<span(.+)span>|<p>|とマストドン(.*)', "", str(content))) + "しながらマストドンして❤"
                         g_vis = "public"
@@ -629,8 +630,8 @@ class game():
         content = Re1.text(status["content"])
         gameIn = ("(劇場|げきじょう|[Cc]inema|シネマ)(ゲーム|げーむ)[：:]"+
                   "<br />【(.+)】<br />起[：:](.+)<br />承[：:](.+)<br />転[：:](.+)<br />結[：:](.+)")
-        gameOut = "(劇場|げきじょう|[Cc]inema|シネマ)(ゲーム|げーむ)"+".*(ひとつ|おねがい|お願い|[1１一]つ)"
-        if re.compile(gameIn).search(content):
+        gameOut = "(劇場|げきじょう|[Cc]inema|シネマ)(ゲーム|げーむ)"+".*(ひとつ|おねが[いひ]|お願[いひ]|[1１一]つ)"
+        if re.compile(gameIn+"<br />").search(content):
             print("○hitしました♪")
             word = re.search(gameIn, str(content))
             sekuhara = bot.block01(status)
@@ -642,7 +643,7 @@ class game():
                 Sho = word.group(5)
                 Ten = word.group(6)
                 Kets = word.group(7)
-                if len(Ki) > 60 or len(Sho) > 60 or len(Ten) > 60 or len(Kets) > 60 or len(Title) > 60:
+                if len(Ki) > 80 or len(Sho) > 80 or len(Ten) > 80 or len(Kets) > 80 or len(Title) > 60:
                     bot.rets(5, "٩(๑`^´๑)۶長い！！！！！！", "public")
                     pass
                 else:
