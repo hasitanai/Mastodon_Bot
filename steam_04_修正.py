@@ -674,8 +674,8 @@ class game():
                 c4 = word2[4]
                 c5 = [c0[5],c1[5],c2[5],c3[5],c4[5]]
                 cast = list(set(c5[1:]))
-                toot_now = ("【タイトル】\n"+c0[0]+"\n\n【あらすじ】\n"+c1[1]+"\n"+c2[2]+"\n"+c3[3]+"\n"+c4[4]+"\n\n"
-                            "【スタッフ】\n監督：:@"+c0[5]+":\n主演キャスト：:@"+str(": :@".join(cast)))+ ":"
+                toot_now = ("【タイトル】\n"+unesc(c0[0])+"\n\n【あらすじ】\n"+unesc(c1[1])+"\n"+unesc(c2[2])+"\n"+unesc(c3[3])+"\n"+unesc(c4[4])+"\n\n"
+                            "【スタッフ】\n監督：:@"+c0[5]+":\n主演キャスト：:@"+str("::@".join(cast)))+ ":\n#劇場げーむ"
                 spo = ":@" + account["acct"] + ":さんに上映開始のお知らせ"
                 return bot.rets(6, toot_now, "public", None, spo)
         
@@ -693,10 +693,8 @@ class game():
     
     def rensou(status):
         """
-
         toot = bot.toot
         toot("٩(๑❛ᴗ❛๑)۶今から連想ゲームを始めます！！", "")
-        
         
 　　　　"""
         pass
@@ -731,8 +729,10 @@ class game():
                 f = codecs.open('game\\memo_word.txt', 'a', 'UTF-8')
                 f.write(tex + ">>" + account["acct"] + "\r\n" )
                 f.close()
+                # bot.rets(5, "メモしました（*'∀'人）", "public")
                 return "メモしました（*'∀'人）"
             except:
+                # bot.rets(5, "メモに失敗しました(｡>﹏<｡)", "public")
                 return "メモに失敗しました(｡>﹏<｡)"
                 pass
             pass
