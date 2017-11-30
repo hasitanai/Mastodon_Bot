@@ -222,8 +222,8 @@ class LTL():
         bot.check01(status)
         bot.fav01(status)
         bot.res01(status)
-        bot.res06(status)
-        bot.res07(status)
+        bot.res02(status)
+        bot.res03(status)
         bot.check00(status)
         bot.check02(status)
         game.poem(status)
@@ -283,7 +283,7 @@ class bot():
                 j = False
         return j
 
-    def res07(status):
+    def res03(status):
         account = status["account"]
         if account['acct'] != "kiri_bot01":
             if account["acct"] != "JC":
@@ -504,7 +504,7 @@ class bot():
         else:
             print("○反応がない人なので挨拶しません（*'∀'人）")
 
-    def res06(status):
+    def res02(status):
         account = status["account"]
         content = Re1.text(status["content"])
         if account["acct"] != "JC":
@@ -723,7 +723,7 @@ class game():
         content = Re1.text(status["content"])
         if re.compile("ももな.*(メモ|めも)[：:]").search(content):
             try:
-                memo = re.search("ももな.*(メモ|めも)[：:]?(<br />)(.+)", str(content))
+                memo = re.search("ももな.*(メモ|めも)[：:]?(<br />)(.+)?(<br />)", str(content))
                 tex = memo.group(3)  #記録用の要素取り出し
                 #書き出し処理＆保存
                 f = codecs.open('game\\memo_word.txt', 'a', 'UTF-8')
@@ -736,6 +736,7 @@ class game():
                 return "メモに失敗しました(｡>﹏<｡)"
                 pass
             pass
+        # ある程度溜まったらメモまとめをお願いするシステムの予定
         pass
 
     def poem(status):
