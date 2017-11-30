@@ -600,7 +600,7 @@ class bot():
             print("例外情報\n" + traceback.format_exc())
             with open('except.log', 'a') as f:
                 jst_now = datetime.now(timezone('Asia/Tokyo'))
-                f.write("【" + str(jst_now) + "】")
+                f.write("\n\n【" + str(jst_now) + "】\n")
                 traceback.print_exc(file=f)
             sleep(180)
             bot.t_local()
@@ -614,7 +614,7 @@ class bot():
             print("例外情報\n" + traceback.format_exc())
             with open('except.log', 'a') as f:
                 jst_now = datetime.now(timezone('Asia/Tokyo'))
-                f.write("【" + str(jst_now) + "】")
+                f.write("\n\n【" + str(jst_now) + "】\n")
                 traceback.print_exc(file=f)
             sleep(180)
             bot.t_user()
