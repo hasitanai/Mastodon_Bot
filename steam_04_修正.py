@@ -195,7 +195,7 @@ class res_toot(StreamListener):
             pass
 
     def on_delete(self, status_id):
-        print("===削除されました===")
+        print(str("===削除されました【{}】===").format(str(status_id)))
         
 class HTL():
     def HTL(status):
