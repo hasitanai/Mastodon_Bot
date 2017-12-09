@@ -32,7 +32,7 @@ mastodon = Mastodon(
 jst_now = datetime.now(timezone('Asia/Tokyo'))
 nowing = str(jst_now.strftime("%Y%m%d%H%M%S"))
 with open('log\\' + 'log_' + nowing + '.txt', 'w') as f:
-    f.write(str(jst_now))
+    f.write(str(jst_now)+'\n')
 
 class Re1():  # Content整頓用関数
     def text(text):
@@ -63,6 +63,7 @@ class Log():  # toot記録用クラス٩(๑❛ᴗ❛๑)۶
         f = codecs.open('log\\' + 'log_' + nowing + '.txt', 'a', 'UTF-8')
         f.write(re.sub('<br />', '\\n', str(text)) + ',<acct="' + acct + '">\r\n')
         f.close()
+        
 
 class men_toot(StreamListener):
     def on_update(self, status):
@@ -382,29 +383,7 @@ class bot():
                         bot.rets(20, toot_now, g_vis)
                         count.timer_hello = 1
                 else:
-                    if account["acct"] == "kiri_bot01":  # きりぼっとに参加
-                            f = codecs.open('at_time\\' + account["acct"] + '.txt', 'r', 'UTF-8')
-                            nstr = f.read()
-                            f.close
-                            print(nstr)
-                            tstr = re.sub("\....Z", "", nstr)
-                            last_time = datetime.strptime(tstr, '%Y-%m-%dT%H:%M:%S')
-                            nstr = status['created_at']
-                            tstr = re.sub("\....Z", "", nstr)
-                            now_time = datetime.strptime(tstr, '%Y-%m-%dT%H:%M:%S')
-                            delta = now_time - last_time
-                            print(delta)
-                            if delta.total_seconds() >= 300:
-                                n = re.search("(\d)～(\d)の中から好きな数字", str(content))
-                                num = random.randint(n.group(1), n.group(2))
-                                toot_now = "@kiri_bot01 " + str(num)
-                                g_vis = "direct"
-                                try:
-                                    bot.rets(5, toot_now, g_vis)
-                                except:
-                                    bot.toot("@lamazeP (｡>﹏<｡)失敗しました……", g_vis)
-                                    pass
-                    elif re.compile("[寝ね](ます|る|マス)(.*)[ぽお]や[すし]|ももな(.*)[ぽお]や[すし]").search(content):
+                    if re.compile("[寝ね](ます|る|マス)([！よかぞね。]?)$|[寝ね](ます|る|マス)(.*)[ぽお]や[すし]|ももな(.*)[ぽお]や[すし]").search(content):
                         if not re.compile("[寝ね]る(人|ひと)").search(status['content']):
                             print("○hitしました♪")
                             print("○おやすみします（*'∀'人）")
@@ -418,7 +397,9 @@ class bot():
                             g_vis = "public"
                             bot.rets(5, toot_now, g_vis)
                     elif re.compile(
-                            "[いイ行逝]って(くる|きます|[きキ]マストドン)|出かけて(くる|きま[あぁー]*す|[きキ]マストドン)|おでかけ(する|しま[あぁー]*す|[しシ]マストドン)|(出勤|離脱|しゅっきん|りだつ)(する|しま[あぁー]*す|[しシ]マストドン)|^(出勤|離脱)$|(.+)して(くる|きま[あぁー]*す|[きキ]マストドン)([ー～！。よぞね]|$)").search(
+                            "[いイ行逝]って(くる|きます|[きキ]マストドン)[^？\?]|出かけて(くる|きま[あぁー]*す|[きキ]マストドン)[^？\?]|"
+                            "おでかけ(する|しま[あぁー]*す|[しシ]マストドン)[^？\?]|(出勤|離脱|しゅっきん|りだつ)(する|しま[あぁー]*す[^？\?]|"
+                            "[しシ]マストドン)|(出勤|離脱)$|(.+)して(くる|きま[あぁー]*す[^？\?]|[きキ]マストドン)([ー～！。よぞね]|$)").search(
                         content):
                         print("○hitしました♪")
                         print("○見送ります（*'∀'人）")
@@ -429,7 +410,7 @@ class bot():
                             toot_now = ":@" + account['acct'] + ":" + account['display_name'] + "\n" + 'いってらーーーー！！'
                         g_vis = "public"
                         bot.rets(5, toot_now, g_vis)
-                    elif re.compile("ただいま|ただいマストドン|(おうち|家).*([着つ]いた|帰った|帰ってきた)").search(content):
+                    elif re.compile("ただいま(です|[！あー～。…]*$)|ただいマストドン|(おうち|家).*([着つ]いた|帰った|帰ってきた)|(帰宅|きたく)(した|しました|$)|").search(content):
                         print("○hitしました♪")
                         print("○優しく迎えます（*'∀'人）")
                         if account['acct'] == "5":  # やなちゃん専用挨拶
@@ -530,7 +511,7 @@ class bot():
 
     def fav01(status):
         account = status["account"]
-        if re.compile("(ももな|:@JC:)").search(status['content']):
+        if re.compile("(ももな|:@JC:|ちゃんもも)").search(status['content']):
             bot.thank(account, 8)
             v = threading.Timer(5, bot.fav_now,[status["id"]])
             v.start()
