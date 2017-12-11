@@ -14,8 +14,8 @@ import asyncio
 #Winのプロンプトから起動するならこれ追加ね↓
 """
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer,
-                              encoding=sys.stdout.encoding, 
-                              errors='backslashreplace', 
+                              encoding=sys.stdout.encoding,
+                              errors='backslashreplace',
                               line_buffering=sys.stdout.line_buffering)
                               """
 warnings.simplefilter("ignore", UnicodeWarning)
@@ -36,7 +36,8 @@ with open('log\\' + 'log_' + nowing + '.txt', 'w') as f:
 
 class Re1():  # Content整頓用関数
     def text(text):
-        return (re.sub('<p>|</p>|<a.+"tag">|<a.+"_blank">|<a.+mention">|<span>|</span>|</a>|<span class="[a-z-]+">', "",
+        return (re.sub('<p>|</p>|<a.+"tag">|<a.+"_blank">|<a.+mention">|<span>|'
+                       '</span>|</a>|<span class="[a-z-]+">', "",
                        str(text)))
 
 class Log():  # toot記録用クラス٩(๑❛ᴗ❛๑)۶
@@ -63,7 +64,7 @@ class Log():  # toot記録用クラス٩(๑❛ᴗ❛๑)۶
         f = codecs.open('log\\' + 'log_' + nowing + '.txt', 'a', 'UTF-8')
         f.write(re.sub('<br />', '\\n', str(text)) + ',<acct="' + acct + '">\r\n')
         f.close()
-        
+
 
 class men_toot(StreamListener):
     def on_update(self, status):
@@ -122,7 +123,8 @@ class men_toot(StreamListener):
                         print(str(sec))
                         if re.compile("(アラーム|[Aa][Rr][Aa][Mm])(.*)「(.*)」").search(content):
                             mes = re.search("「(.*)」", content)
-                            toot_now = "@" + account["acct"] + " " + "（*'∀'人）時間だよーー♪♪\n「" + mes.group(1) + "」"
+                            toot_now = ("@" + account["acct"] + " " + "（*'∀'人）時間だよーー♪♪\n"
+                                        "「" + mes.group(1) + "」"
                         else:
                             toot_now = "@" + account["acct"] + " " + "（*'∀'人）時間だよーー♪♪"
                         g_vis = status["visibility"]
@@ -131,7 +133,8 @@ class men_toot(StreamListener):
                         t.start()
                         #bot.rets(sec,toot_now, g_vis,status['id'] )
                     elif re.compile(
-                            "(フォロー|follow)(して|く[うぅー]*ださ[あぁー]*い|お願[あぁー]*い|おねが[あぁー]*い|頼[むみ]|たの[むみ]|ぷりーず|プリーズ|please)").search(
+                            "(フォロー|follow)(して|く[うぅー]*ださ[あぁー]*い|お願[あぁー]*い|'
+                            'おねが[あぁー]*い|頼[むみ]|たの[むみ]|ぷりーず|プリーズ|please)").search(
                             content):
                         mastodon.account_follow(account["id"])
                         toot_now = "@" + account["acct"] + " " + "（*'∀'人）フォローしました♪♪"
@@ -148,7 +151,8 @@ class men_toot(StreamListener):
                             bot.rets(1, toot_now, g_vis)
                     elif re.compile("連想ゲーム開始").search(content):
                         if rensou_time:
-                            toot_now = "@" + account["acct"] + " " + "（*'∀'人）ごめんね、今開催中なの♪♪"
+                            toot_now = ("@" + account["acct"] + " "
+                                        + "（*'∀'人）ごめんね、今開催中なの♪♪")
                             g_vis = status["visibility"]
                             in_reply_to_id = status["id"]
                             bot.rets(5, toot_now, g_vis, status['id'])
@@ -197,7 +201,7 @@ class res_toot(StreamListener):
 
     def on_delete(self, status_id):
         print(str("===削除されました【{}】===").format(str(status_id)))
-        
+
 class HTL():
     def HTL(status):
         account = status["account"]
@@ -213,7 +217,7 @@ class HTL():
                     toot_now = "°˖✧◝(⁰▿⁰)◜✧˖" + str(ct) + 'toot達成ーーーー♪♪'
                     g_vis = "public"
                     bot.rets(4, toot_now, g_vis)
-        else: 
+        else:
             bot.check03(status)
 
 
@@ -260,13 +264,18 @@ class bot():
         count.end = ing
 
     def toot(toot_now, g_vis, rep=None, spo=None):
-        mastodon.status_post(status=toot_now, visibility=g_vis, in_reply_to_id=rep, spoiler_text=spo)
+        mastodon.status_post(status=toot_now,
+                             visibility=g_vis,
+                             in_reply_to_id=rep,
+                             spoiler_text=spo)
         print("【次までのロスタイム:" + str(count.end) + "】")
-        """visibility   これで公開範囲を指定できるよ！: public, unlisted, private, direct"""
+        """
+        visibility これで公開範囲を指定できるよ！: public, unlisted, private, direct
+        """
 
     def standby():
         print("「(๑•̀ㅁ•́๑)✧＜tootｽﾃﾝﾊﾞｰｲ」")
-        
+
     def block01(status):
         f = codecs.open("NG\sekuhara.txt", 'r', 'utf-8')
         l = []
@@ -318,12 +327,15 @@ class bot():
                 #    bot.rets(4, toot_now, g_vis)
             else:
                 if re.match('^\d+0000$', str(ct)):
-                    toot_now = " :@" + account['acct'] + ": @" + account['acct'] + "\n°˖✧◝(⁰▿⁰)◜✧˖" + str(
-                        ct) + 'tootおめでとーーーー♪♪'
+                    toot_now = (" :@" + account['acct'] + ": @" +
+                                account['acct'] + "\n°˖✧◝(⁰▿⁰)◜✧˖" + str(ct) +
+                                'tootおめでとーーーー♪♪')
                     g_vis = "public"
                     bot.rets(4, toot_now, g_vis)
                 elif re.match('^\d000$', str(ct)):
-                    toot_now = " :@" + account['acct'] + ": @" + account['acct'] + "\n（*'∀'人）" + str(ct) + 'tootおめでとーー♪'
+                    toot_now = (" :@" + account['acct'] + ": @" +
+                                account['acct'] + "\n（*'∀'人）" + str(ct) +
+                                'tootおめでとーー♪')
                     g_vis = "public"
                     bot.rets(4, toot_now, g_vis)
         else:
@@ -359,8 +371,9 @@ class bot():
         else:  # テスト
             ct += 5
             if re.match('^\d+000$', str(ct)):
-                toot_now = "@" + account["acct"] + " (๑•̀ㅁ•́๑)ただいまフォローしてる方にテスト中！\n" + str(
-                    ct) + 'tootまであと5だよ！！！！'
+                toot_now = ("@" + account["acct"] +
+                            " (๑•̀ㅁ•́๑)ただいまフォローしてる方にテスト中！\n" + str(ct) +
+                            'tootまであと5だよ！！！！')
                 g_vis = "direct"
                 bot.rets(4, toot_now, g_vis)
 
@@ -383,14 +396,16 @@ class bot():
                         bot.rets(20, toot_now, g_vis)
                         count.timer_hello = 1
                 else:
-                    if re.compile("[寝ね](ます|る|マス)([！よかぞね。]?)$|[寝ね](ます|る|マス)(.*)[ぽお]や[すし]|ももな(.*)[ぽお]や[すし]").search(content):
+                    if re.compile("[寝ね](ます|る|マス)([！よかぞね。]?)$|[寝ね](ます|る|マス)"
+                                  "(.*)[ぽお]や[すし]|ももな(.*)[ぽお]や[すし]").search(content):
                         if not re.compile("[寝ね]る(人|ひと)").search(status['content']):
                             print("○hitしました♪")
                             print("○おやすみします（*'∀'人）")
                             if account['acct'] == "5":  # やなちゃん専用挨拶
                                 print("○やなちゃんだ！！（*'∀'人）")
-                                toot_now = ":@" + account[
-                                    'acct'] + ":" + "やなちゃん！！！！！！" + "\n" + '(｡>﹏<｡)あとで一緒に寝るーーーー！！！！'
+                                toot_now = (":@" + account['acct'] + ":" +
+                                            "やなちゃん！！！！！！" + "\n" +
+                                            '(｡>﹏<｡)あとで一緒に寝るーーーー！！！！'
                             else:
                                 toot_now = ":@" + account['acct'] + ":" + account[
                                     'display_name'] + "\n" + '(ृ 　 ु *`ω､)ु ⋆゜おやすみーーーー♪'
@@ -405,17 +420,21 @@ class bot():
                         print("○見送ります（*'∀'人）")
                         if account['acct'] == "5":  # やなちゃん専用挨拶
                             print("○やなちゃんだ！！（*'∀'人）")
-                            toot_now = ":@" + account['acct'] + ":" + "やなちゃん！！！！！！" + "\n" + '(*>_<*)ﾉいってらいってらーーーー！！！！'
+                            toot_now = (":@" + account['acct'] + ":" + "やなちゃん！！！！！！" +
+                                        "\n" + '(*>_<*)ﾉいってらいってらーーーー！！！！'
                         else:
-                            toot_now = ":@" + account['acct'] + ":" + account['display_name'] + "\n" + 'いってらーーーー！！'
+                            toot_now = (":@" + account['acct'] + ":" + account['display_name'] +
+                                        "\n" + 'いってらーーーー！！')
                         g_vis = "public"
                         bot.rets(5, toot_now, g_vis)
-                    elif re.compile("ただいま(です|[！あー～。…]*$)|ただいマストドン|(おうち|家).*([着つ]いた|帰った|帰ってきた)|(帰宅|きたく)(した|しました|$)|").search(content):
+                    elif re.compile("ただいま(です|[！あー～。…]*$)|ただいマストドン|(おうち|家).*"
+                                    "([着つ]いた|帰った|帰ってきた)|(帰宅|きたく)(した|しました|$)|").search(content):
                         print("○hitしました♪")
                         print("○優しく迎えます（*'∀'人）")
                         if account['acct'] == "5":  # やなちゃん専用挨拶
                             print("○やなちゃんだ！！（*'∀'人）")
-                            toot_now = ":@" + account['acct'] + ":" + "やなちゃん！！！！！！" + "\n" + '٩(๑❛ᴗ❛๑)۶おかえりおかえりーー！！'
+                            toot_now = (":@" + account['acct'] + ":" + "やなちゃん！！！！！！" +
+                                        "\n" + '٩(๑❛ᴗ❛๑)۶おかえりおかえりーー！！')
                         else:
                             toot_now = ":@" + account['acct'] + ":" + account[
                                 'display_name'] + "\n" + '( 〃 ❛ᴗ❛ 〃 )おかえりおかえりーー！！'
@@ -437,7 +456,8 @@ class bot():
                             if delta.total_seconds() >= 604800:
                                 if account['acct'] == "5":  # やなちゃん専用挨拶
                                     print("○やなちゃんだ！！（*'∀'人）")
-                                    toot_now = ":@" + account['acct'] + ":" + "やなちゃん！！！！！！" + "\n" + "（*'∀'人）おひさひさーーーー♪"
+                                    toot_now = (":@" + account['acct'] + ":" + "やなちゃん！！！！！！" +
+                                                "\n" + "（*'∀'人）おひさひさーーーー♪")
                                 else:
                                     toot_now = " :@" + account['acct'] + ":\n" + account[
                                         'acct'] + "\n" + "（*'∀'人）おひさひさーーーー♪"
@@ -456,32 +476,37 @@ class bot():
                                 else:
                                     print("○あいさつします（*'∀'人）")
                                     if account['display_name'] == "":
-                                        toot_now = ":@" + account['acct'] + ":" + account['acct'] + "\n" + to_r
+                                        toot_now = (":@" + account['acct'] + ":" +
+                                                    account['acct'] + "\n" + to_r
                                     else:
-                                        toot_now = ":@" + account['acct'] + ":" + account['display_name'] + "\n" + to_r
+                                        toot_now = (":@" + account['acct'] + ":" +
+                                                    account['display_name'] + "\n" + to_r)
                                 g_vis = "public"
                                 bot.rets(5, toot_now, g_vis)
                         except:
                             print("○初あいさつします（*'∀'人）")
                             if account['statuses_count'] <= 2:
                                 if account['display_name'] == "":
-                                    toot_now = " :@" + account['acct'] + ": @" + account['acct'] + "\n" + account[
-                                        'acct'] + "\n" + 'ようこそようこそーーーー♪'
+                                    toot_now = " :@" + account['acct'] + ": @" + account[
+                                        'acct'] + "\n" + account['acct'] + "\n" + 'ようこそようこそーーーー♪'
                                 else:
-                                    toot_now = " :@" + account['acct'] + ": @" + account['acct'] + "\n" + account[
-                                        'display_name'] + "\n" + 'ようこそようこそーーーー♪'
+                                    toot_now = " :@" + account['acct'] + ": @" + account[
+                                        'acct'] + "\n" + account['display_name'] + "\n" + 'ようこそようこそーーーー♪'
                                 shinki = True
                             else:
                                 if account['display_name'] == "":
-                                    toot_now = " :@" + account['acct'] + ": @" + account['acct'] + "\n" + 'いらっしゃーーーーい♪'
+                                    toot_now = " :@" + account['acct'] + ": @" + account[
+                                            'acct'] + "\n" + 'いらっしゃーーーーい♪'
                                 else:
-                                    toot_now = " :@" + account['acct'] + ": @" + account['acct'] + "\n" + 'いらっしゃーーーーい♪'
+                                    toot_now = " :@" + account['acct'] + ": @" + account[
+                                            'acct'] + "\n" + 'いらっしゃーーーーい♪'
                                 shinki = False
                             g_vis = "public"
                             bot.rets(5, toot_now, g_vis)
                             if shinki is True:
-                                bot.toot("@lamazeP 新規さんが来たよーー（小声）\n【" + str(account['acct']) + "】", "direct", status["id"])
-                                
+                                bot.toot("@lamazeP 新規さんが来たよーー（小声）\n【" + str(account['acct']) + "】",
+                                         "direct", status["id"])
+
         else:
             print("○反応がない人なので挨拶しません（*'∀'人）")
 
@@ -655,11 +680,12 @@ class game():
                 c4 = word2[4]
                 c5 = [c0[5],c1[5],c2[5],c3[5],c4[5]]
                 cast = list(set(c5[1:]))
-                toot_now = ("【タイトル】\n"+unesc(c0[0])+"\n\n【あらすじ】\n"+unesc(c1[1])+"\n"+unesc(c2[2])+"\n"+unesc(c3[3])+"\n"+unesc(c4[4])+"\n\n"
+                toot_now = ("【タイトル】\n"+unesc(c0[0])+"\n\n【あらすじ】\n"+unesc(c1[1])+
+                            "\n"+unesc(c2[2])+"\n"+unesc(c3[3])+"\n"+unesc(c4[4])+"\n\n"
                             "【スタッフ】\n監督：:@"+c0[5]+":\n主演キャスト：:@"+str("::@".join(cast)))+ ":\n#劇場げーむ"
                 spo = ":@" + account["acct"] + ":さんに上映開始のお知らせ"
                 return bot.rets(6, toot_now, "public", None, spo)
-        
+
 
     def world(status):
         account = status["account"]
@@ -671,12 +697,12 @@ class game():
             bot.rets(5, toot_now, "public")
         else:
             pass
-    
+
     def rensou(status):
         """
         toot = bot.toot
         toot("٩(๑❛ᴗ❛๑)۶今から連想ゲームを始めます！！", "")
-        
+
 　　　　"""
         pass
 
@@ -685,18 +711,20 @@ class game():
         content = Re1.text(status["content"])
         if re.compile("クイズ(問題|もんだい)[：:]<br />").search(content):
             try:
-                qz = re.search("クイズ(問題|もんだい)[：:]<br />[QqＱｑ][.．](.+)<br />[AaＡａ][.．](.+)", str(content))
+                qz = re.search("クイズ(問題|もんだい)[：:]<br />[QqＱｑ][.．](.+)<br />"
+                               "[AaＡａ][.．](.+)", str(content))
                 #ファイル読み書きモードで呼び出し
                 #lenを確認して番号振り
                 #書き出し処理＆保存
                 return ("クイズ問題、登録しました（*'∀'人）\n"
                         "問題番号"+ "xxx")
             except:
-                return "クイズ問題、失敗しました(｡>﹏<｡)"
+                return "クイズ問題、登録に失敗しました(｡>﹏<｡)"
                 pass
             pass
         elif re.compile("クイズ(回答|解答|かいとう)[：:]<br />").search(content):
-            ans = re.search("クイズ(回答|解答|かいとう)[：:]<br />[QqＱｑ][.．](.+)<br />[AaＡａ][.．](.+)", str(content))
+            ans = re.search("クイズ(回答|解答|かいとう)[：:]<br />[QqＱｑ][.．](.+)<br />"
+                            "[AaＡａ][.．](.+)", str(content))
             pass
 
     def memo(status):
@@ -732,7 +760,7 @@ class game():
                     g_vis = "public"
                     bot.rets(5, toot_now, g_vis)
                 else:
-                    Poe = re.sub("<br />", "\\n", Poe) 
+                    Poe = re.sub("<br />", "\\n", Poe)
                     f = codecs.open('game\\poem_word.txt', 'a', 'UTF-8')
                     f.write(str(Poe) + " &,@" + account["acct"] + "\r\n" )
                     f.close()
@@ -775,7 +803,7 @@ class game():
                     g_vis = "public"
                     bot.rets(5, toot_now, g_vis)
                 else:
-                    Poe = re.sub("<br />", "\\\\n", Poe) 
+                    Poe = re.sub("<br />", "\\\\n", Poe)
                     f = codecs.open('game\\poem_word.txt', 'a', 'UTF-8')
                     f.write(str(Poe) + " &,@" + account["acct"] + "\r\n" )
                     f.close()
@@ -818,7 +846,8 @@ class game():
                     pass
                 else:
                     f = codecs.open('game\\senryu_word.txt', 'a', 'UTF-8')
-                    f.write(unesc(sen1) + ">>>" + unesc(sen2) + ">>>" + unesc(sen3) + ">>>" + account["acct"] + "\r\n" )
+                    f.write(unesc(sen1) + ">>>" + unesc(sen2) + ">>>" +
+                            unesc(sen3) + ">>>" + account["acct"] + "\r\n" )
                     f.close()
                     v = threading.Timer(5, game.fav, [status["id"]])
                     v.start()
@@ -837,8 +866,8 @@ class game():
                 h1 = word2[1]
                 h2 = word2[2]
                 h3 = word2[3]
-                toot_now = h0[0] + "\n" + h1[1] + "\n" + h2[2] + "\n（作者：:@" + h3[3] + ":）\n:@" + account[
-                    "acct"] +":ﾄｩｰﾄｩﾄｩﾄｩｰﾄｩ❤\n#川柳げーむ"
+                toot_now = (h0[0] + "\n" + h1[1] + "\n" + h2[2] +"\n（作者：:@" +
+                            h3[3] + ":）\n:@" + account["acct"] +":ﾄｩｰﾄｩﾄｩﾄｩｰﾄｩ❤\n#川柳げーむ")
                 g_vis = "public"
                 bot.rets(6, toot_now, g_vis)
         else:
@@ -856,7 +885,8 @@ class game():
                     pass
                 else:
                     f = codecs.open('game\\senryu_word.txt', 'a', 'UTF-8')
-                    f.write(str(sen1) + ">>>" + str(sen2) + ">>>" + str(sen3) + ">>>" + account["acct"] + "\r\n" )
+                    f.write(str(sen1) + ">>>" + str(sen2) + ">>>" +
+                            str(sen3) + ">>>" + account["acct"] + "\r\n" )
                     f.close()
                     v = threading.Timer(5, game.fav, [status["id"]])
                     v.start()
@@ -876,12 +906,12 @@ class game():
                     h1 = word2[1]
                     h2 = word2[2]
                     h3 = word2[3]
-                    toot_now = h0[0] + "\n" + h1[1] + "\n" + h2[2] + "\n（作者：:@" + h3[3] + ":）\n:@" + account[
-                        "acct"] +":からのリクエストでした❤\n#川柳げーむ"
+                    toot_now = (h0[0] + "\n" + h1[1] + "\n" + h2[2] + "\n（作者：:@" +
+                                h3[3] + ":）\n:@" + account["acct"] +":からのリクエストでした❤\n#川柳げーむ")
                     g_vis = "public"
                     bot.rets(6, toot_now, g_vis)
         pass
-    
+
     def dice(inp):
         l = []
         n = []
