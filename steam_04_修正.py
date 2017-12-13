@@ -124,7 +124,7 @@ class men_toot(StreamListener):
                         if re.compile("(アラーム|[Aa][Rr][Aa][Mm])(.*)「(.*)」").search(content):
                             mes = re.search("「(.*)」", content)
                             toot_now = ("@" + account["acct"] + " " + "（*'∀'人）時間だよーー♪♪\n"
-                                        "「" + mes.group(1) + "」"
+                                        "「" + mes.group(1) + "」")
                         else:
                             toot_now = "@" + account["acct"] + " " + "（*'∀'人）時間だよーー♪♪"
                         g_vis = status["visibility"]
@@ -133,9 +133,9 @@ class men_toot(StreamListener):
                         t.start()
                         #bot.rets(sec,toot_now, g_vis,status['id'] )
                     elif re.compile(
-                            "(フォロー|follow)(して|く[うぅー]*ださ[あぁー]*い|お願[あぁー]*い|'
-                            'おねが[あぁー]*い|頼[むみ]|たの[むみ]|ぷりーず|プリーズ|please)").search(
-                            content):
+                                    "(フォロー|follow)(して|く[うぅー]*ださ[あぁー]*い|お願[あぁー]*い|"
+                                    "おねが[あぁー]*い|頼[むみ]|たの[むみ]|ぷりーず|プリーズ|please)").search(
+                                    content):
                         mastodon.account_follow(account["id"])
                         toot_now = "@" + account["acct"] + " " + "（*'∀'人）フォローしました♪♪"
                         g_vis = status["visibility"]
@@ -405,15 +405,15 @@ class bot():
                                 print("○やなちゃんだ！！（*'∀'人）")
                                 toot_now = (":@" + account['acct'] + ":" +
                                             "やなちゃん！！！！！！" + "\n" +
-                                            '(｡>﹏<｡)あとで一緒に寝るーーーー！！！！'
+                                            '(｡>﹏<｡)あとで一緒に寝るーーーー！！！！')
                             else:
-                                toot_now = ":@" + account['acct'] + ":" + account[
-                                    'display_name'] + "\n" + '(ृ 　 ु *`ω､)ु ⋆゜おやすみーーーー♪'
+                                toot_now = (":@" + account['acct'] + ":" + account[
+                                    'display_name'] + "\n" + '(ृ 　 ु *`ω､)ु ⋆゜おやすみーーーー♪')
                             g_vis = "public"
                             bot.rets(5, toot_now, g_vis)
                     elif re.compile(
                             "[いイ行逝]って(くる|きます|[きキ]マストドン)[^？\?]|出かけて(くる|きま[あぁー]*す|[きキ]マストドン)[^？\?]|"
-                            "おでかけ(する|しま[あぁー]*す|[しシ]マストドン)[^？\?]|(出勤|離脱|しゅっきん|りだつ)(する|しま[あぁー]*す[^？\?]|"
+                            "おでかけ(する|しま[あぁー]*す|[しシ]マストドン)[^？\?]|(出勤|離脱|しゅっきん|りだつ)(する[^な]|しま[あぁー]*す[^？\?]|"
                             "[しシ]マストドン)|(出勤|離脱)$|(.+)して(くる|きま[あぁー]*す[^？\?]|[きキ]マストドン)([ー～！。よぞね]|$)").search(
                         content):
                         print("○hitしました♪")
@@ -421,14 +421,14 @@ class bot():
                         if account['acct'] == "5":  # やなちゃん専用挨拶
                             print("○やなちゃんだ！！（*'∀'人）")
                             toot_now = (":@" + account['acct'] + ":" + "やなちゃん！！！！！！" +
-                                        "\n" + '(*>_<*)ﾉいってらいってらーーーー！！！！'
+                                        "\n" + '(*>_<*)ﾉいってらいってらーーーー！！！！')
                         else:
                             toot_now = (":@" + account['acct'] + ":" + account['display_name'] +
                                         "\n" + 'いってらーーーー！！')
                         g_vis = "public"
                         bot.rets(5, toot_now, g_vis)
-                    elif re.compile("ただいま(です|[！あー～。…]*$)|ただいマストドン|(おうち|家).*"
-                                    "([着つ]いた|帰った|帰ってきた)|(帰宅|きたく)(した|しました|$)|").search(content):
+                    elif re.compile("ただいま(です|[！あー～。…]*$)|ただいマストドン|(おうち|家).*([着つ]いた"
+                                    "|帰った|帰ってきた)|(帰宅|きたく)(した|しました|$)").search(content):
                         print("○hitしました♪")
                         print("○優しく迎えます（*'∀'人）")
                         if account['acct'] == "5":  # やなちゃん専用挨拶
@@ -436,8 +436,8 @@ class bot():
                             toot_now = (":@" + account['acct'] + ":" + "やなちゃん！！！！！！" +
                                         "\n" + '٩(๑❛ᴗ❛๑)۶おかえりおかえりーー！！')
                         else:
-                            toot_now = ":@" + account['acct'] + ":" + account[
-                                'display_name'] + "\n" + '( 〃 ❛ᴗ❛ 〃 )おかえりおかえりーー！！'
+                            toot_now = (":@" + account['acct'] + ":" + account[
+                                'display_name'] + "\n" + '( 〃 ❛ᴗ❛ 〃 )おかえりおかえりーー！！')
                         g_vis = "public"
                         bot.rets(5, toot_now, g_vis)
                     else:
@@ -477,7 +477,7 @@ class bot():
                                     print("○あいさつします（*'∀'人）")
                                     if account['display_name'] == "":
                                         toot_now = (":@" + account['acct'] + ":" +
-                                                    account['acct'] + "\n" + to_r
+                                                    account['acct'] + "\n" + to_r)
                                     else:
                                         toot_now = (":@" + account['acct'] + ":" +
                                                     account['display_name'] + "\n" + to_r)
@@ -637,9 +637,9 @@ class game():
         gameIn = ("(劇場|げきじょう|[Cc]inema|シネマ)(ゲーム|げーむ)[：:]"+
                   "<br />【(.+)】<br />起[：:](.+)<br />承[：:](.+)<br />転[：:](.+)<br />結[：:](.+)")
         gameOut = "(劇場|げきじょう|[Cc]inema|シネマ)(ゲーム|げーむ)"+".*(ひとつ|おねが[いひ]|お願[いひ]|[1１一]つ)"
-        if re.compile(gameIn+"<br />").search(content):
+        if re.compile(gameIn).search(content):
             print("○hitしました♪")
-            word = re.search(gameIn, str(content))
+            word = re.search(gameIn+"<br />.*", str(content))
             sekuhara = bot.block01(status)
             if sekuhara:
                 bot.rets(5, "٩(๑`^´๑)۶えっちなのはよくない！！！！", "public")
