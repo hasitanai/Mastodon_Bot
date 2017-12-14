@@ -141,10 +141,10 @@ class men_toot(StreamListener):
                         g_vis = status["visibility"]
                         in_reply_to_id = status["id"]
                         bot.rets(8, toot_now, g_vis, status['id'])
-                    elif re.compile("(xxxx)<br />(.+)").search(content):  # 悪用されないように変えてます
+                    elif re.compile("(こそこそ)<br />(.+)").search(content):  # 悪用されないように変えてます
                         if status["visibility"] == "direct":
                             print("○受け取りました")
-                            com = re.search("(xxxx).*<br />(.+)", str(content))
+                            com = re.search("(こそこそ).*<br />(.+)", str(content))
                             messe = com.group(2)
                             toot_now = messe
                             g_vis = "public"
@@ -396,8 +396,8 @@ class bot():
                         bot.rets(20, toot_now, g_vis)
                         count.timer_hello = 1
                 else:
-                    if re.compile("[寝ね](ます|る|マス)([！よかぞね。]?)$|[寝ね](ます|る|マス)"
-                                  "(.*)[ぽお]や[すし]|ももな(.*)[ぽお]や[すし]").search(content):
+                    if re.compile("[寝ね](ます|る|マス)([よかぞね]?|[…。うぅー～！]+)$|"
+                                  "[寝ね](ます|る|マス)(.*)[ぽお]や[すし]|ももな(.*)[ぽお]や[すし]").search(content):
                         if not re.compile("[寝ね]る(人|ひと)").search(status['content']):
                             print("○hitしました♪")
                             print("○おやすみします（*'∀'人）")
