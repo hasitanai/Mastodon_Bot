@@ -308,12 +308,10 @@ class bot():
                     non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
                     coro = (re.sub("<p>|</p>", "", str(status['content']).translate(non_bmp_map)))
                     toot_now = ":@" + account["acct"] + ": @" + account["acct"] + "\n" + game.dice(coro)
-                    g_vis = status["visibility"]
-                    bot.rets(5, toot_now, g_vis)
+                    bot.rets(8, toot_now, status["visibility"])
                 elif re.compile("ももな(.*)([6-9]|\d{2})[dD](\d*)").search(status['content']):
-                    toot_now = "６回以上の回数は畳む内容だからメンションの方で送ってーー！！"
-                    g_vis = status["visibility"]
-                    bot.rets(6, toot_now, g_vis)
+                    toot_now = "@{} ６回以上の回数は畳む内容だからメンションの方で送ってーー！！".format(account["acct"])
+                    bot.rets(6, toot_now, status["visibility"],status["id"])
 
     def check00(status):
         account = status["account"]
@@ -403,7 +401,7 @@ class bot():
                         count.timer_hello = 1
                 else:
                     if re.compile("寝(ます|る|マス)([よかぞね]?|[…。うぅー～！]+)$|^ねる$|"
-                                  "[寝ね](ます|る|マス)(.*)[ぽお]や[すし]|ももな(.*)[ぽお]や[すし]").search(content):
+                                  "[寝ね](ます|る|マス)(.*)[ぽお]や[すし]|ももな(.*)[ぽお]や[すしー]").search(content):
                         if not re.compile("[寝ね]る(人|ひと)").search(status['content']):
                             print("○hitしました♪")
                             print("○おやすみします（*'∀'人）")
