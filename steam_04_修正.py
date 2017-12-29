@@ -324,11 +324,6 @@ class bot():
         if int(x) >= -10:
             if account["acct"] == "JC":
                 pass
-                #ct += 1
-                #if re.match('^\d+000$', str(ct)):
-                #    toot_now = "°˖✧◝(⁰▿⁰)◜✧˖" + str(ct) + 'toot達成ーーーー♪♪'
-                #    g_vis = "public"
-                #    bot.rets(4, toot_now, g_vis)
             else:
                 if re.match('^\d+0000$', str(ct)):
                     toot_now = (" :@" + account['acct'] + ": @" +
