@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from mastodon import *
 import time, re, sys, os, json, random, io, gc
 import threading, requests, pprint, codecs
@@ -722,8 +720,16 @@ class game():
                 qz = re.search("クイズ(問題|もんだい)[：:]<br />[QqＱｑ][.．](.+)<br />"
                                "[AaＡａ][.．](.+)", str(content))
                 #ファイル読み書きモードで呼び出し
+                try:
+                    with open("game\\quiz.json","r") as f:
+                        quiz = json.load(f)
+                except:
+                    quis = {}
                 #lenを確認して番号振り
+                ("{0}{1}: {2}").format(account["acct"],qz.group(2)+">>>"+qz.group)
                 #書き出し処理＆保存
+                with open("game\\quiz.json","w") as f:
+                    json.dump(quiz,f)
                 return ("クイズ問題、登録しました（*'∀'人）\n"
                         "問題番号"+ "xxx")
             except:
