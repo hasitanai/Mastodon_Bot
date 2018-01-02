@@ -724,7 +724,7 @@ class game():
                     with open("game\\quiz.json","r") as f:
                         quiz = json.load(f)
                 except:
-                    quis = {}
+                    quiz = {}
                 #lenを確認して番号振り
                 ("{0}{1}: {2}").format(account["acct"],qz.group(2)+">>>"+qz.group)
                 #書き出し処理＆保存
