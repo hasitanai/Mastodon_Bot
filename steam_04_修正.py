@@ -378,6 +378,7 @@ class bot():
         account = status["account"]
         content = re.sub("<p>|</p>", "", str(status['content']))
         path = 'thank\\' + account["acct"] + '.txt'
+        account['display_name'] = re.sub("@[a-zA-Z0-9]+|\s", "", account['display_name'])
         if os.path.exists(path):
             f = open(path, 'r')
             x = f.read()
@@ -395,7 +396,7 @@ class bot():
                 else:
                     if re.compile("寝(ます|る|マス)([よかぞね]?|[…。うぅー～！]+)$|^ねる$|"
                                   "[寝ね](ます|る|マス)(.*)[ぽお]や[すし]|ももな(.*)[ぽお]や[すしー]").search(content):
-                        if not re.compile("[寝ね]る(人|ひと)").search(status['content']):
+                        if not re.compile("[寝ね]る(かた|方|人|ひと)").search(status['content']):
                             print("○hitしました♪")
                             print("○おやすみします（*'∀'人）")
                             if account['acct'] == "5":  # やなちゃん専用挨拶
