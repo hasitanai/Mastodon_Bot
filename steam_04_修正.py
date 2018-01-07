@@ -395,7 +395,7 @@ class bot():
                         count.timer_hello = 1
                 else:
                     if re.compile("寝(ます|る|マス)([よかぞね]?|[…。うぅー～！]+)$|^ねる$|"
-                                  "[寝ね](ます|る|マス)(.*)[ぽお]や[すし]|ももな(.*)[ぽお]や[すしー]").search(content):
+                                  "[寝ね](ます|る|マス)(.*)[ぽお]や[すし]|ももな(.*)[ぽお]や[ユすしー]").search(content):
                         if not re.compile("[寝ね]る(かた|方|人|ひと)").search(status['content']):
                             print("○hitしました♪")
                             print("○おやすみします（*'∀'人）")
