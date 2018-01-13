@@ -761,6 +761,7 @@ class game():
                 pass
             pass
         # ある程度溜まったらメモまとめをお願いするシステムの予定
+        # めそ
         pass
 
     def poem(status):
