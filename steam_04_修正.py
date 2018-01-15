@@ -750,9 +750,8 @@ class game():
                 memo = re.search("ももな.*(メモ|めも)[：:]?(<br />)(.+)?(<br />)", str(content))
                 tex = memo.group(3)  #記録用の要素取り出し
                 #書き出し処理＆保存
-                f = codecs.open('game\\memo_word.txt', 'a', 'UTF-8')
-                f.write(tex + ">>" + account["acct"] + "\r\n" )
-                f.close()
+                with codecs.open('game\\memo_word.txt', 'a', 'UTF-8') as f:
+                    f.write(tex + ">>" + account["acct"] + "\r\n" )
                 # bot.rets(5, "メモしました（*'∀'人）", "public")
                 return "メモしました（*'∀'人）"
             except:
