@@ -759,6 +759,7 @@ class game():
                 return "メモに失敗しました(｡>﹏<｡)"
                 pass
             pass
+        count.memo =+ 1
         # ある程度溜まったらメモまとめをお願いするシステムの予定
         # めそ
         pass
@@ -1000,6 +1001,7 @@ class count():
     end = 0
     sec = 0
     timer_hello = 0
+    memo = 0
 
     def emo01(time=10800):  # 定期的に評価を下げまーーす♪（無慈悲）
         while 1:
