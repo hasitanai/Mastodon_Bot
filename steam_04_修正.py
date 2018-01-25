@@ -301,7 +301,7 @@ class bot():
         account = status["account"]
         if account['acct'] != "kiri_bot01":
             if account["acct"] != "JC":
-                if re.compile("ももな(.*)[1-5][dD]\d+").search(status['content']):
+                if re.compile("ももな([^\d]*)[1-5][dD]\d+").search(status['content']):
                     print("○hitしました♪")
                     non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
                     coro = (re.sub("<p>|</p>", "", str(status['content']).translate(non_bmp_map)))
@@ -938,13 +938,15 @@ class game():
         try:
             inp = re.sub("&lt;", "<", str(inp))
             inp = re.sub("&gt;", ">", str(inp))
-            com = re.search("(\d+)[dD](\d+)([:<>]*)(\d*)([\+\-\*/\d]*)(.*)", str(inp))
+            com = re.search("(\d+)[dD](\d+)([:<>]*)(\d*)([\+\-\*/\d]*)(.*)(<br />|$)", str(inp))
             print(str(com.group()))
             for v in range(1, 7):
                 m.append(com.group(v))
             print(m)
             if int(m[1]) == 0:
                 result = "面が0の数字は振れないよ……"
+            elif int(m[1]) >= 5000000000000001:
+                result = "そんないっぱいの面持ってないよ！！！！"
             elif int(m[0]) >= 51:
                 result = "回数が長すぎるとめんどくさいから振らないよ……？"
             elif int(m[0]) == 0:
