@@ -395,9 +395,9 @@ class bot():
                         count.timer_hello = 1
                 else:
                     if re.compile("[寝ね](ます|る|マス)([よかぞね]?|[…。うぅー～！・]+)$|^[寝ね](ます|る|よ)[…。うぅー～！・]*$|"
-                                  "[寝ね](ます|る|マス)(.*)[ぽお]や[すし]|ももな(.*)[ぽお]や[ユすしー]|"
+                                  "[寝ね](ます|る|マス)(.*)[ぽお]や[ユすしー]|ももな(.*)[ぽお]や[ユすしー]|"
                                   "(そろそろ|やっと|ようやく)寝").search(content):
-                        if not re.compile("[寝ね]る(かた|方|人|ひと)").search(status['content']):
+                        if not re.compile("[寝ね]る(かた|方|人|ひと|民)").search(status['content']):
                             print("○hitしました♪")
                             print("○おやすみします（*'∀'人）")
                             if account['acct'] == "5":  # やなちゃん専用挨拶
@@ -682,11 +682,11 @@ class game():
                 for x in range(5):
                     s = random.randint(0, m-1)
                     word2.append((word1[s]).split('>>'))
-                c0 = word2[0]
-                c1 = word2[1]
-                c2 = word2[2]
-                c3 = word2[3]
-                c4 = word2[4]
+                c0 = unesc(word2[0])
+                c1 = unesc(word2[1])
+                c2 = unesc(word2[2])
+                c3 = unesc(word2[3])
+                c4 = unesc(word2[4])
                 c5 = [c0[5],c1[5],c2[5],c3[5],c4[5]]
                 cast = list(set(c5[1:]))
                 toot_now = ("【タイトル】\n"+unesc(c0[0])+"\n\n【あらすじ】\n"+unesc(c1[1])+
@@ -796,11 +796,11 @@ class game():
                 for x in range(5):
                     s = random.randint(0, m-1)
                     word2.append((word1[s]).split(' &,@'))
-                poe0 = word2[0]
-                poe1 = word2[1]
-                poe2 = word2[2]
-                poe3 = word2[3]
-                poe4 = word2[4]
+                poe0 = unesc(word2[0])
+                poe1 = unesc(word2[1])
+                poe2 = unesc(word2[2])
+                poe3 = unesc(word2[3])
+                poe4 = unesc(word2[4])
                 toot_now = poe0[0] + "\n" + poe1[0] + "\n" + poe2[0] + "\n" + poe3[
                     0] + "\n" + poe4[0] + "\n(by:@" + poe0[1] + ":-:@" + poe1[1] + ":-:@" + poe2[
                         1] + ":-:@" + poe3[1] + ":-:@"+poe4[1] + ":)\n#ぽえむげーむ"
@@ -840,11 +840,11 @@ class game():
                     for x in range(5):
                         s = random.randint(0, m-1)
                         word2.append((word1[s]).split(' &,@'))
-                    poe0 = word2[0]
-                    poe1 = word2[1]
-                    poe2 = word2[2]
-                    poe3 = word2[3]
-                    poe4 = word2[4]
+                    poe0 = unesc(word2[0])
+                    poe1 = unesc(word2[1])
+                    poe2 = unesc(word2[2])
+                    poe3 = unesc(word2[3])
+                    poe4 = unesc(word2[4])
                     toot_now = poe0[0] + "\n" + poe1[0] + "\n" + poe2[0] + "\n" + poe3[
                         0] + "\n" + poe4[0] + "\n(by:@" + poe0[1] + ":-:@" + poe1[1] + ":-:@" + poe2[
                             1] + ":-:@" + poe3[1] + ":-:@"+poe4[1] + ":)\n#ぽえむげーむ"
