@@ -1000,6 +1000,10 @@ class game():
             result = "えっ？"
         return result
 
+    def honyaku(status):
+        #ネイティオ語が分かるようになる装置
+        pass
+
 
 class count():
     CT = time.time()
