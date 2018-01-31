@@ -840,11 +840,11 @@ class game():
                     for x in range(5):
                         s = random.randint(0, m-1)
                         word2.append((word1[s]).split(' &,@'))
-                    poe0 = unesc(word2[0])
-                    poe1 = unesc(word2[1])
-                    poe2 = unesc(word2[2])
-                    poe3 = unesc(word2[3])
-                    poe4 = unesc(word2[4])
+                    poe0 = word2[0]
+                    poe1 = word2[1]
+                    poe2 = word2[2]
+                    poe3 = word2[3]
+                    poe4 = word2[4]
                     toot_now = poe0[0] + "\n" + poe1[0] + "\n" + poe2[0] + "\n" + poe3[
                         0] + "\n" + poe4[0] + "\n(by:@" + poe0[1] + ":-:@" + poe1[1] + ":-:@" + poe2[
                             1] + ":-:@" + poe3[1] + ":-:@"+poe4[1] + ":)\n#ぽえむげーむ"
