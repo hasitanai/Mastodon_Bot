@@ -682,11 +682,11 @@ class game():
                 for x in range(5):
                     s = random.randint(0, m-1)
                     word2.append((word1[s]).split('>>'))
-                c0 = esc(word2[0])
-                c1 = esc(word2[1])
-                c2 = esc(word2[2])
-                c3 = esc(word2[3])
-                c4 = esc(word2[4])
+                c0 = word2[0]
+                c1 = word2[1]
+                c2 = word2[2]
+                c3 = word2[3]
+                c4 = word2[4]
                 c5 = [c0[5],c1[5],c2[5],c3[5],c4[5]]
                 cast = list(set(c5[1:]))
                 toot_now = ("【タイトル】\n"+unesc(c0[0])+"\n\n【あらすじ】\n"+unesc(c1[1])+
