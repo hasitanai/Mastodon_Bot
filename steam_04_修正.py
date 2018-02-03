@@ -547,7 +547,7 @@ class bot():
 
     def fav01(status):
         account = status["account"]
-        if re.compile("(ももな|:@JC:|ちゃんもも|:nicoru\d*:|JC)").search(status['content']):
+        if re.compile("(ももな|:@JC:|ちゃんもも|:nicoru\d*:|JC|もなな)").search(status['content']):
             bot.thank(account, 8)
             v = threading.Timer(5, bot.fav_now,[status["id"]])
             v.start()
@@ -1002,6 +1002,10 @@ class game():
 
     def honyaku(status):
         #ネイティオ語が分かるようになる装置
+        pass
+
+    def callmomona(status):
+        #呼ばれた回数を数えるやつ！
         pass
 
 
