@@ -1002,10 +1002,12 @@ class game():
 
     def honyaku(status):
         #ネイティオ語が分かるようになる装置
+        #未定！
         pass
 
     def callmomona(status):
         #呼ばれた回数を数えるやつ！
+        #未定！
         pass
 
 
