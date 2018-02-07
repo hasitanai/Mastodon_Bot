@@ -517,7 +517,9 @@ class bot():
                             if shinki is True:
                                 bot.toot("@lamazeP 新規さんが来たよーー（小声）\n【" + str(account['acct']) + "】",
                                          "direct", status["id"])
-
+                    # toot_now = ""
+                    # bot.rets(6, toot_now, g_vis)
+                    
         else:
             print("○反応がない人なので挨拶しません（*'∀'人）")
 
