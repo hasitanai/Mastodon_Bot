@@ -1012,6 +1012,10 @@ class game():
         #未定！
         pass
 
+    def throw(status):
+        #ぶん投げるボケシステム
+        pass
+
 
 class count():
     CT = time.time()
