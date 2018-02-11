@@ -397,7 +397,7 @@ class bot():
                     if re.compile("[寝ね](ます|る|マス)([よかぞね]?|[…。うぅー～！・]+)$|^[寝ね](ます|る|よ)[…。うぅー～！・]*$|"
                                   "[寝ね](ます|る|マス)(.*)[ぽお]や[ユすしー]|ももな(.*)[ぽお]や[ユすしー]|"
                                   "(そろそろ|やっと|ようやく)寝").search(content):
-                        if not re.compile("[寝ね]る(かた|方|人|ひと|民)").search(status['content']):
+                        if not re.compile("[寝ね]る(かた|方|人|ひと|民)|あやねる").search(status['content']):
                             print("○hitしました♪")
                             print("○おやすみします（*'∀'人）")
                             if account['acct'] == "5":  # やなちゃん専用挨拶
