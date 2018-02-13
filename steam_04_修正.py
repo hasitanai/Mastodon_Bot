@@ -394,6 +394,19 @@ class bot():
                         bot.rets(20, toot_now, g_vis)
                         count.timer_hello = 1
                 else:
+                    # あだ名実装の準備
+                    """
+                    if account['acct'] == "5": 
+                        print("○やなちゃんだ！！（*'∀'人）")
+                        name = "やなちゃん！！！！！！"
+                    elif account['display_name'] == "":
+                        name = (account['acct'])
+                    else:
+                        name = (account['display_name'])
+                    #
+                    #
+                    #
+                    """
                     if re.compile("[寝ね](ます|る|マス)([よかぞね]?|[…。うぅー～！・]+)$|^[寝ね](ます|る|よ)[…。うぅー～！・]*$|"
                                   "[寝ね](ます|る|マス)(.*)[ぽお]や[ユすしー]|ももな(.*)[ぽお]や[ユすしー]|"
                                   "(そろそろ|やっと|ようやく)寝").search(content):
