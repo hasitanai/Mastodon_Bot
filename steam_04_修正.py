@@ -403,9 +403,6 @@ class bot():
                         name = (account['acct'])
                     else:
                         name = (account['display_name'])
-                    #
-                    #
-                    #
                     """
                     if re.compile("[寝ね](ます|る|マス)([よかぞね]?|[…。うぅー～！・]+)$|^[寝ね](ます|る|よ)[…。うぅー～！・]*$|"
                                   "[寝ね](ます|る|マス)(.*)[ぽお]や[ユすしー]|ももな(.*)[ぽお]や[ユすしー]|"
@@ -562,7 +559,7 @@ class bot():
 
     def fav01(status):
         account = status["account"]
-        if re.compile("(ももな|:@JC:|ちゃんもも|:nicoru\d*:|JC|もなな)").search(status['content']):
+        if re.compile("(ももな|:@JC:|ちゃんもも|:nicoru\d*:|\WJC\W|もなな)").search(status['content']):
             bot.thank(account, 8)
             v = threading.Timer(5, bot.fav_now,[status["id"]])
             v.start()
