@@ -378,7 +378,7 @@ class bot():
         account = status["account"]
         content = re.sub("<p>|</p>", "", str(status['content']))
         path = 'thank\\' + account["acct"] + '.txt'
-        account['display_name'] = re.sub("[(:)]|@[a-zA-Z0-9]+|\s", "", account['display_name'])
+        account['display_name'] = re.sub("[(:（]+*[):）]|@[a-zA-Z0-9]+|\s", "", account['display_name'])
         if os.path.exists(path):
             f = open(path, 'r')
             x = f.read()
