@@ -553,9 +553,12 @@ class bot():
                         g_vis = "public"
                         bot.rets(5, toot_now, g_vis)
                     else:
+                        print("○セクハラサーチ！！")
                         toot_now = "そんなセクハラ分かりません\n(* ,,Ծ‸Ծ,, )ﾌﾟｰ"
                         g_vis = "public"
                         bot.rets(5, toot_now, g_vis)
+                        bot.toot("@lamazeP これってセクハラ？？\n:" + str(account['acct']) + ": 「{}」".format(str(content)) ,
+                                 "direct", status["id"])
 
     def fav01(status):
         account = status["account"]
