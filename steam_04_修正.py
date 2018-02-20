@@ -281,11 +281,10 @@ class bot():
         print("「(๑•̀ㅁ•́๑)✧＜tootｽﾃﾝﾊﾞｰｲ」")
 
     def block01(status):
-        f = codecs.open("NG\sekuhara.txt", 'r', 'utf-8')
-        l = []
-        for x in f:
-            l.append(x.rstrip("\r\n"))
-        f.close()
+        with codecs.open("NG\sekuhara.txt", 'r', 'utf-8') as f:
+            l = []
+            for x in f:
+                l.append(x.rstrip("\r\n"))
         m = len(l)
         for x in range(m):
             if re.compile(str(l[x])).search(re.sub("<p>|</p>", "", str(status))):
