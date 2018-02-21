@@ -289,7 +289,7 @@ class bot():
         for x in range(m):
             if re.compile(str(l[x])).search(re.sub("<p>|</p>", "", str(status))):
                 j = True
-                print(str(l[x]))
+                print("う～う～！セクハラ検出しました！　→" + str(l[x]))
                 # bot.thank(account, -64)
                 break
             else:
