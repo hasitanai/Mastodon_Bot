@@ -290,6 +290,8 @@ class bot():
             if re.compile(str(l[x])).search(re.sub("<p>|</p>", "", str(status))):
                 j = True
                 print("う～う～！セクハラ検出しました！　→" + str(l[x]))
+                bot.toot("@lamazeP (｡>﹏<｡)これってセクハラですか？\n【" + str(account['acct']) + "】" + str(status),
+                         "direct", status["id"])
                 # bot.thank(account, -64)
                 break
             else:
