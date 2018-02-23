@@ -305,7 +305,7 @@ class bot():
                 if re.compile("ももな([^\d]*)[1-5][dD]\d+").search(status['content']):
                     print("○hitしました♪")
                     non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
-                    coro = (re.sub("<p>|</p>", "", str(status['content']).translate(non_bmp_map)))
+                    coro = Re1.text(str(status['content']).translate(non_bmp_map))
                     toot_now = ":@" + account["acct"] + ": @" + account["acct"] + "\n" + game.dice(coro)
                     bot.rets(8, toot_now, status["visibility"])
                 elif re.compile("ももな(.*)([6-9]|\d{2})[dD](\d*)").search(status['content']):
