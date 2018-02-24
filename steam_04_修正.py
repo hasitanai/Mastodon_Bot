@@ -370,7 +370,7 @@ class bot():
             ct += 5
             if re.match('^\d+000$', str(ct)):
                 toot_now = ("@" + account["acct"] +
-                            " (๑•̀ㅁ•́๑)ただいまフォローしてる方にテスト中！\n" + str(ct) +
+                            " (๑•̀ㅁ•́๑)ただいまフォローしてる方にお知らせだよ！\n" + str(ct) +
                             'tootまであと5だよ！！！！')
                 g_vis = "direct"
                 bot.rets(4, toot_now, g_vis)
