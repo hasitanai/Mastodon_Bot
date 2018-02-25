@@ -34,6 +34,7 @@ with open('log\\' + 'log_' + nowing + '.txt', 'w') as f:
 
 class Re1():  # Content整頓用関数
     def text(text):
+        text = re.sub('<br />', '\n', str(text))
         return (re.sub('<p>|</p>|<a.+"tag">|<a.+"_blank">|<a.+mention">|<span>|'
                        '</span>|</a>|<span class="[a-z-]+">', "",
                        str(text)))
