@@ -22,15 +22,7 @@ class Re1():
 class response_toot(StreamListener):
     def on_update(self, status):
         try:
-            account = status["account"]
-            content = status["content"]
-            ct = account["statuses_count"]
-            non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0x0000)
-            print("===on_update===")
-            print((account["display_name"]).translate(non_bmp_map) + "@" + str(
-                account["acct"]).translate(non_bmp_map) + " [{}toot]".format(str(ct)))
-            print(Re1.text(content).translate(non_bmp_map))
-            print("---")
+            log.read(status)
             # ここに受け取ったtootに対してどうするか追加してね（*'∀'人）
             pass
         except:
@@ -56,6 +48,19 @@ class response_toot(StreamListener):
         print("===on_delete===")
         print(status_id)
         pass
+
+class log():
+    def read(status):
+        account = status["account"]
+        content = status["content"]
+        ct = account["statuses_count"]
+        non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0x0000)
+        print("===on_update===")
+        print((account["display_name"]).translate(non_bmp_map) + "@" + str(
+            account["acct"]).translate(non_bmp_map) + " [{}toot]".format(str(ct)))
+        print(Re1.text(content).translate(non_bmp_map))
+        print("---")
+        return
 
 if __name__ == '__main__':
     listener = response_toot()
