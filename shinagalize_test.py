@@ -27,5 +27,7 @@ class ShinagalizeTest(unittest.TestCase):
     def test_however(self):
         self.assertEqual(shinagalize("ももなが孕んだの"), "ももなが孕んでも")
         self.assertEqual(shinagalize("いずみんが早漏なの"), "いずみんが早漏でも")
+    def test_however(self):
+        self.assertEqual(shinagalize("ももなが孕まないの"), "ももなが孕まずに")
 if __name__ == '__main__':
     unittest.main()
