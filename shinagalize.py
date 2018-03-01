@@ -34,4 +34,6 @@ def shinagalize(text):
         return prefix + ("ても" if target.base_form == "た" else "でも")
     if re.search("特殊・ダ", target.infl_type):
         return prefix + "でも"
+    if re.search("特殊・ナイ", target.infl_type):
+        return prefix + "ずに"
     return text + "しながら"
