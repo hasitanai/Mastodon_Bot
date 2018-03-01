@@ -1,22 +1,21 @@
-import MeCab
+from janome.tokenizer import Tokenizer
 import re
 
 def shinagalize(text):
-    parsed = MeCab.Tagger("-Ochasen").parse(text)
-    parsed = re.sub("\nEOS\n", '', parsed)
-    lines = [x.split("\t") for x in parsed.split("\n")]
+    lines = Tokenizer().tokenize(text)
+
     last = len(lines)
-    if re.search("名詞-サ変接続", lines[last - 1][3]):
-        return ''.join([x[0] for x in lines[0:last]]) + "しながら"
-    elif re.search("動詞", lines[last - 2][3]):
-        ttype = lines[last - 2][4]
-        prefix = ''.join([x[0] for x in lines[0:last-2]])
-        base = lines[last - 2][2]
-        if ttype == "一段" or re.search("カ変", ttype):
-            return prefix + re.sub("る$", "", base) + "ながら"
-        if re.search("サ変", ttype) :
-            return prefix + re.sub("する$", "し", base) + "ながら"
-        m = re.search("五段・(.)行", ttype)
+    target = lines[last - 1]
+    if re.search("名詞,サ変接続", target.part_of_speech):
+        return ''.join([x.surface for x in lines[0:last]]) + "しながら"
+    target = lines[last - 2]
+    if re.search("動詞", target.part_of_speech):
+        prefix = ''.join([x.surface for x in lines[0:last-2]])
+        if target.infl_type == "一段" or re.search("カ変", target.infl_type):
+            return prefix + re.sub("る$", "", target.base_form) + "ながら"
+        if re.search("サ変", target.infl_type) :
+            return prefix + re.sub("する$", "し", target.base_form) + "ながら"
+        m = re.search("五段・(.)行", target.infl_type)
         if m:
             mappings = [
                 "アいう", "カきく", "ガぎぐ", "サしす", "タちつ",
@@ -25,5 +24,5 @@ def shinagalize(text):
             m =  m.group(1)
             for mapping in mappings:
                 if mapping[0] == m:
-                    return prefix + re.sub(mapping[2] + "$", mapping[1], base) + "ながら"
+                    return prefix + re.sub(mapping[2] + "$", mapping[1], target.base_form) + "ながら"
     return text + "しながら"
