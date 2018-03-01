@@ -12,16 +12,17 @@ class ShinagalizeTest(unittest.TestCase):
         self.assertEqual(shinagalize("ももなのおっぱい揉むの"), "ももなのおっぱい揉みながら")
         self.assertEqual(shinagalize("ももなとやるの"), "ももなとやりながら")
         self.assertEqual(shinagalize("ももなのあそこにはめるの"), "ももなのあそこにはめながら")
+        self.assertEqual(shinagalize("ももなを味わうの"), "ももなを味わいながら")
     def test_sahen(self):
         self.assertEqual(shinagalize("ももなとセックスするの"), "ももなとセックスしながら")
+        self.assertEqual(shinagalize("感ずるの"), "感じながら")
     def test_kahen(self):
         self.assertEqual(shinagalize("ももなの初潮が来るの"), "ももなの初潮が来ながら")
     def test_kami(self):
         self.assertEqual(shinagalize("ももなのおしっこを浴びるの"), "ももなのおしっこを浴びながら")
     def test_shimo(self):
         self.assertEqual(shinagalize("ももなと寝るの"), "ももなと寝ながら")
-    def test_sase(self):
+    def test_sage(self):
         self.assertEqual(shinagalize("ももなにしゃぶらせるの"), "ももなにしゃぶらせながら")
-
 if __name__ == '__main__':
     unittest.main()
