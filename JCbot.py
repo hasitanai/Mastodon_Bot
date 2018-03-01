@@ -7,6 +7,7 @@ from time import sleep
 from datetime import datetime
 from pytz import timezone
 import warnings, traceback
+from shinagalize import shinagalize
 
 def LTL(status): # から受け取ったtootに対してどうするか追加してね（*'∀'人）
     # 以下bot機能の一覧
@@ -348,7 +349,8 @@ class bot():
         account = status["account"]
         content = Re1.text(status["content"])
         if account["acct"] != "JC":
-            if re.compile("(.+)とマストドン(どちら|どっち)が大[切事]か[分わ]かってない").search(content):
+            maches = re.search("([^>]+)とマストドン(どちら|どっち)が大[切事]か[分わ]かってない", content)
+            if matches:
                 print("○hitしました♪")
                 sekuhara = bot.block01(status)
                 if len(content) > 60:
@@ -358,8 +360,8 @@ class bot():
                 else:
                     if not sekuhara:
                         print("○だったら")
-                        toot_now = ":@" + account["acct"] + ":" + (
-                            re.sub('<span(.+)span>|<p>|とマストドン(.*)', "", str(content))) + "しながらマストドンして❤"
+                        shinagalized_text = shinagalize(matches.group(1))
+                        toot_now = ":@" + account["acct"] + ":" + shinagalized_text + "マストドンして❤"
                         g_vis = "public"
                         bot.rets(5, toot_now, g_vis)
                     else:
