@@ -6,12 +6,13 @@ def shinagalize(text):
 
     last = len(lines)
     target = lines[last - 1]
+    # print(target.surface, target.part_of_speech)
     if re.search("名詞,サ変接続", target.part_of_speech):
         return ''.join([x.surface for x in lines[0:last]]) + "しながら"
     target = lines[last - 2]
-    print(target.surface, target.infl_type)
+    prefix = ''.join([x.surface for x in lines[0:last - 2]])
+    # print(target.surface, target.part_of_speech, target.infl_type)
     if re.search("動詞", target.part_of_speech):
-        prefix = ''.join([x.surface for x in lines[0:last-2]])
         if target.infl_type == "一段" or re.search("カ変", target.infl_type):
             return prefix + re.sub("る$", "", target.base_form) + "ながら"
         if re.search("サ変.+スル", target.infl_type) :
@@ -28,4 +29,9 @@ def shinagalize(text):
             for mapping in mappings:
                 if mapping[0] == m:
                     return prefix + re.sub(mapping[2] + "$", mapping[1], target.base_form) + "ながら"
+
+    if re.search("特殊・タ", target.infl_type):
+        return prefix + ("ても" if target.base_form == "た" else "でも")
+    if re.search("特殊・ダ", target.infl_type):
+        return prefix + "でも"
     return text + "しながら"
