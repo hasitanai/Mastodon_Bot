@@ -8,6 +8,7 @@ import warnings, traceback
 import xlrd, xlsxwriter
 from xml.sax.saxutils import unescape as unesc
 import asyncio
+from shinagalize import shinagalize
 
 #Winのプロンプトから起動するならこれ追加ね↓
 """
@@ -32,12 +33,13 @@ nowing = str(jst_now.strftime("%Y%m%d%H%M%S"))
 with open('log\\' + 'log_' + nowing + '.txt', 'w') as f:
     f.write(str(jst_now)+'\n')
 
-class Re1():  # Content整頓用関数
+class Re1():  # Content整頓用関数(๑°⌓°๑)
     def text(text):
         text = re.sub('<br />', '\n', str(text))
         return (re.sub('<p>|</p>|<a.+"tag">|<a.+"_blank">|<a.+mention">|<span>|'
                        '</span>|</a>|<span class="[a-z-]+">', "",
                        str(text)))
+
 
 class Log():  # toot記録用クラス٩(๑❛ᴗ❛๑)۶
     def __init__(self, status):
@@ -206,6 +208,7 @@ class res_toot(StreamListener):
 
     def on_delete(self, status_id):
         print(str("===削除されました【{}】===").format(str(status_id)))
+
 
 class HTL():
     def HTL(status):
@@ -539,7 +542,8 @@ class bot():
         account = status["account"]
         content = Re1.text(status["content"])
         if account["acct"] != "JC":
-            if re.compile("(.+)とマストドン(どちら|どっち)が大[切事]か[分わ]かってない").search(content):
+            matches = re.search("([^>]+)とマストドン(どちら|どっち)が大[切事]か[分わ]かってない", content)
+            if matches:
                 print("○hitしました♪")
                 sekuhara = bot.block01(status)
                 if len(content) > 60:
@@ -549,9 +553,8 @@ class bot():
                 else:
                     if not sekuhara:
                         print("○だったら")
-                        # if re.compile("(.+)するのとマストドン(どちら|どっち)が大[切事]か[分わ]かってない").search(content):
-                        toot_now = ":@" + account["acct"] + ":" + (
-                        re.sub('<span(.+)span>|<p>|とマストドン(.*)', "", str(content))) + "しながらマストドンして❤"
+                        shinagalized_text = shinagalize(matches.group(1))
+                        toot_now = ":@" + account["acct"] + ":" + shinagalized_text + "マストドンして❤"
                         g_vis = "public"
                         bot.rets(5, toot_now, g_vis)
                     else:
@@ -559,8 +562,8 @@ class bot():
                         toot_now = "そんなセクハラ分かりません\n(* ,,Ծ‸Ծ,, )ﾌﾟｰ"
                         g_vis = "public"
                         bot.rets(5, toot_now, g_vis)
-                        bot.toot("@lamazeP これってセクハラ？？\n:" + str(account['acct']) + ": 「{}」".format(str(content)) ,
-                                 "direct", status["id"])
+                        #bot.toot("@lamazeP これってセクハラ？？\n:" + str(account["acct"]) + ": 「{}」".format(str(content)) ,
+                        #         "direct", status["id"])
 
     def fav01(status):
         account = status["account"]
