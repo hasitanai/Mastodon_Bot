@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from mastodon import *
 import time, re, sys, os, io
 import threading, codecs
@@ -8,6 +6,7 @@ import warnings, traceback
 from xml.sax.saxutils import unescape as unesc
 import JCbot as JC
 
+#Winのプロンプトから起動用
 """
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer,
                               encoding=sys.stdout.encoding,
@@ -15,7 +14,6 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer,
                               line_buffering=sys.stdout.line_buffering)
 warnings.simplefilter("ignore", UnicodeWarning)
 """
-
 
 """ログイントークン取得済みで動かしてね（*'∀'人）"""
 
@@ -26,19 +24,25 @@ mastodon = Mastodon(
     access_token="auth.txt",
     api_base_url=url_ins)  # インスタンス
 
+jst_now = datetime.now(timezone('Asia/Tokyo'))
+nowing = str(jst_now.strftime("%Y%m%d%H%M%S"))
+with open('log\\' + 'log_' + nowing + '.txt', 'w') as f:
+    f.write(str(jst_now)+'\n')
 
-class Re1():  # Content整頓用(๑°⌓°๑)
+class Re1():  # Content整頓用関数(๑°⌓°๑)
     def text(text):
-        return (re.sub('<p>|</p>|<a.+"tag">|<a.+"_blank">|<'
-                       'a.+mention">|<span>|</span>|</a>|<span class="'
-                       '[a-z-]+">', "", str(text)))
-
+        text = re.sub('<br />', '\n', str(text))
+        return (re.sub('<p>|</p>|<a.+"tag">|<a.+"_blank">|<a.+mention">|<span>|'
+                       '</span>|</a>|<span class="[a-z-]+">', "",
+                       str(text)))
+    
 
 class Log():  # toot記録用クラス٩(๑❛ᴗ❛๑)۶
     def __init__(self, status):
         self.account = status["account"]
         self.mentions = status["mentions"]
-        self.content = unsec(Re1.text(status["content"]))
+        self.content = Re1.text(status["content"])
+        self.content = unesc(self.content)
         self.non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
 
     def read(self):
@@ -51,12 +55,11 @@ class Log():  # toot記録用クラス٩(๑❛ᴗ❛๑)۶
         print(str(self.mentions).translate(non_bmp_map))
 
     def write(self):
+        global nowing
         text = self.content
         acct = self.account["acct"]
-
-        f = codecs.open('log\\' + 'log_' + nowing + '.txt', 'a', 'UTF-8')
-        f.write(re.sub('<br />', '\\n', str(text)) + ',<acct="' + acct + '">\r\n')
-        f.close()
+        with codecs.open('log\\' + 'log_' + nowing + '.txt', 'a', 'UTF-8') as f:
+            f.write(re.sub('<br />', '\\n', str(text)) + ',<acct="' + acct + '">\r\n')
 
 
 class men_toot(StreamListener):  # 通知&ホーム監視クラス(๑・ .̫ ・๑)

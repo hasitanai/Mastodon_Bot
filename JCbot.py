@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from mastodon import *
 import time, re, sys, os, json, random
 import threading, requests, pprint, codecs
@@ -7,93 +5,151 @@ from time import sleep
 from datetime import datetime
 from pytz import timezone
 import warnings, traceback
-from shinagalize import shinagalize
 
 def LTL(status): # から受け取ったtootに対してどうするか追加してね（*'∀'人）
     # 以下bot機能の一覧
     bot.check01(status)
     bot.fav01(status)
     bot.res01(status)
-    bot.res06(status)
-    bot.res07(status)
+    bot.res02(status)
+    bot.res03(status)
     bot.check00(status)
     bot.check02(status)
     game.poem(status)
     game.senryu(status)
+    game.cinema(status)
     # ここまで
 
 def HTL(status): # ホームから受け取ったtootに対してどうするか追加してね（*'∀'人）
-    check03(status)
+    account = status["account"]
+    ct = account["statuses_count"]
+    if account["acct"] == "JC":
+        path = 'thank\\' + account["acct"] + '.txt'
+        if os.path.exists(path):
+            f = open(path, 'r')
+            x = f.read()
+            f.close()
+            ct += 1
+            if re.match('^\d+000$', str(ct)):
+                toot_now = "°˖✧◝(⁰▿⁰)◜✧˖" + str(ct) + 'toot達成ーーーー♪♪'
+                g_vis = "public"
+                bot.rets(4, toot_now, g_vis)
+    else:
+        bot.check03(status)
 
 def MEN(status): # メンション通知に対してどうするか追加してね（*'∀'人）
     status = notification["status"]
     account = status["account"]
     mentions = status["mentions"]
     content = unesc(Re1.text(status["content"]))
-    if re.compile("おは|おあひょ").search(content):
-        toot_now = "@" + str(account["acct"]) + " " + "（*'∀'人）おあひょーーーー♪"
-        g_vis = status["visibility"]
-        bot.rets(8, toot_now, g_vis, status['id'])
-    elif re.compile("こんに").search(content):
-        toot_now = "@" + str(account["acct"]) + " " + "（*'∀'人）こんにちはーーーー♪"
-        g_vis = status["visibility"]
-        bot.rets(8, toot_now, g_vis, status['id'])
-    elif re.compile("こんば").search(content):
-        toot_now = "@" + str(account["acct"]) + " " + "（*'∀'人）こんばんはーーーー♪"
-        g_vis = status["visibility"]
-        bot.rets(8, toot_now, g_vis, status['id'])
-    elif re.compile("\d+[dD]\d+").search(content):
-        inp = (re.sub("<span class(.+)</span></a></span>|<p>|</p>", "",
-                      str(status['content']).translate(non_bmp_map)))
-        result = game.dice(inp)
-        g_vis = status["visibility"]
-        toot_now = ":@" + str(account["acct"]) + ": @" + account["acct"] + "\n" + result
-        bot.rets(5, toot_now, g_vis, status['id'])
-    elif re.compile("アラーム(\d+)").search(content):
+    try:
+        print("===通知が来ました===")
         non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
-        content = str(status['content']).translate(non_bmp_map)
-        account = status['account']
-        com = re.search("(アラーム|[Aa][Rr][Aa][Mm])(\d+)([秒分]?)", content)
-        sec = int(com.group(2))
-        clo = com.group(3)
-        if clo == "分":
-            sec = sec * 60
-        else:
-            pass
-        print(str(sec))
-        toot_now = "@" + account["acct"] + " " + "（*'∀'人）時間だよーー♪♪"
-        g_vis = status["visibility"]
-        bot.rets(int(com.group(1)), toot_now, g_vis, status['id'])
-    elif re.compile(
-            "(フォロー|follow)(して|く[うぅー]*ださ[あぁー]*い|お願[あぁー]*い|おねが[あぁー]*い|頼[むみ]|たの[むみ]|ぷりーず|プリーズ|please)").search(
-        content):
-        mastodon.account_follow(account["id"])
-        toot_now = "@" + account["acct"] + " " + "（*'∀'人）フォローしました♪♪"
-        g_vis = status["visibility"]
-        in_reply_to_id = status["id"]
-        bot.rets(8, toot_now, g_vis, status['id'])
-    elif re.compile("(xxxx)<br />(.+)").search(content):  # 悪用されないように変えてます
-        if status["visibility"] == "direct":
-            print("○受け取りました")
-            com = re.search("(xxxx).*<br />(.+)", str(content))
-            messe = com.group(2)
-            toot_now = messe
-            g_vis = "public"
-            bot.rets(1, toot_now, g_vis)
-    elif re.compile("連想ゲーム開始").search(content):
-        if rensou_time:
-            toot_now = "@" + account["acct"] + " " + "（*'∀'人）ごめんね、今開催中なの♪♪"
-            g_vis = status["visibility"]
-            in_reply_to_id = status["id"]
-            bot.rets(5, toot_now, g_vis, status['id'])
-        else:
-            t = threading.Timer(0, game.rensou)
-            t.start()
-            rensou_time = True
-    elif account["acct"] == "twotwo":
-        if re.compile("").search(content):
-            pass
-    else:
+        if notification["type"] == "mention":
+            status = notification["status"]
+            account = status["account"]
+            mentions = status["mentions"]
+            content = unesc(Re1.text(status["content"]))
+            log = threading.Thread(Log(status).read())
+            log.run()
+            bot.thank(account, 64)
+            if mentions:
+                if re.compile("おは|おあひょ").search(content):
+                    toot_now = "@" + str(account["acct"]) + " " + "（*'∀'人）おあひょーーーー♪"
+                    g_vis = status["visibility"]
+                    bot.rets(8, toot_now, g_vis, status['id'])
+                elif re.compile("こんに").search(content):
+                    toot_now = "@" + str(account["acct"]) + " " + "（*'∀'人）こんにちはーーーー♪"
+                    g_vis = status["visibility"]
+                    bot.rets(8, toot_now, g_vis, status['id'])
+                elif re.compile("こんば").search(content):
+                    toot_now = "@" + str(account["acct"]) + " " + "（*'∀'人）こんばんはーーーー♪"
+                    g_vis = status["visibility"]
+                    bot.rets(8, toot_now, g_vis, status['id'])
+                elif re.compile("\d+[dD]\d+").search(content):
+                    inp = (re.sub("<span class(.+)</span></a></span>|<p>|</p>", "",
+                                  str(status['content']).translate(non_bmp_map)))
+                    result = game.dice(inp)
+                    g_vis = status["visibility"]
+                    toot_now = ":@" + str(account["acct"]) + ": @" + account["acct"] + "\n" + result
+                    bot.rets(5, toot_now, g_vis, status['id'])
+                elif re.compile("(アラーム|[Aa][Rr][Aa][Mm])(\d+)").search(content):
+                    non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
+                    content = str(status['content']).translate(non_bmp_map)
+                    account = status['account']
+                    com = re.search("(アラーム|[Aa][Rr][Aa][Mm])(\d+)([秒分]?)", content)
+                    sec = int(com.group(2))
+                    clo = com.group(3)
+                    if clo == "分":
+                        sec = sec * 60
+                    else:
+                        pass
+                    print(str(sec))
+                    if re.compile("(アラーム|[Aa][Rr][Aa][Mm])(.*)「(.*)」").search(content):
+                        mes = re.search("「(.*)」", content)
+                        toot_now = ("@" + account["acct"] + " " + "（*'∀'人）時間だよーー♪♪\n"
+                                    "「" + mes.group(1) + "」")
+                    else:
+                        toot_now = "@" + account["acct"] + " " + "（*'∀'人）時間だよーー♪♪"
+                    g_vis = status["visibility"]
+                    in_reply_to_id = status["id"]
+                    t = threading.Timer(sec, bot.toot, [toot_now, g_vis, status['id']])
+                    t.start()
+                    #bot.rets(sec,toot_now, g_vis,status['id'] )
+                elif re.compile(
+                                "(フォロー|follow)(して|く[うぅー]*ださ[あぁー]*い|お願[あぁー]*い|"
+                                "おねが[あぁー]*い|頼[むみ]|たの[むみ]|ぷりーず|プリーズ|please)").search(
+                                content):
+                    mastodon.account_follow(account["id"])
+                    toot_now = "@" + account["acct"] + " " + "（*'∀'人）フォローしました♪♪"
+                    g_vis = status["visibility"]
+                    in_reply_to_id = status["id"]
+                    bot.rets(8, toot_now, g_vis, status['id'])
+                elif re.compile("(こそこそ)<br />(.+)").search(content):  # 悪用されないように変えてます
+                    if status["visibility"] == "direct":
+                        print("○受け取りました")
+                        com = re.search("(こそこそ).*<br />(.+)", str(content))
+                        messe = com.group(2)
+                        toot_now = messe
+                        g_vis = "public"
+                        bot.rets(1, toot_now, g_vis)
+                elif re.compile("連想ゲーム開始").search(content):
+                    if rensou_time:
+                        toot_now = ("@" + account["acct"] + " "
+                                    + "（*'∀'人）ごめんね、今開催中なの♪♪")
+                        g_vis = status["visibility"]
+                        in_reply_to_id = status["id"]
+                        bot.rets(5, toot_now, g_vis, status['id'])
+                    else:
+                        t = threading.Timer(0, game.rensou)
+                        t.start()
+                        rensou_time = True
+                elif account["acct"] == "twotwo":
+                    if re.compile("").search(content):
+                        pass
+                else:
+                    pass
+            v = threading.Timer(5, bot.fav_now,[status["id"]])
+            v.start()
+        elif notification["type"] == "favourite":
+            account = notification["account"]
+            print(str(account["display_name"]).translate(non_bmp_map) + "@" + str(
+                account["acct"]) + "からニコってくれたよ₍₍ ◝(●˙꒳˙●)◜ ₎₎")
+            print()
+            bot.thank(account, 32)
+            print("---")
+        elif notification["type"] == "reblog":
+            account = notification["account"]
+            print(str(account["display_name"]).translate(non_bmp_map) + "@" + str(
+                account["acct"]) + "がブーストしてくれたよ(๑˃́ꇴ˂̀๑)")
+            print()
+            bot.thank(account, 32)
+            print("---")
+        pass
+    except Exception as e:
+        print("エラー情報【USER】\n" + traceback.format_exc())
+        with open('error.log', 'a') as f:
+            traceback.print_exc(file=f)
         pass
 
 
@@ -349,8 +405,7 @@ class bot():
         account = status["account"]
         content = Re1.text(status["content"])
         if account["acct"] != "JC":
-            maches = re.search("([^>]+)とマストドン(どちら|どっち)が大[切事]か[分わ]かってない", content)
-            if matches:
+            if re.compile("(.+)とマストドン(どちら|どっち)が大[切事]か[分わ]かってない").search(content):
                 print("○hitしました♪")
                 sekuhara = bot.block01(status)
                 if len(content) > 60:
@@ -360,8 +415,8 @@ class bot():
                 else:
                     if not sekuhara:
                         print("○だったら")
-                        shinagalized_text = shinagalize(matches.group(1))
-                        toot_now = ":@" + account["acct"] + ":" + shinagalized_text + "マストドンして❤"
+                        toot_now = ":@" + account["acct"] + ":" + (
+                            re.sub('<span(.+)span>|<p>|とマストドン(.*)', "", str(content))) + "しながらマストドンして❤"
                         g_vis = "public"
                         bot.rets(5, toot_now, g_vis)
                     else:
