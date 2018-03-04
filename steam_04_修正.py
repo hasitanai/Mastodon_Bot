@@ -36,9 +36,9 @@ with open('log\\' + 'log_' + nowing + '.txt', 'w') as f:
 class Re1():  # Content整頓用関数(๑°⌓°๑)
     def text(text):
         text = re.sub('<br />', '\n', str(text))
-        return (re.sub('<p>|</p>|<a.+"tag">|<a.+"_blank">|<a.+mention">|<span>|'
-                       '</span>|</a>|<span class="[a-z-]+">', "",
-                       str(text)))
+        text = re.sub('<p>|</p>|<a.+"tag">|<a.+"_blank">|<a.+mention">|<'
+                      'span>|</span>|</a>|<span class="[a-z-]+">', "", text)
+        return unesc(text, {"&apos;":"'", '&quot;':'"'})
 
 
 class Log():  # toot記録用クラス٩(๑❛ᴗ❛๑)۶
@@ -562,7 +562,7 @@ class bot():
                         toot_now = "そんなセクハラ分かりません\n(* ,,Ծ‸Ծ,, )ﾌﾟｰ"
                         g_vis = "public"
                         bot.rets(5, toot_now, g_vis)
-                        #bot.toot("@lamazeP これってセクハラ？？\n:" + str(account["acct"]) + ": 「{}」".format(str(content)) ,
+                        #bot.toot("@lamazeP これってセクハラ？？\n:{0}: 「{1}」".format(str(account["acct"]), str(content)) ,
                         #         "direct", status["id"])
 
     def fav01(status):
