@@ -139,67 +139,12 @@ class ready():
     def stop():
         count.timer_hello = 0
 
-
-class Emo():
-    def emo01(time=10800):  # 定期的に評価を下げまーーす♪（無慈悲）
-        while 1:
-            sleep(time)
-            data_dir_path = u"./thank/"
-            file_list = os.listdir(r'./thank/')
-            for file_name in file_list:
-                root, ext = os.path.splitext(file_name)
-                if ext == u'.txt':
-                    abs_name = data_dir_path + '/' + file_name
-                    f = open(abs_name, 'r')
-                    x = f.read()
-                    y = int(x)
-                    y += -1
-                    f.close()
-                    f = open(abs_name, 'w')
-                    f.write(str(y))
-                    f.close()
-
-    def emo02(point):
-        sleep(time)
-        data_dir_path = u"./thank/"
-        file_list = os.listdir(r'./thank/')
-        for file_name in file_list:
-            root, ext = os.path.splitext(file_name)
-            if ext == u'.txt':
-                abs_name = data_dir_path + '/' + file_name
-                f = open(abs_name, 'r')
-                x = f.read()
-                y = int(x)
-                y += point
-                f.close()
-                f = open(abs_name, 'w')
-                f.write(str(y))
-                f.close()
-        pass
-
-    def emo03(user, point):
-        sleep(time)
-        data_dir_path = u"./thank/"
-        file_list = os.listdir(r'./thank/')
-        abs_name = data_dir_path + '/' + user + '.txt'
-        f = open(abs_name, 'r')
-        x = f.read()
-        y = int(x)
-        y += point
-        f.close()
-        f = open(abs_name, 'w')
-        f.write(str(y))
-        f.close()
-        pass
-
-
 if __name__ == '__main__':
     count()
     ready.go()
     bot.timer_toot = False
     uuu = threading.Thread(bot.t_local)
     lll = threading.Thread(bot.t_user)
-    fff = threading.Thread(Emo.emo01, [10800])
     uuu.start()
     lll.start()
-    fff.start()
+    
