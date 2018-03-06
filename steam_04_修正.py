@@ -163,6 +163,9 @@ class men_toot(StreamListener):
                     elif account["acct"] == "twotwo":
                         if re.compile("").search(content):
                             pass
+                    elif account["acct"] == "lamazeP":
+                        if re.compile("a").search(content):
+                            pass
                     else:
                         pass
                 v = threading.Timer(5, bot.fav_now,[status["id"]])
@@ -285,6 +288,7 @@ class bot():
         print("「(๑•̀ㅁ•́๑)✧＜tootｽﾃﾝﾊﾞｰｲ」")
 
     def block01(status):
+        account = status["account"]
         with codecs.open("NG\sekuhara.txt", 'r', 'utf-8') as f:
             l = []
             for x in f:
@@ -294,13 +298,17 @@ class bot():
             if re.compile(str(l[x])).search(re.sub("<p>|</p>", "", str(status))):
                 j = True
                 print("う～う～！セクハラ検出しました！　→" + str(l[x]))
-                bot.toot("@lamazeP (｡>﹏<｡)これってセクハラですか？\n【" + str(account['acct']) + "】" + str(status),
+                bot.toot("@lamazeP (｡>﹏<｡)これってセクハラですか？？\n:{0}: 「{1}」".format(str(account["acct"]), str(content)),
                          "direct", status["id"])
-                # bot.thank(account, -64)
+                bot.thank(account, -64)
                 break
             else:
                 j = False
         return j
+
+    def block02(status):
+        account = status["account"]
+        pass
 
     def res03(status):
         account = status["account"]
@@ -562,8 +570,6 @@ class bot():
                         toot_now = "そんなセクハラ分かりません\n(* ,,Ծ‸Ծ,, )ﾌﾟｰ"
                         g_vis = "public"
                         bot.rets(5, toot_now, g_vis)
-                        #bot.toot("@lamazeP これってセクハラ？？\n:{0}: 「{1}」".format(str(account["acct"]), str(content)) ,
-                        #         "direct", status["id"])
 
     def fav01(status):
         account = status["account"]
