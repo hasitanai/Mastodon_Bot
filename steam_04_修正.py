@@ -131,7 +131,7 @@ class men_toot(StreamListener):
                         in_reply_to_id = status["id"]
                         t = threading.Timer(sec, bot.toot, [toot_now, g_vis, status['id']])
                         t.start()
-                        #bot.rets(sec,toot_now, g_vis,status['id'] )
+                        #bot.rets(sec, toot_now, g_vis,status['id'] )
                     elif re.compile(
                                     "(フォロー|follow)(して|く[うぅー]*ださ[あぁー]*い|お願[あぁー]*い|"
                                     "おねが[あぁー]*い|頼[むみ]|たの[むみ]|ぷりーず|プリーズ|please)").search(
@@ -164,7 +164,7 @@ class men_toot(StreamListener):
                         if re.compile("").search(content):
                             pass
                     elif account["acct"] == "lamazeP":
-                        if re.compile("a").search(content):
+                        if re.compile("セクハラ").search(content):
                             pass
                     else:
                         pass
