@@ -165,6 +165,7 @@ class men_toot(StreamListener):
                             pass
                     elif account["acct"] == "lamazeP":
                         if re.compile("セクハラ").search(content):
+                            com = re.search("対象[：:]()", str(inp))
                             pass
                     else:
                         pass
