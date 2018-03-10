@@ -164,9 +164,9 @@ class men_toot(StreamListener):
                         if re.compile("").search(content):
                             pass
                     elif account["acct"] == "lamazeP":
-                        if re.compile("セクハラ").search(content):
-                            name = re.search("対象[：:]([\l\u\d_]+)", str(content))
-                            bot.block02(name)
+                        if re.compile("評価対象[：:]").search(content):
+                            name = re.search("対象[：:]([\l\u\d_]+)<br >(point|ぽいんと|ポイント)[：:](\d+)", str(content))
+                            bot.trial(name.group(1), name.group(3))
                             pass
                     else:
                         pass
@@ -308,7 +308,7 @@ class bot():
                 j = False
         return j
 
-    def block02(name):
+    def trial01(name, point):
         path = 'thank\\' + name + '.txt'
             if os.path.exists(path):
                 f = open(path, 'r')
