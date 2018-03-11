@@ -166,7 +166,9 @@ class men_toot(StreamListener):
                     elif account["acct"] == "lamazeP":
                         if re.compile("評価対象[：:]").search(content):
                             name = re.search("対象[：:]([\l\u\d_]+)<br >(point|ぽいんと|ポイント)[：:](\d+)", str(content))
-                            bot.trial(name.group(1), name.group(3))
+                            name = name.group(1)
+                            point = int(name.group(3))
+                            bot.trial(name, point)
                             pass
                     else:
                         pass
@@ -320,11 +322,10 @@ class bot():
                 f.write(str(y))
                 f.close()
                 print("現在の評価値:" + str(y))
+                toot_now = ("（*'∀'人）評価しておいたよ")
             else:
-                f = open(path, 'w')
-                f.write(str(point))
-                f.close()  # ファイルを閉じる
-                print("現在の評価値:" + str(0))
+                toot_now = ("")
+            bot.rets(6, toot_now, status["direct"],status["id"])
             pass
 
     def res03(status):
