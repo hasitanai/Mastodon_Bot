@@ -165,7 +165,7 @@ class men_toot(StreamListener):
                             pass
                     elif account["acct"] == "lamazeP":
                         if re.compile("評価対象[：:]").search(content):
-                            name = re.search("対象[：:]([\l\u\d_]+)<br >(point|ぽいんと|ポイント)[：:](\d+)", str(content))
+                            name = re.search("対象[：:]([A-Za-z0-9_]+)<br >(point|ぽいんと|ポイント)[：:](\d+)", str(content))
                             name = name.group(1)
                             point = int(name.group(3))
                             ids = status["id"]
@@ -313,21 +313,21 @@ class bot():
 
     def trial01(name, point,ids):
         path = 'thank\\' + name + '.txt'
-            if os.path.exists(path):
-                f = open(path, 'r')
-                x = f.read()
-                y = int(x)
-                y += point
-                f.close()
-                f = open(path, 'w')
-                f.write(str(y))
-                f.close()
-                print("現在の評価値:" + str(y))
-                toot_now = ("（*'∀'人）評価しておいたよ\n対象ID：{0} :@{0}:".format(name))
-            else:
-                toot_now = ("(｡>﹏<｡)会ったことのない人みたいだから評価できなかったよ")
-            bot.toot(toot_now, status["direct"], ids)
-            pass
+        if os.path.exists(path):
+            f = open(path, 'r')
+            x = f.read()
+            y = int(x)
+            y += point
+            f.close()
+            f = open(path, 'w')
+            f.write(str(y))
+            f.close()
+            print("現在の評価値:" + str(y))
+            toot_now = ("（*'∀'人）評価しておいたよ\n対象ID：{0} :@{0}:".format(name))
+        else:
+            toot_now = ("(｡>﹏<｡)会ったことのない人みたいだから評価できなかったよ")
+        bot.toot(toot_now, "direct", ids)
+        pass
 
     def res03(status):
         account = status["account"]
