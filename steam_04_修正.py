@@ -168,7 +168,8 @@ class men_toot(StreamListener):
                             name = re.search("対象[：:]([\l\u\d_]+)<br >(point|ぽいんと|ポイント)[：:](\d+)", str(content))
                             name = name.group(1)
                             point = int(name.group(3))
-                            bot.trial(name, point)
+                            ids = status["id"]
+                            bot.trial(name, point, ids)
                             pass
                     else:
                         pass
@@ -310,7 +311,7 @@ class bot():
                 j = False
         return j
 
-    def trial01(name, point):
+    def trial01(name, point,ids):
         path = 'thank\\' + name + '.txt'
             if os.path.exists(path):
                 f = open(path, 'r')
@@ -322,10 +323,10 @@ class bot():
                 f.write(str(y))
                 f.close()
                 print("現在の評価値:" + str(y))
-                toot_now = ("（*'∀'人）評価しておいたよ")
+                toot_now = ("（*'∀'人）評価しておいたよ\n対象ID：{0} :@{0}:".format(name))
             else:
                 toot_now = ("")
-            bot.rets(6, toot_now, status["direct"],status["id"])
+            bot.toot(toot_now, status["direct"], ids)
             pass
 
     def res03(status):
