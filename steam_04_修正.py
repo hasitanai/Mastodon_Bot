@@ -325,7 +325,7 @@ class bot():
                 print("現在の評価値:" + str(y))
                 toot_now = ("（*'∀'人）評価しておいたよ\n対象ID：{0} :@{0}:".format(name))
             else:
-                toot_now = ("")
+                toot_now = ("(｡>﹏<｡)会ったことのない人みたいだから評価できなかったよ")
             bot.toot(toot_now, status["direct"], ids)
             pass
 
