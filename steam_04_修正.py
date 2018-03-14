@@ -304,8 +304,8 @@ class bot():
             if re.compile(str(l[x])).search(re.sub("<p>|</p>", "", str(status))):
                 j = True
                 print("う～う～！セクハラ検出しました！　→" + str(l[x]))
-                bot.toot("@lamazeP (｡>﹏<｡)これってセクハラですか？？\n:{0}: 「{1}」".format(str(account["acct"]), str(content)),
-                         "direct", status["id"])
+                bot.toot("@lamazeP (｡>﹏<｡)これってセクハラですか？？\n:{0}: 「{1}」".format(str(account["acct"]),
+                         str(content)), "direct", status["id"])
                 bot.thank(account, -64)
                 break
             else:
@@ -510,7 +510,7 @@ class bot():
                                                 "\n" + "（*'∀'人）おひさひさーーーー♪"
                                                 + "\n#ニコフレ挨拶部")
                                 else:
-                                    toot_now = (" :@" + account['acct'] + ":\n" + account['acct']
+                                    toot_now = (" :@" + account['acct'] + ":\n" + account['display_name']
                                                 + "\n" + "（*'∀'人）おひさひさーーーー♪" + "\n#ニコフレ挨拶部")
                                 g_vis = "public"
                                 bot.rets(6, toot_now, g_vis)
