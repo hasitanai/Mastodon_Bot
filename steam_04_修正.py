@@ -294,6 +294,7 @@ class bot():
 
     def block01(status):
         account = status["account"]
+        content = status["content"]
         with codecs.open("NG\sekuhara.txt", 'r', 'utf-8') as f:
             l = []
             for x in f:
