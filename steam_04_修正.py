@@ -344,6 +344,18 @@ class bot():
                     toot_now = "@{} ６回以上の回数は畳む内容だからメンションの方で送ってーー！！".format(account["acct"])
                     bot.rets(6, toot_now, status["visibility"],status["id"])
 
+    def res04(status):　#あだ名実装の途中
+        account = status["account"]
+        if account["acct"] != "JC":
+            if re.compile("ももな.*お名前「(.+)」って呼んで").search(status['content']):
+                print("○hitしました♪")
+                ad = re.search("ももな.*あだ名「(.+)」って呼んで", content)
+                adan = ad.group(1)
+                with codecs.open('dic_time\\adana\\' + account["acct"] + '.txt', 'w', 'UTF-8') as f:
+                    f.write(adan)
+                toot_now = "٩(๑> ₃ <)۶分かったーーーー！！\n「{}」って呼ぶようにするね！！".format(adan)
+                bot.rets(6, toot_now, status["visibility"], sec = 4)
+
     def check00(status):
         account = status["account"]
         ct = account["statuses_count"]
