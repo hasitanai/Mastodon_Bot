@@ -351,7 +351,7 @@ class bot():
                 print("○hitしました♪")
                 ad = re.search("ももな.*あだ名「(.+)」って呼んで", content)
                 adan = ad.group(1)
-                with codecs.open('dic_time\\adana\\' + account["acct"] + '.txt', 'w', 'UTF-8') as f:
+                with codecs.open('date\\adana\\' + account["acct"] + '.txt', 'w', 'UTF-8') as f:
                     f.write(adan)
                 toot_now = "٩(๑> ₃ <)۶分かったーーーー！！\n「{}」って呼ぶようにするね！！".format(adan)
                 bot.rets(6, toot_now, status["visibility"], sec = 4)
