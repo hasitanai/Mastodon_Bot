@@ -342,19 +342,23 @@ class bot():
                     bot.rets(8, toot_now, status["visibility"])
                 elif re.compile("ももな(.*)([6-9]|\d{2})[dD](\d*)").search(status['content']):
                     toot_now = "@{} ６回以上の回数は畳む内容だからメンションの方で送ってーー！！".format(account["acct"])
-                    bot.rets(6, toot_now, status["visibility"],status["id"])
+                    bot.rets(6, toot_now, status["visibility"], status["id"])
 
     def res04(status):　#あだ名実装の途中
         account = status["account"]
         if account["acct"] != "JC":
-            if re.compile("ももな.*お名前「(.+)」って呼んで").search(status['content']):
+            if re.compile("ももな.*あだ名「(.+)」って呼んで").search(status['content']):
                 print("○hitしました♪")
                 ad = re.search("ももな.*あだ名「(.+)」って呼んで", content)
                 adan = ad.group(1)
-                with codecs.open('date\\adana\\' + account["acct"] + '.txt', 'w', 'UTF-8') as f:
-                    f.write(adan)
-                toot_now = "٩(๑> ₃ <)۶分かったーーーー！！\n「{}」って呼ぶようにするね！！".format(adan)
-                bot.rets(6, toot_now, status["visibility"], sec = 4)
+                sekuhara = bot.block01(status)
+                if is not sekuhara:
+                    with codecs.open('date\\adana\\' + account["acct"] + '.txt', 'w', 'UTF-8') as f:
+                        f.write(adan)
+                    toot_now = "٩(๑> ₃ <)۶分かったーーーー！！\n「{}」って呼ぶようにするね！！".format(adan)
+                else:
+                    toot_now = "そんなセクハラ分かりません\n(* ,,Ծ‸Ծ,, )ﾌﾟｰ"
+                bot.rets(6, toot_now, "public")
 
     def check00(status):
         account = status["account"]
