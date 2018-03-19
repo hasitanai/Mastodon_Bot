@@ -357,7 +357,7 @@ class bot():
                         f.write(adan)
                     toot_now = "٩(๑> ₃ <)۶分かったーーーー！！\n「{}」って呼ぶようにするね！！".format(adan)
                 else:
-                    toot_now = "そんなセクハラ分かりません\n(* ,,Ծ‸Ծ,, )ﾌﾟｰ"
+                    toot_now = "(｡>﹏<｡)そんないやらしい呼び方出来ないよーー……"
                 bot.rets(6, toot_now, "public")
 
     def check00(status):
