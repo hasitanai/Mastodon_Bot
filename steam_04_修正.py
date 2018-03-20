@@ -312,7 +312,7 @@ class bot():
                 j = False
         return j
 
-    def trial01(name, point,ids):
+    def trial01(name, point,ids): # デバック用
         path = 'thank\\' + name + '.txt'
         if os.path.exists(path):
             f = open(path, 'r')
@@ -359,6 +359,9 @@ class bot():
                 else:
                     toot_now = "(｡>﹏<｡)そんないやらしい呼び方出来ないよーー……"
                 bot.rets(6, toot_now, "public")
+            elif re.compile("ももな.*:@[A-Za-z0-9_]:のこと.*「(.+)」って呼んで").search(status['content']):
+                
+                if 
 
     def check00(status):
         account = status["account"]
