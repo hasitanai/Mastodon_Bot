@@ -360,8 +360,13 @@ class bot():
                     toot_now = "(｡>﹏<｡)そんないやらしい呼び方出来ないよーー……"
                 bot.rets(6, toot_now, "public")
             elif re.compile("ももな.*:@[A-Za-z0-9_]:のこと.*「(.+)」って呼んで").search(status['content']):
-                
-                if 
+                data_dir_path = u"./thank/"
+                abs_name = data_dir_path + '/' + account["acct"] + '.txt'
+                with open(abs_name, 'r')as f:
+                    x = f.read()
+                    y = int(x)
+                if y >= 50000 or account["acct"] == "lamazeP" :
+                    
 
     def check00(status):
         account = status["account"]
