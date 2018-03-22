@@ -362,11 +362,23 @@ class bot():
             elif re.compile("ももな.*:@[A-Za-z0-9_]:のこと.*「(.+)」って呼んで").search(status['content']):
                 data_dir_path = u"./thank/"
                 abs_name = data_dir_path + '/' + account["acct"] + '.txt'
-                with open(abs_name, 'r')as f:
-                    x = f.read()
-                    y = int(x)
-                if y >= 50000 or account["acct"] == "lamazeP" :
-                    
+                try:
+                    with open(abs_name, 'r')as f:
+                        x = f.read()
+                        y = int(x)
+                    if y >= 50000 or account["acct"] == "lamazeP" :
+                        adan = ad.group(1)
+                        sekuhara = bot.block01(status)
+                        if is not sekuhara:
+                            with codecs.open('date\\adana\\' + account["acct"] + '.txt', 'w', 'UTF-8') as f:
+                                f.write(adan)
+                            toot_now = (":@" + account['acct'] + ": ٩(๑> ₃ <)۶分かったーーーー！！\n"
+                                        "「{}」って呼ぶようにするね！！".format(adan))
+                        else:
+                            toot_now = ":@" + account['acct'] + ": (｡>﹏<｡)いくら仲が良くてもそれは出来ないよ！！！！"
+                        bot.rets(6, toot_now, "public")
+                except:
+                    bot.rets(6, "( ◉ ‸ ◉ )私の知らない人だから無理……", "public")
 
     def check00(status):
         account = status["account"]
