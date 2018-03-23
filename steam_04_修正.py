@@ -330,56 +330,6 @@ class bot():
         bot.toot(toot_now, "direct", ids)
         pass
 
-    def res03(status):
-        account = status["account"]
-        if account['acct'] != "kiri_bot01":
-            if account["acct"] != "JC":
-                if re.compile("ももな([^\d]*)[1-5][dD]\d+").search(status['content']):
-                    print("○hitしました♪")
-                    non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
-                    coro = Re1.text(str(status['content']).translate(non_bmp_map))
-                    toot_now = ":@" + account["acct"] + ": @" + account["acct"] + "\n" + game.dice(coro)
-                    bot.rets(8, toot_now, status["visibility"])
-                elif re.compile("ももな(.*)([6-9]|\d{2})[dD](\d*)").search(status['content']):
-                    toot_now = "@{} ６回以上の回数は畳む内容だからメンションの方で送ってーー！！".format(account["acct"])
-                    bot.rets(6, toot_now, status["visibility"], status["id"])
-
-    def res04(status):　#あだ名実装の途中
-        account = status["account"]
-        if account["acct"] != "JC":
-            if re.compile("ももな.*あだ名「(.+)」って呼んで").search(status['content']):
-                print("○hitしました♪")
-                ad = re.search("ももな.*あだ名「(.+)」って呼んで", content)
-                adan = ad.group(1)
-                sekuhara = bot.block01(status)
-                if is not sekuhara:
-                    with codecs.open('date\\adana\\' + account["acct"] + '.txt', 'w', 'UTF-8') as f:
-                        f.write(adan)
-                    toot_now = "٩(๑> ₃ <)۶分かったーーーー！！\n「{}」って呼ぶようにするね！！".format(adan)
-                else:
-                    toot_now = "(｡>﹏<｡)そんないやらしい呼び方出来ないよーー……"
-                bot.rets(6, toot_now, "public")
-            elif re.compile("ももな.*:@[A-Za-z0-9_]:のこと.*「(.+)」って呼んで").search(status['content']):
-                data_dir_path = u"./thank/"
-                abs_name = data_dir_path + '/' + account["acct"] + '.txt'
-                try:
-                    with open(abs_name, 'r')as f:
-                        x = f.read()
-                        y = int(x)
-                    if y >= 50000 or account["acct"] == "lamazeP" :
-                        adan = ad.group(1)
-                        sekuhara = bot.block01(status)
-                        if is not sekuhara:
-                            with codecs.open('date\\adana\\' + account["acct"] + '.txt', 'w', 'UTF-8') as f:
-                                f.write(adan)
-                            toot_now = (":@" + account['acct'] + ": ٩(๑> ₃ <)۶分かったーーーー！！\n"
-                                        "「{}」って呼ぶようにするね！！".format(adan))
-                        else:
-                            toot_now = ":@" + account['acct'] + ": (｡>﹏<｡)いくら仲が良くてもそれは出来ないよ！！！！"
-                        bot.rets(6, toot_now, "public")
-                except:
-                    bot.rets(6, "( ◉ ‸ ◉ )私の知らない人だから無理……", "public")
-
     def check00(status):
         account = status["account"]
         ct = account["statuses_count"]
@@ -406,6 +356,29 @@ class bot():
                     bot.rets(4, toot_now, g_vis)
         else:
             pass
+
+    def check01(status):
+        account = status["account"]
+        created_at = status['created_at']
+        non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
+        with codecs.open('acct\\' + account["acct"] + '.txt', 'w', 'UTF-8') as f:  # 書き込みモードで開く
+            f.write(str(status["account"]).translate(non_bmp_map))  # アカウント情報の更新
+        path = 'thank\\' + account["acct"] + '.txt'
+        if os.path.exists(path):
+            f = open(path, 'r')
+            x = f.read()
+            print("現在の評価値:" + str(x))
+            f.close()
+        else:
+            f = open(path, 'w')
+            f.write("0")
+            f.close()  # ファイルを閉じる
+
+    def check02(status):
+        account = status["account"]
+        created_at = status['created_at']
+        with codecs.open('at_time\\' + account["acct"] + '.txt', 'w', 'UTF-8') as f:  # 書き込みモードで開く
+            f.write(str(status["created_at"]))  # \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z
 
     def check03(status):
         account = status["account"]
@@ -630,35 +603,62 @@ class bot():
                         g_vis = "public"
                         bot.rets(5, toot_now, g_vis)
 
+    def res03(status):
+        account = status["account"]
+        if account['acct'] != "kiri_bot01":
+            if account["acct"] != "JC":
+                if re.compile("ももな([^\d]*)[1-5][dD]\d+").search(status['content']):
+                    print("○hitしました♪")
+                    non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
+                    coro = Re1.text(str(status['content']).translate(non_bmp_map))
+                    toot_now = ":@" + account["acct"] + ": @" + account["acct"] + "\n" + game.dice(coro)
+                    bot.rets(8, toot_now, status["visibility"])
+                elif re.compile("ももな(.*)([6-9]|\d{2})[dD](\d*)").search(status['content']):
+                    toot_now = "@{} ６回以上の回数は畳む内容だからメンションの方で送ってーー！！".format(account["acct"])
+                    bot.rets(6, toot_now, status["visibility"], status["id"])
+
+    def res04(status):　#あだ名実装の途中
+        account = status["account"]
+        if account["acct"] != "JC":
+            if re.compile("ももな.*あだ名「(.+)」って呼んで").search(status['content']):
+                print("○hitしました♪")
+                ad = re.search("ももな.*あだ名「(.+)」って呼んで", content)
+                adan = ad.group(1)
+                sekuhara = bot.block01(status)
+                if is not sekuhara:
+                    with codecs.open('date\\adana\\' + account["acct"] + '.txt', 'w', 'UTF-8') as f:
+                        f.write(adan)
+                    toot_now = "٩(๑> ₃ <)۶分かったーーーー！！\n「{}」って呼ぶようにするね！！".format(adan)
+                else:
+                    toot_now = "(｡>﹏<｡)そんないやらしい呼び方出来ないよーー……"
+                bot.rets(6, toot_now, "public")
+            elif re.compile("ももな.*:@[A-Za-z0-9_]:のこと.*「(.+)」って呼んで").search(status['content']):
+                data_dir_path = u"./thank/"
+                abs_name = data_dir_path + '/' + account["acct"] + '.txt'
+                try:
+                    with open(abs_name, 'r')as f:
+                        x = f.read()
+                        y = int(x)
+                    if y >= 50000 or account["acct"] == "lamazeP" :
+                        adan = ad.group(1)
+                        sekuhara = bot.block01(status)
+                        if is not sekuhara:
+                            with codecs.open('date\\adana\\' + account["acct"] + '.txt', 'w', 'UTF-8') as f:
+                                f.write(adan)
+                            toot_now = (":@" + account['acct'] + ": ٩(๑> ₃ <)۶分かったーーーー！！\n"
+                                        "「{}」って呼ぶようにするね！！".format(adan))
+                        else:
+                            toot_now = ":@" + account['acct'] + ": (｡>﹏<｡)いくら仲が良くてもそれは出来ないよ！！！！"
+                        bot.rets(6, toot_now, "public")
+                except:
+                    bot.rets(6, "( ◉ ‸ ◉ )私の知らない人だから無理……", "public")
+
     def fav01(status):
         account = status["account"]
         if re.compile("(ももな|:@JC:|ちゃんもも|:nicoru\d*:|\WJC\W|もなな)").search(status['content']):
             bot.thank(account, 8)
             v = threading.Timer(5, bot.fav_now,[status["id"]])
             v.start()
-
-    def check01(status):
-        account = status["account"]
-        created_at = status['created_at']
-        non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
-        with codecs.open('acct\\' + account["acct"] + '.txt', 'w', 'UTF-8') as f:  # 書き込みモードで開く
-            f.write(str(status["account"]).translate(non_bmp_map))  # アカウント情報の更新
-        path = 'thank\\' + account["acct"] + '.txt'
-        if os.path.exists(path):
-            f = open(path, 'r')
-            x = f.read()
-            print("現在の評価値:" + str(x))
-            f.close()
-        else:
-            f = open(path, 'w')
-            f.write("0")
-            f.close()  # ファイルを閉じる
-
-    def check02(status):
-        account = status["account"]
-        created_at = status['created_at']
-        with codecs.open('at_time\\' + account["acct"] + '.txt', 'w', 'UTF-8') as f:  # 書き込みモードで開く
-            f.write(str(status["created_at"]))  # \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z
 
     def thank(account, point):
         path = 'thank\\' + account["acct"] + '.txt'
