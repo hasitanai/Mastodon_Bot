@@ -245,6 +245,7 @@ class LTL():
         bot.res01(status)
         bot.res02(status)
         bot.res03(status)
+        bot.res04(status)
         bot.check00(status)
         bot.check02(status)
         game.poem(status)
