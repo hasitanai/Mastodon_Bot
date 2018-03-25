@@ -422,9 +422,9 @@ class bot():
         content = re.sub("<p>|</p>", "", str(status['content']))
         path = 'thank\\' + account["acct"] + '.txt'
         if account['display_name'] == "":
-            account['display_name'] = account['acct']
+            name = account['acct']
         else:
-            account['display_name'] = re.sub("[(:（].+[):）]|@[a-zA-Z0-9]+|\s|＠.+", "", account['display_name'])
+            name = re.sub("[(:（].+[):）]|@[a-zA-Z0-9]+|\s|＠.+", "", account['display_name'])
         if os.path.exists(path):
             f = open(path, 'r')
             x = f.read()
@@ -440,16 +440,6 @@ class bot():
                         bot.rets(20, toot_now, g_vis)
                         count.timer_hello = 1
                 else:
-                    # あだ名実装の準備
-                    """
-                    if account['acct'] == "5": 
-                        print("○やなちゃんだ！！（*'∀'人）")
-                        name = "やなちゃん！！！！！！"
-                    elif account['display_name'] == "":
-                        name = (account['acct'])
-                    else:
-                        name = (account['display_name'])
-                    """
                     if re.compile("[寝ね](ます|る|マス)([よかぞね]?|[…。うぅー～！・]+)$|^[寝ね](ます|る|よ)[…。うぅー～！・]*$|"
                                   "[寝ね](ます|る|マス)(.*)[ぽお]や[ユすしー]|ももな(.*)[ぽお]や[ユすしー]|"
                                   "(そろそろ|やっと|ようやく)寝").search(content):
@@ -463,9 +453,8 @@ class bot():
                                             '(｡>﹏<｡)あとで一緒に寝るーーーー！！！！'
                                              + "\n#ニコフレ挨拶部")
                             else:
-                                toot_now = (":@" + account['acct'] + ":" + account[
-                                    'display_name'] + "\n" + '(ृ 　 ु *`ω､)ु ⋆゜おやすみーーーー♪'
-                                             + "\n#ニコフレ挨拶部")
+                                toot_now = (":@" + account['acct'] + ":" + name + "\n" + '(ृ 　 ु *`ω､)ु ⋆゜おやすみーーーー♪'
+                                            + "\n#ニコフレ挨拶部")
                             g_vis = "public"
                             bot.rets(6, toot_now, g_vis)
                     elif re.compile("([いイ行逝]って|出かけて|(風呂|ふろ).*(入|はい)って)(くる|きま[あぁー]*す|[きキ]マストドン)[^？\?]|"
@@ -483,7 +472,7 @@ class bot():
                                         "\n" + '(*>_<*)ﾉいってらいってらーーーー！！！！'
                                          + "\n#ニコフレ挨拶部")
                         else:
-                            toot_now = (":@" + account['acct'] + ":" + account['display_name'] +
+                            toot_now = (":@" + account['acct'] + ":" + name +
                                         "\n" + 'いってらーーーー！！' + "\n#ニコフレ挨拶部")
                         g_vis = "public"
                         bot.rets(6, toot_now, g_vis)
@@ -498,7 +487,7 @@ class bot():
                                         "\n" + '٩(๑❛ᴗ❛๑)۶おかえりおかえりーー！！' + "\n#ニコフレ挨拶部"
                                         )
                         else:
-                            toot_now = (":@" + account['acct'] + ":" + account['display_name']
+                            toot_now = (":@" + account['acct'] + ":" + name
                                         + "\n" + '( 〃 ❛ᴗ❛ 〃 )おかえりおかえりーー！！'
                                         + "\n#ニコフレ挨拶部")
                         g_vis = "public"
@@ -523,7 +512,7 @@ class bot():
                                                 "\n" + "（*'∀'人）おひさひさーーーー♪"
                                                 + "\n#ニコフレ挨拶部")
                                 else:
-                                    toot_now = (" :@" + account['acct'] + ":\n" + account['display_name']
+                                    toot_now = (" :@" + account['acct'] + ":\n" + name
                                                 + "\n" + "（*'∀'人）おひさひさーーーー♪" + "\n#ニコフレ挨拶部")
                                 g_vis = "public"
                                 bot.rets(6, toot_now, g_vis)
