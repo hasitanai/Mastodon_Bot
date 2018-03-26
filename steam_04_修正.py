@@ -424,7 +424,7 @@ class bot():
         if account['display_name'] == "":
             name = account['acct']
         else:
-            name = re.sub("[(:（].+[):）]|@[a-zA-Z0-9]+|\s|＠.+", "", account['display_name'])
+            name = re.sub("[(:（].+[):）]|@[a-zA-Z0-9_]+|\s|＠.+", "", account['display_name'])
         if os.path.exists(path):
             f = open(path, 'r')
             x = f.read()
@@ -442,7 +442,7 @@ class bot():
                 else:
                     if re.compile("[寝ね](ます|る|マス)([よかぞね]?|[…。うぅー～！・]+)$|^[寝ね](ます|る|よ)[…。うぅー～！・]*$|"
                                   "[寝ね](ます|る|マス)(.*)[ぽお]や[ユすしー]|ももな(.*)[ぽお]や[ユすしー]|"
-                                  "(そろそろ|やっと|ようやく)寝").search(content):
+                                  "(そろそろ|やっと|ようやく|[ね寝]([～ー]|る[～ー]))寝").search(content):
                         if not re.compile("[寝ね]る(かた|方|人|ひと|民)|あやねる").search(status['content']):
                             print("○hitしました♪")
                             print("○おやすみします（*'∀'人）")
