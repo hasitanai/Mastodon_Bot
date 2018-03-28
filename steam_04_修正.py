@@ -457,11 +457,11 @@ class bot():
                                 posting = '(ृ 　 ु *`ω､)ु ⋆゜おやすみーーーー♪'
                             toot_now = (":@{0}: {1}\n{2}\n#ニコフレ挨拶部".format(account['acct'], name, posting))
                             bot.rets(6, toot_now, "public")
-                    elif re.compile("([いイ行逝]って|出かけて|(風呂|ふろ).*(入|はい)って)(くる|きま[あぁー]*す|[きキ]マストドン)[^？\?]|"
-                                    "おでかけ(する|しま[あぁー]*す|[しシ]マストドン)[^？\?]|(ふろ|風呂)って(くる|きます)|"
-                                    "(出勤|離脱|しゅっきん|りだつ)(する[^な]|しま[あぁー]*す[^？\?]|[しシ]マストドン)|"
-                                    "(出勤|離脱)$|(.+)して?(くる|きま[あぁー]*す[^？\?]|[きキ]マストドン)([ー～！。よぞね]|$)|"
-                                    "(仕事|しごと).*(戻|もど)(る|りゅ|りま[すつ])|(飯|めし)って(くる|きます)|(めし|飯)([い行]く|[お落]ち)|"
+                    elif re.compile("([いイ行逝]って|出かけて|(風呂|ふろ).*(入|はい)って)(くる|きま([あぁー]*す|[きキ]マストドン|$))[^？\?]|"
+                                    "おでかけ(する|しま([あぁー]*す|[しシ]マストドン|$))[^？\?]|(ふろ|風呂)って(くる|きま(す|$))|"
+                                    "(出勤|離脱|しゅっきん|りだつ)(する[^な]|しま([あぁー]*す[^？\?]|[しシ]マストドン|$))|"
+                                    "(出勤|離脱)$|(.+)して?(くる|きま([あぁー]*す[^？\?]|$)|[きキ]マストドン)([ー～！。よぞね]|$)|"
+                                    "(仕事|しごと).*(戻|もど)(る|りゅ|りま([すつ]|$))|(飯|めし)って(くる|きま(す|$))|(めし|飯)([い行]く|[お落]ち)|"
                                     "^りだつ$"
                                     ).search(content):
                         print("○hitしました♪")
@@ -544,9 +544,6 @@ class bot():
                             if shinki is True:
                                 bot.toot("@lamazeP 新規さんが来たよーー（小声）\n【" + str(account['acct']) + "】",
                                          "direct", status["id"])
-                    # toot_now = (":@{0}: {1}\n{2}".format(account['acct'], name, posting))
-                    # bot.rets(6, toot_now, g_vis)
-                    
         else:
             print("○反応がない人なので挨拶しません（*'∀'人）")
 
@@ -606,7 +603,7 @@ class bot():
                     adan = re.sub(':', '', adan)
                     adan = re.sub('@[a-zA-Z0-9_]+', ':\1:', adan)
                     sekuhara = bot.block01(status)
-                    if len(content) > 60:
+                    if len(adan) > 60:
                         toot_now = "٩(๑`^´๑)۶長い！！！！！！"
                     else:
                         if not sekuhara:
@@ -616,16 +613,24 @@ class bot():
                         else:
                             toot_now = "(｡>﹏<｡)そんないやらしい呼び方出来ないよーー……"
                     bot.rets(6, toot_now, status["visibility"], status["id"])
-            elif re.compile("ももな.*:@([A-Za-z0-9_]+):のこと.*[｢「](.+)[」｣]って[呼よ]んで").search(status['content']):
-                if y >= 50000 or account["acct"] == "lamazeP" or acct == account["acct"]:
-                    ad = re.search("ももな.*:@([A-Za-z0-9_]+):のこと.*[｢「](.+)[」｣]って[呼よ]んで", status['content'])
-                    acct = ad.group(1)
+            elif re.compile("ももな.*:@([A-Za-z0-9_]+): ?のこと.*[｢「](.+)[」｣]って[呼よ]んで").search(status['content']):
+                ad = re.search("ももな.*:@([A-Za-z0-9_]+): ?のこと.*[｢「](.+)[」｣]って[呼よ]んで", status['content'])
+                acct = ad.group(1)
+                if y >= 50000 or account["acct"] == "lamazeP": 
                     name = ad.group(2)
                     adan = Re1.text(name)
                     adan = re.sub(':', '', adan)
                     adan = re.sub('@[a-zA-Z0-9_]+', ':\1:', adan)
                     sekuhara = bot.block01(status)
-                    if len(content) > 60:
+                    if acct == account["acct"]:
+                        if not sekuhara:
+                            with codecs.open('date\\adana\\' + account["acct"] + '.txt', 'w', 'UTF-8') as f:
+                                f.write(adan)
+                            toot_now = ("@{1} ٩(๑> ₃ <)۶分かったーーーー！！\n「{0}」って呼ぶようにするね！！"
+                                        "#ももなのあだ名事情".format(adan, account["acct"]))
+                        else:
+                            toot_now = "(｡>﹏<｡)そんないやらしい呼び方出来ないよーー……"
+                    elif len(adan) > 60:
                         toot_now = "٩(๑`^´๑)۶長い！！！！！！"
                     else:
                         try:
@@ -634,21 +639,27 @@ class bot():
                                 x = f.read()
                                 z = int(x)
                             if not sekuhara:
-                                if z < y:
-                                    with codecs.open('date\\adana\\' + account["acct"] + '.txt', 'w', 'UTF-8') as f:
+                                if account["acct"] == "lamazeP":
+                                    y =+ 1000000000
+                                if z <= y:
+                                    with codecs.open('date\\adana\\' + acct + '.txt', 'w', 'UTF-8') as f:
                                         f.write(adan)
                                     toot_now = (":@" + account['acct'] + ": ٩(๑> ₃ <)۶分かったーーーー！！\n"
-                                                ":@{1}:のことは「{0}」って呼ぶようにするね！！".format(adan, acct))
+                                                ":@{1}:のことは「{0}」って呼ぶようにするね！！"
+                                                "#ももなのあだ名事情".format(adan, acct))
                                 else:
-                                    toot_now = ":@" + account['acct'] + ": (｡>﹏<｡){}のあだ名変えたくないよ！！！！".format(acct)
+                                    toot_now = ":@" + account['acct'] + ": (｡>﹏<｡):@{}:のあだ名変えたくないよ！！！！".format(acct)
                             else:
                                 toot_now = ":@" + account['acct'] + ": (｡>﹏<｡)いくら仲が良くてもそれは出来ないよ！！！！"
                         except:
-                            toot_now = ":@" + account['acct'] + ":( ◉ ‸ ◉ )私の知らない人だから無理……"
+                            toot_now = ":@" + account['acct'] + " :( ◉ ‸ ◉ )私の知らない人だから無理……"
                 else:
-                    toot_now = ":@" + account['acct'] + "(｡>﹏<｡)もう少し仲良くならないと呼びかけられないよ！！"
+                    toot_now = ":@" + account['acct'] + ": (｡>﹏<｡)もう少し仲良くならないと呼びかけられないよ！！"
                 bot.rets(6, toot_now, "public")
-                
+            elif re.compile("ももな.*あだ[名な](キャンセル|消して)").search(status['content']):
+                name = re.sub("[(:（].+[):）]|@[a-zA-Z0-9_]+|\s|＠.+", "", account['display_name'])
+                toot_now = ("@{1} ٩(๑> ₃ <)۶分かったーーーー！！\n「{0}」って呼ぶようにするね！！".format(name, account["acct"]))
+                bot.rets(6, toot_now, status["visibility"], status["id"])
 
     def fav01(status):
         account = status["account"]
