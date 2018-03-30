@@ -10,6 +10,8 @@ from xml.sax.saxutils import unescape as unesc
 import asyncio
 from shinagalize import shinagalize
 
+mastodon = None
+
 #Winのプロンプトから起動するならこれ追加ね↓
 """
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer,
@@ -460,7 +462,7 @@ class bot():
                     elif re.compile("([いイ行逝]って|出かけて|(風呂|ふろ).*(入|はい)って)(くる|きま([あぁー]*す|[きキ]マストドン|$))[^？\?]|"
                                     "おでかけ(する|しま([あぁー]*す|[しシ]マストドン|$))[^？\?]|(ふろ|風呂)って(くる|きま(す|$))|"
                                     "(出勤|離脱|しゅっきん|りだつ)(する[^な]|しま([あぁー]*す[^？\?]|[しシ]マストドン|$))|"
-                                    "(出勤|離脱)$|(.+)して?(くる|きま([あぁー]*す[^？\?]|$)|[きキ]マストドン)([ー～！。よぞね]|$)|"
+                                    "(出勤|離脱)([。っ！]*$|しま$)|(.+)して?(くる|きま([あぁー]*す[^？\?]|$)|[きキ]マストドン)([ー～！。よぞね]|$)|"
                                     "(仕事|しごと).*(戻|もど)(る|りゅ|りま([すつ]|$))|(飯|めし)って(くる|きま(す|$))|(めし|飯)([い行]く|[お落]ち)|"
                                     "^りだつ$"
                                     ).search(content):
@@ -501,9 +503,9 @@ class bot():
                             if delta.total_seconds() >= 604800:
                                 if account['acct'] == "5":  # やなちゃん専用挨拶
                                     print("○やなちゃんだ！！（*'∀'人）")
-                                    posting = "(｡>﹏<｡)暫く会えなくて寂しかったよーーーー！！！！" + "\n#ニコフレ挨拶部"
+                                    posting = "(｡>﹏<｡)暫く会えなくて寂しかったよーーーー！！！！"
                                 else:
-                                    posting = "（*'∀'人）おひさひさーーーー♪" + "\n#ニコフレ挨拶部"
+                                    posting = "（*'∀'人）おひさひさーーーー♪"
                                 
                                 toot_now = (":@{0}: {1}\n{2}".format(account['acct'], name, posting))
                                 bot.rets(6, toot_now, "public")
@@ -530,7 +532,7 @@ class bot():
                                     name = account['acct']
                                 else:
                                     name = account['display_name']
-                                posting = 'ようこそようこそーーーー♪' + "\n#ニコフレ挨拶部"
+                                posting = 'ようこそようこそーーーー♪'
                                 shinki = True
                             else:
                                 if account['display_name'] == "":
@@ -1132,6 +1134,7 @@ class count():
                     f = open(abs_name, 'w')
                     f.write(str(y))
                     f.close()
+            gc.collect()
 
     def emo02(point):
         data_dir_path = u"./thank/"
