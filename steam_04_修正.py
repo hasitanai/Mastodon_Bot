@@ -253,6 +253,7 @@ class LTL():
         game.poem(status)
         game.senryu(status)
         game.cinema(status)
+        game.prof(status)
         # ここまで
 
 class bot():
@@ -748,6 +749,59 @@ class bot():
 class game():
     def fav(id):
         mastodon.status_favourite(id)
+
+    def prof(status):
+        account = status["account"]
+        content = Re1.text(status["content"])
+        if account["acct"] != "JC":
+            spo = None
+            if re.compile("ももな.*:@([A-Za-z0-9_]+): ?はこんな(人|ひと|やつ|奴|方).*[：:]").search(content):
+                print("○hitしました♪")
+                word = re.search("ももな.*:@([A-Za-z0-9_]+): ?はこんな(人|ひと|やつ|奴|方).*[：:](<br />)?(.+)", str(content))
+                acct = word.group(1)
+                tex1 = word.group(4)
+                if len(tex1) > 60:
+                    toot_now = "٩(๑`^´๑)۶文章が長い！！！！"
+                else:
+                    tex2 = tex1 + "（by:@{}:）".format(account["acct"])
+                    try:
+                        with open("game\\prof\\{}.txt".format(acct),"r") as f:
+                            tex0 = f.read()
+                        if len(tex0) > 400:
+                            toot_now = "これ以上:@{}:のこと覚えられないよ……整頓するからもう少し待ってね(｡>﹏<｡)".format(acct)
+                            bot.rets(6, toot_now, "public")
+                        elif re.search("[^:]@[A-Za-z0-9_]+[^:]", tex1):
+                             toot_now = "٩(๑`^´๑)۶いたずらしちゃダメ！！！！"
+                             count.emo03(account["acct"], -64)
+                        else:
+                            with open("game\\prof\\{}.txt".format(acct),"a") as f:
+                                f.write(tex2+"\n")
+                            toot_now = (":@{0}:ありがと！！\n:@{1}:の知ってること、また一つ覚えた！！！！".format(account["acct"], acct)+"\n#ももな図鑑")
+                    except:
+                        with open("game\\prof\\{}.txt".format(acct),"a") as f:
+                            f.write(tex2+"\n")
+                        toot_now = (":@{0}:ありがと！！\n:@{1}:のこと覚えた！！！！".format(account["acct"], acct)+"\n#ももな図鑑")
+                bot.rets(6, toot_now, "public")
+            elif re.compile("ももな.*:@([A-Za-z0-9_]+): ?(のこと(教|おし)えて|って(誰|何))").search(content):
+                print("○hitしました♪")
+                word = re.search("ももな.*:@([A-Za-z0-9_]+): ?(のこと(教|おし)えて|って(誰|何))", str(content))
+                acct = word.group(1)
+                try:
+                    with open("game\\prof\\{}.txt".format(acct),"r") as f:
+                        tex0 = f.read()
+                        spo = ":@{}:はこんな人だよ！！".format(acct
+                                                      )
+                    try:
+                        with codecs.open('date\\adana\\' + account["acct"] + '.txt', 'r', 'UTF-8') as f:
+                            name = f.read()
+                            adan = name + "だよ！！"
+                    except:
+                        adan = "まだないみたいだよ！！"
+                    toot_now = (tex0 + "\nあだ名は{}".format(adan)+"\n#ももな図鑑")
+                except:
+                    toot_now = ("(｡>﹏<｡)ごめんね……:@{}:がどんな人なのか分からないの……".format(acct)+"\n#ももな図鑑")
+                bot.rets(6, toot_now, "public", spo=spo)
+                
 
     def cinema(status):
         account = status["account"]
