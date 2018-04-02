@@ -520,6 +520,10 @@ class bot():
                                 if account['acct'] == "5":  # やなちゃん専用挨拶
                                     print("○やなちゃんだ！！（*'∀'人）")
                                     name = "やなちゃん！！！！！！"
+                                    # elif account['acct'] == "lamazeP":  # ジョーク
+                                    #     print("○ジョークを言います（*'∀'人）")
+                                    #     name = "初めましてチノちゃん！！"
+                                    #     posting = 'ようこそようこそーーーー♪'
                                 else:
                                     print("○あいさつします（*'∀'人）")
                                     pass
@@ -589,7 +593,7 @@ class bot():
                     toot_now = "@{} ６回以上の回数は畳む内容だからメンションの方で送ってーー！！".format(account["acct"])
                     bot.rets(6, toot_now, status["visibility"], status["id"])
 
-    def res04(status): #あだ名実装の途中
+    def res04(status): #あだ名実装
         account = status["account"]
         if account["acct"] != "JC":
             data_dir_path = u"./thank/"
@@ -663,7 +667,9 @@ class bot():
             elif re.compile("ももな.*あだ[名な](キャンセル|消して)").search(status['content']):
                 print("○hitしました♪")
                 name = re.sub("[(:（].+[):）]|@[a-zA-Z0-9_]+|\s|＠.+", "", account['display_name'])
-                toot_now = ("@{1} ٩(๑> ₃ <)۶分かったーーーー！！\n「{0}」って呼ぶようにするね！！".format(name, account["acct"]))
+                with codecs.open('date\\adana\\' + acct + '.txt', 'w', 'UTF-8') as f:
+                    f.write("")
+                toot_now = ("@{} ٩(๑> ₃ <)۶分かったーーーー！！\n次からは普通に呼びかけるね！！".format(account["acct"]))
                 bot.rets(6, toot_now, status["visibility"], status["id"])
             elif re.compile("ももな.*:@([A-Za-z0-9_]+): ?のあだ[名な](を?教えて|(って|は)何)").search(status['content']):
                 ad = re.search("ももな.*:@([A-Za-z0-9_]+): ?のあだ[名な](を?教えて|(って|は)何)", status['content'])
@@ -792,7 +798,7 @@ class game():
                         spo = ":@{}:はこんな人だよ！！".format(acct
                                                       )
                     try:
-                        with codecs.open('date\\adana\\' + account["acct"] + '.txt', 'r', 'UTF-8') as f:
+                        with codecs.open('date\\adana\\' + acct + '.txt', 'r', 'UTF-8') as f:
                             name = f.read()
                             adan = name + "だよ！！"
                     except:
