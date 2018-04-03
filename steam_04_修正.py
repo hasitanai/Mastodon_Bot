@@ -145,12 +145,16 @@ class men_toot(StreamListener):
                         bot.rets(8, toot_now, g_vis, status['id'])
                     elif re.compile("(こそこそ)<br />(.+)").search(content):  # 悪用されないように変えてます
                         if status["visibility"] == "direct":
+                            # この機能いらなくなってきた所ある
+                            """
                             print("○受け取りました")
                             com = re.search("(こそこそ).*<br />(.+)", str(content))
                             messe = com.group(2)
                             toot_now = messe
                             g_vis = "public"
                             bot.rets(1, toot_now, g_vis)
+                            """
+                            pass
                     elif re.compile("連想ゲーム開始").search(content):
                         if rensou_time:
                             toot_now = ("@" + account["acct"] + " "
@@ -776,8 +780,8 @@ class game():
                         if len(tex0) > 400:
                             toot_now = "これ以上:@{}:のこと覚えられないよ……整頓するからもう少し待ってね(｡>﹏<｡)".format(acct)
                             bot.rets(6, toot_now, "public")
-                        elif re.search("[^:]@[A-Za-z0-9_]+[^:]", tex1):
-                             toot_now = "٩(๑`^´๑)۶いたずらしちゃダメ！！！！"
+                        elif re.search("[^:]?@[A-Za-z0-9_]+[^:]?", tex1):
+                             toot_now = "٩(๑`^´๑)۶リプライのいたずらしちゃダメ！！！！"
                              count.emo03(account["acct"], -64)
                         else:
                             with open("game\\prof\\{}.txt".format(acct),"a") as f:
