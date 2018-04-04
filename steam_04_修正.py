@@ -599,6 +599,7 @@ class bot():
 
     def res04(status): #あだ名実装
         account = status["account"]
+        profile_emojis = status["profile_emojis"]
         if account["acct"] != "JC":
             data_dir_path = u"./thank/"
             abs_name = data_dir_path + '/' + account["acct"] + '.txt'
@@ -763,44 +764,77 @@ class game():
     def prof(status):
         account = status["account"]
         content = Re1.text(status["content"])
+        profile_emojis = status["profile_emojis"]
         if account["acct"] != "JC":
             spo = None
-            if re.compile("ももな.*:@([A-Za-z0-9_]+): ?はこんな(人|ひと|やつ|奴|方).*[：:]").search(content):
+            if re.compile("ももな.*:@([A-Za-z0-9_]+): ?(は|って)こんな(人|ひと|やつ|奴|方).*[：:]").search(content):
                 print("○hitしました♪")
-                word = re.search("ももな.*:@([A-Za-z0-9_]+): ?はこんな(人|ひと|やつ|奴|方).*[：:](<br />)?(.+)", str(content))
+                word = re.search("ももな.*:@([A-Za-z0-9_]+): ?(は|って)こんな(人|ひと|やつ|奴|方).*[：:](<br />)?(.+)", str(content))
                 acct = word.group(1)
-                tex1 = word.group(4)
-                if len(tex1) > 60:
-                    toot_now = "٩(๑`^´๑)۶文章が長い！！！！"
-                else:
-                    tex2 = tex1 + "（by:@{}:）".format(account["acct"])
-                    try:
-                        with open("game\\prof\\{}.txt".format(acct),"r") as f:
-                            tex0 = f.read()
-                        if len(tex0) > 400:
-                            toot_now = "これ以上:@{}:のこと覚えられないよ……整頓するからもう少し待ってね(｡>﹏<｡)".format(acct)
-                            bot.rets(6, toot_now, "public")
-                        elif re.search("[^:]?@[A-Za-z0-9_]+[^:]?", tex1):
-                             toot_now = "٩(๑`^´๑)۶リプライのいたずらしちゃダメ！！！！"
-                             count.emo03(account["acct"], -64)
-                        else:
+                tex1 = word.group(5)
+                over = False
+                user_check = False
+                for x in profile_emojis:  # ユーザー絵文字検出器～～ﾟ+.･ﾟ+｡(〃・ω・〃)｡+ﾟ･.+ﾟ
+                    if x["shortcode"] == ("@{}".format(acct)):
+                        print("○ユーザーを確認しました♪")
+                        user_check = True
+                        break
+                if user_check == True:
+                    if len(tex1) > 60:
+                        toot_now = "٩(๑`^´๑)۶文章が長い！！！！"
+                    else:
+                        tex2 = tex1 + "（by:@{}:）".format(account["acct"])
+                        try:
+                            with open("game\\prof\\{}.txt".format(acct),"r") as f:
+                                tex0 = f.read()
+                            with open("game\\prof\\{}.txt".format(acct),"r") as f:
+                                tex0s = f.readlines()
+                            resch = "^.*（by:@{}:）\n".format(account["acct"])
+                            tex3 = ""
+                            for x in tex0s:
+                                print(x)
+                                if re.search(resch, x):
+                                    over = True
+                                else:
+                                    tex3 = tex3 + x
+                            try:
+                                with open("game\\prof\\{}.txt".format(acct), "w") as f:
+                                    print(tex3)
+                                    f.write(tex3)
+                                print("○上書きしたよ！！！！")
+                            except:
+                                with open("game\\prof\\{}.txt".format(acct), "w") as f:
+                                    f.write(tex0)
+                            else:
+                                pass
+                            if len(tex0) > 400:
+                                toot_now = "これ以上:@{}:のこと覚えられないよ……整頓するからもう少し待ってね(｡>﹏<｡)".format(acct)
+                                bot.rets(6, toot_now, "public")
+                            elif re.search("[^:]?@[A-Za-z0-9_]+[^:]?", tex1):
+                                 toot_now = "٩(๑`^´๑)۶リプライのいたずらしちゃダメ！！！！"
+                                 count.emo03(account["acct"], -64)
+                            else:
+                                with open("game\\prof\\{}.txt".format(acct),"a") as f:
+                                    f.write(tex2+"\n")
+                                if over == True:
+                                    toot_now = (":@{0}:ありがと！！\n:@{1}:のこと、覚え直した！！！！".format(account["acct"], acct)+"\n#ももな図鑑")
+                                else:
+                                    toot_now = (":@{0}:ありがと！！\n:@{1}:の知ってること、また一つ覚えた！！！！".format(account["acct"], acct)+"\n#ももな図鑑")
+                        except:
                             with open("game\\prof\\{}.txt".format(acct),"a") as f:
                                 f.write(tex2+"\n")
-                            toot_now = (":@{0}:ありがと！！\n:@{1}:の知ってること、また一つ覚えた！！！！".format(account["acct"], acct)+"\n#ももな図鑑")
-                    except:
-                        with open("game\\prof\\{}.txt".format(acct),"a") as f:
-                            f.write(tex2+"\n")
-                        toot_now = (":@{0}:ありがと！！\n:@{1}:のこと覚えた！！！！".format(account["acct"], acct)+"\n#ももな図鑑")
+                            toot_now = (":@{0}:ありがと！！\n:@{1}:のこと覚えた！！！！".format(account["acct"], acct)+"\n#ももな図鑑")
+                else:
+                    toot_now = (":@{}:は実在しない人だよ……(｡>﹏<｡)".format(acct) + "\n#ももな図鑑")
                 bot.rets(6, toot_now, "public")
-            elif re.compile("ももな.*:@([A-Za-z0-9_]+): ?(のこと(教|おし)えて|って(誰|何))").search(content):
+            elif re.compile("ももな.*:@([A-Za-z0-9_]+): ?((について|の(こと|事))(教|おし)[えへ]て|って[誰何])").search(content):
                 print("○hitしました♪")
-                word = re.search("ももな.*:@([A-Za-z0-9_]+): ?(のこと(教|おし)えて|って(誰|何))", str(content))
+                word = re.search("ももな.*:@([A-Za-z0-9_]+): ?((について|の(こと|事))(教|おし)[えへ]て|って[誰何])", str(content))
                 acct = word.group(1)
                 try:
                     with open("game\\prof\\{}.txt".format(acct),"r") as f:
                         tex0 = f.read()
-                        spo = ":@{}:はこんな人だよ！！".format(acct
-                                                      )
+                        spo = ":@{}:はこんな人だよ！！".format(acct)
                     try:
                         with codecs.open('date\\adana\\' + acct + '.txt', 'r', 'UTF-8') as f:
                             name = f.read()
