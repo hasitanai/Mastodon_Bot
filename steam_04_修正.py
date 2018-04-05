@@ -903,7 +903,7 @@ class game():
                 return bot.rets(6, toot_now, "public", None, spo)
 
 
-    def world(status):
+    def world(status):  # 使われない機能……
         account = status["account"]
         content = Re1.text(status["content"])
         hitting = 'セカイが(.+)になっちゃ(っ[たて]|いま[すし])'
@@ -914,13 +914,24 @@ class game():
         else:
             pass
 
-    def rensou(status):
-        """
-        toot = bot.toot
-        toot("٩(๑❛ᴗ❛๑)۶今から連想ゲームを始めます！！", "")
-
-　　　　"""
-        # 多分没案になりまーーーーす！！
+    def quest(status):  # 連想ゲームをボツにして変わりの予定
+        account = status["account"]
+        content = Re1.text(status["content"])
+        profile_emojis = status["profile_emojis"]
+        if account["acct"] != "JC":
+            if re.compile("ももな.*:@([A-Za-z0-9_]+): ?の戦闘力(教えて|おしえて|おねがい|お願い|表示)").search(content):
+                word = re.search("ももな.*:@([A-Za-z0-9_]+): ?の戦闘力(教えて|おしえて|おねがい|お願い|表示)", str(content))
+                acct = word.group(1)
+                user_check = False
+                for x in profile_emojis:  # ユーザー絵文字検出器～～ﾟ+.･ﾟ+｡(〃・ω・〃)｡+ﾟ･.+ﾟ
+                    if x["shortcode"] == ("@{}".format(acct)):
+                        print("○ユーザーを確認しました♪")
+                        user_check = True
+                        break
+                if user_check == True:
+                    pass
+                else:
+                    pass
         pass
 
     def quiz(status):
