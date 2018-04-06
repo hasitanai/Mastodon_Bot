@@ -944,33 +944,42 @@ class game():
                     if 0 == it["statuses_count"]:
                         toot_now = 'まだ冒険してない新規さんだよ！！'
                     else:
-                        p = math.sqrt(7.298555)
+                        p = math.sqrt(7.298555)  # 平方根の処理だよ！
                         for x in range(1,101):
                             e = int(pow(x-1,p)*p)+(10*x) 
                             if e < ex:
                                 xx = ex - e
                             else:
                                 lv = x
+                                if x == 1:
+                                    xx = e - ex
                                 break
                         ak = int(it["followers_count"]/3)+int(lv*it["followers_count"]/400)+lv
                         df = int(it["following_count"]/3)+int(lv*it["followers_count"]/400)+lv
-                        hp = int(((df/60)+lv) * int(ex / 1000))
-                        g = int(game.emo(it["acct"]))
-                        if g < 0:
-                            g = 0
-                        a = datetime.strptime(re.sub("Z","", status['created_at']), '%Y-%m-%dT%H:%M:%S.%f')
-                        a = a.replace(tzinfo=tzutc())
-                        b = it['created_at']
-                        d = a - b
-                        ra = int(int(d.days) / (ex/25) ) + 1 + int(it["followers_count"]/1000)
-                        if ra > 30:
-                            ra = 30
-                        toot_now = (":@{0}:の戦闘力だよ！！\nLv：{1}　レア度：{2}\n攻撃力：{3}\n防御力：{4}\nHP：{5}\n所持金：{6}\n次のLvまであと{7}tootだよ！！！！".format(
-                            acct, lv, ra, ak, df, hp, g, xx))
-                        toot_now = toot_now+"\n#ももなクエスト"
-                        pass
+                        hp = int(((df/60)+lv) * (int(ex / 1000)+1))
+                        mn = int(min(it["followers_count"], it["following_count"]))
+                        mx = int(max(it["followers_count"], it["following_count"]))
+                        mp = int(max(mn-((mx-mn)/8), 0))
+                        try:
+                            g = int(game.emo(it["acct"]))
+                            if g < 0:
+                                g = 0
+                            a = datetime.strptime(re.sub("Z","", status['created_at']), '%Y-%m-%dT%H:%M:%S.%f')
+                            a = a.replace(tzinfo=tzutc())
+                            b = it['created_at']
+                            d = a - b
+                            ra = int(int(d.days) / (ex/25) ) + 1 + int(it["followers_count"]/1000)
+                            if ra > 30:
+                                ra = 30
+                            toot_now = (":@{0}:の戦闘力だよ！！\nLv：{1}　レア度：{2}\n"
+                                        "攻撃力：{3}\n防御力：{4}\nHP：{5}　MP：{6}"
+                                        "\n所持金：{7}\n次のLvまで{8}tootだよ！！").format(
+                                            acct, lv, ra, ak, df, hp, mp, g, xx)
+                            toot_now = toot_now+"\n#ももなクエスト"
+                        except FileNotFoundError:
+                            toot_now = "まだ会ったことがない人だからわからないの(｡>﹏<｡)"
                 else:
-                    toot_now = 'この世に存在しない人だよ！！！！'
+                    toot_now = '¿?(๑ºㅅº๑)¿?この世に存在しない人だよ！！！！'
                     pass
                 bot.rets(5, toot_now, "public")
         pass
