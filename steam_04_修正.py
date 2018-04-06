@@ -1,14 +1,15 @@
 from mastodon import *
-import time, re, sys, os, json, random, io, gc
+import time, re, sys, os, json, random, io, gc, math
 import threading, requests, pprint, codecs
 from time import sleep
-from datetime import datetime
+from datetime import timedelta, datetime
 from pytz import timezone
 import warnings, traceback
 import xlrd, xlsxwriter
 from xml.sax.saxutils import unescape as unesc
 import asyncio
 from shinagalize import shinagalize
+from dateutil.tz import tzutc
 
 mastodon = None
 
@@ -258,6 +259,7 @@ class LTL():
         game.senryu(status)
         game.cinema(status)
         game.prof(status)
+        game.quest(status)
         # ここまで
 
 class bot():
@@ -758,6 +760,14 @@ class bot():
 
 
 class game():
+    def emo(user):
+        data_dir_path = u"./thank/"
+        file_list = os.listdir(r'./thank/')
+        abs_name = data_dir_path + '/' + user + '.txt'
+        with open(abs_name, 'r') as f:
+            x = f.read()
+        return x
+    
     def fav(id):
         mastodon.status_favourite(id)
 
@@ -919,19 +929,50 @@ class game():
         content = Re1.text(status["content"])
         profile_emojis = status["profile_emojis"]
         if account["acct"] != "JC":
-            if re.compile("ももな.*:@([A-Za-z0-9_]+): ?の戦闘力(教えて|おしえて|おねがい|お願い|表示)").search(content):
-                word = re.search("ももな.*:@([A-Za-z0-9_]+): ?の戦闘力(教えて|おしえて|おねがい|お願い|表示)", str(content))
+            if re.compile("ももな.*:@([A-Za-z0-9_]+): ?の戦闘力を?(教[へえ][てろ]|おし[へえ][てろ]|おねが[ひい]|お願[ひい]|表示)").search(content):
+                word = re.search("ももな.*:@([A-Za-z0-9_]+): ?の戦闘力を?(教[へえ][てろ]|おし[へえ][てろ]|おねが[ひい]|お願[ひい]|表示)", str(content))
                 acct = word.group(1)
                 user_check = False
                 for x in profile_emojis:  # ユーザー絵文字検出器～～ﾟ+.･ﾟ+｡(〃・ω・〃)｡+ﾟ･.+ﾟ
                     if x["shortcode"] == ("@{}".format(acct)):
                         print("○ユーザーを確認しました♪")
+                        it = mastodon.account(int(x['account_id']))
                         user_check = True
                         break
                 if user_check == True:
-                    pass
+                    ex = int(it["statuses_count"])
+                    if 0 == it["statuses_count"]:
+                        toot_now = 'まだ冒険してない新規さんだよ！！'
+                    else:
+                        p = math.sqrt(7.298555)
+                        for x in range(1,101):
+                            e = int(pow(x-1,p)*p)+(10*x) 
+                            if e < ex:
+                                xx = ex - e
+                            else:
+                                lv = x
+                                break
+                        ak = int(it["followers_count"]/3)+int(lv*it["followers_count"]/400)+lv
+                        df = int(it["following_count"]/3)+int(lv*it["followers_count"]/400)+lv
+                        hp = int(((df/60)+lv) * int(ex / 1000))
+                        g = int(game.emo(it["acct"]))
+                        if g < 0:
+                            g = 0
+                        a = datetime.strptime(re.sub("Z","", status['created_at']), '%Y-%m-%dT%H:%M:%S.%f')
+                        a = a.replace(tzinfo=tzutc())
+                        b = it['created_at']
+                        d = a - b
+                        ra = int(int(d.days) / (ex/25) ) + 1 + int(it["followers_count"]/1000)
+                        if ra > 30:
+                            ra = 30
+                        toot_now = (":@{0}:の戦闘力だよ！！\nLv：{1}　レア度：{2}\n攻撃力：{3}\n防御力：{4}\nHP：{5}\n所持金：{6}\n次のLvまであと{7}tootだよ！！！！".format(
+                            acct, lv, ra, ak, df, hp, g, xx))
+                        toot_now = toot_now+"\n#ももなクエスト"
+                        pass
                 else:
+                    toot_now = 'この世に存在しない人だよ！！！！'
                     pass
+                bot.rets(5, toot_now, "public")
         pass
 
     def quiz(status):
