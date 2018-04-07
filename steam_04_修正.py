@@ -178,6 +178,10 @@ class men_toot(StreamListener):
                             ids = status["id"]
                             bot.trial(name, point, ids)
                             pass
+                    elif re.compile("ももな(図鑑|ずかん)の?([修訂]正)：.+").search(content):
+                        com = re.search("ももな(図鑑|ずかん)の?([修訂]正)：(.+)", str(content))
+                        tx = com.group(2)
+                        bot.toot("@lamazeP ももな図鑑の訂正要望が来たよ！！\n:@{0}: 「{1}」".format(account["acct"], tx), "direct", status["id"])
                     else:
                         pass
                 v = threading.Timer(5, bot.fav_now,[status["id"]])
@@ -948,11 +952,10 @@ class game():
                         for x in range(1,101):
                             e = int(pow(x-1,p)*p)+(10*x) 
                             if e < ex:
-                                xx = ex - e
+                                pass
                             else:
+                                xx = e - ex
                                 lv = x
-                                if x == 1:
-                                    xx = e - ex
                                 break
                         ak = int(it["followers_count"]/3)+int(lv*it["followers_count"]/400)+lv
                         df = int(it["following_count"]/3)+int(lv*it["followers_count"]/400)+lv
@@ -968,12 +971,12 @@ class game():
                             a = a.replace(tzinfo=tzutc())
                             b = it['created_at']
                             d = a - b
-                            ra = int(int(d.days) / (ex/25) ) + 1 + int(it["followers_count"]/1000)
-                            if ra > 30:
-                                ra = 30
+                            ra = int(math.sqrt(d.days/ex)*10) + int(it["followers_count"]/1000)
+                            if ra >= 20:
+                                ra = "20(MAX)"
                             toot_now = (":@{0}:の戦闘力だよ！！\nLv：{1}　レア度：{2}\n"
-                                        "攻撃力：{3}\n防御力：{4}\nHP：{5}　MP：{6}"
-                                        "\n所持金：{7}\n次のLvまで{8}tootだよ！！").format(
+                                        "攻撃力：{3}\n防御力：{4}\n"  # "かしこさ：{9}\nみりょく：{10}\n"
+                                        "HP：{5}　MP：{6}\n所持金：{7}\n次のLvまで{8}tootだよ！！").format(
                                             acct, lv, ra, ak, df, hp, mp, g, xx)
                             toot_now = toot_now+"\n#ももなクエスト"
                         except FileNotFoundError:
@@ -983,6 +986,31 @@ class game():
                     pass
                 bot.rets(5, toot_now, "public")
         pass
+
+    def count(user):
+        i = 0
+        f = 0
+        b = 0
+        u = mastodon.account(user)
+        print(u['username'])
+        c = mastodon.account_statuses(user,limit=25)
+        for x in range(3):
+            d = mastodon.account_statuses(user, max_id=(c[-1])["id"], limit=25)
+            for x in d:
+                c.append(x)
+        for x in c:
+            f = f + x['favourites_count']
+            b = b + x['reblogs_count']
+            i = i + 1
+            print(x["id"],x['favourites_count'],x['reblogs_count'])
+
+        print(f)
+        print(b)
+        f = f/i
+        b = b/i
+        s = {'fav率':f , 'reb率':b}
+        print("拾った回数：{}".format(i))
+        return s
 
     def quiz(status):
         account = status["account"]
