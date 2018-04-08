@@ -3,7 +3,9 @@ from time import sleep
 import threading, re, sys, io
 import warnings, traceback
 from xml.sax.saxutils import unescape as unesc
-from xml.sax.saxutils import escape as esc
+import datetime
+from dateutil import zoneinfo, tz  # New!
+
 
 url_ins = open("instance.txt").read()
 
@@ -23,6 +25,13 @@ class response_toot(StreamListener):
     def on_update(self, status):
         try:
             log.read(status)
+            print(status["created_at"])
+            a = datetime.datetime.strptime(re.sub("Z", "", str(status["created_at"])), '%Y-%m-%dT%H:%M:%S.%f')
+            a = a.replace(tzinfo=tz.tzutc())
+            def localtime(dt, tzname='Asia/Tokyo'):
+                return dt.replace(tzinfo=tz.tzutc()).astimezone(zoneinfo.gettz(tzname))
+            a = localtime(a)
+            print(a)
             # ここに受け取ったtootに対してどうするか追加してね（*'∀'人）
             pass
         except:
@@ -64,5 +73,5 @@ class log():
 
 if __name__ == '__main__':
     listener = response_toot()
-    #mastodon.local_stream(listener)
+    mastodon.local_stream(listener)
     mastodon.user_stream(listener)
