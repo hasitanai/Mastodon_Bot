@@ -3,13 +3,13 @@ import time, re, sys, os, json, random, io, gc, math
 import threading, requests, pprint, codecs
 from time import sleep
 from datetime import timedelta, datetime
-from pytz import timezone
+from pytz import timezone  # 変更予定
 import warnings, traceback
 import xlrd, xlsxwriter
 from xml.sax.saxutils import unescape as unesc
 import asyncio
 from shinagalize import shinagalize
-from dateutil.tz import tzutc
+from dateutil.tz import tzutc  # 変更予定
 
 mastodon = None
 
