@@ -318,7 +318,27 @@ class bot():
             if re.compile(str(l[x])).search(re.sub("<p>|</p>", "", str(status))):
                 j = True
                 print("う～う～！セクハラ検出しました！　→" + str(l[x]))
-                bot.toot("@lamazeP (｡>﹏<｡)これってセクハラですか？？\n:{0}: 「{1}」".format(str(account["acct"]),
+                bot.toot("@lamazeP (｡>﹏<｡)これってセクハラですか？？\n:@{0}: 「{1}」".format(str(account["acct"]),
+                         str(content)), "direct", status["id"])
+                bot.thank(account, -64)
+                break
+            else:
+                j = False
+        return j
+
+    def block02(status):
+        account = status["account"]
+        content = status["content"]
+        with codecs.open("NG\bougen.txt", 'r', 'utf-8') as f:
+            l = []
+            for x in f:
+                l.append(x.rstrip("\r\n"))
+        m = len(l)
+        for x in range(m):
+            if re.compile(str(l[x])).search(re.sub("<p>|</p>", "", str(status))):
+                j = True
+                print("う～う～！暴言検出しました！　→" + str(l[x]))
+                bot.toot("@lamazeP (｡>﹏<｡)こちらはですか？？\n:@{0}: 「{1}」".format(str(account["acct"]),
                          str(content)), "direct", status["id"])
                 bot.thank(account, -64)
                 break
@@ -572,22 +592,24 @@ class bot():
             if matches:
                 print("○hitしました♪")
                 sekuhara = bot.block01(status)
+                bougen = bot.block02(status)
                 if len(content) > 60:
                     toot_now = "٩(๑`^´๑)۶長い！！！！！！"
                     g_vis = "public"
                     bot.rets(5, toot_now, g_vis)
                 else:
-                    if not sekuhara:
+                    if sekuhara:
+                        print("○セクハラサーチ！！")
+                        toot_now = "そんなセクハラ分かりません\n(* ,,Ծ‸Ծ,, )ﾌﾟｰ"
+                    elif bougen:
+                        print("○暴言サーチ！！")
+                        toot_now = "(｡>﹏<｡)暴言怖いよぉ……"
+                    else:
                         print("○だったら")
                         shinagalized_text = shinagalize(matches.group(1))
                         toot_now = ":@" + account["acct"] + ":" + shinagalized_text + "マストドンして❤"
-                        g_vis = "public"
-                        bot.rets(5, toot_now, g_vis)
-                    else:
-                        print("○セクハラサーチ！！")
-                        toot_now = "そんなセクハラ分かりません\n(* ,,Ծ‸Ծ,, )ﾌﾟｰ"
-                        g_vis = "public"
-                        bot.rets(5, toot_now, g_vis)
+                    g_vis = "public"
+                    bot.rets(5, toot_now, g_vis)
 
     def res03(status):
         account = status["account"]
@@ -641,14 +663,17 @@ class bot():
                     adan = re.sub(':', '', adan)
                     adan = re.sub('@[a-zA-Z0-9_]+', ':\1:', adan)
                     sekuhara = bot.block01(status)
+                    bougen = bot.block02(status)
                     if acct == account["acct"]:
-                        if not sekuhara:
+                        if sekuhara:
+                            toot_now = "(｡>﹏<｡)そんないやらしい呼び方出来ないよーー……"
+                        elif bougen:
+                            toot_now = "(｡>﹏<｡)ふぇぇ暴言怖いよーー……"
+                        else:
                             with codecs.open('date\\adana\\' + account["acct"] + '.txt', 'w', 'UTF-8') as f:
                                 f.write(adan)
                             toot_now = ("@{1} ٩(๑> ₃ <)۶分かったーーーー！！\n「{0}」って呼ぶようにするね！！"
                                         "#ももなのあだ名事情".format(adan, account["acct"]))
-                        else:
-                            toot_now = "(｡>﹏<｡)そんないやらしい呼び方出来ないよーー……"
                     elif len(adan) > 60:
                         toot_now = "٩(๑`^´๑)۶長い！！！！！！"
                     else:
