@@ -329,7 +329,7 @@ class bot():
     def block02(status):
         account = status["account"]
         content = status["content"]
-        with codecs.open("NG\bougen.txt", 'r', 'utf-8') as f:
+        with codecs.open("NG\\bougen.txt", 'r', 'utf-8') as f:
             l = []
             for x in f:
                 l.append(x.rstrip("\r\n"))
@@ -643,17 +643,20 @@ class bot():
                     adan = re.sub(':', '', adan)
                     adan = re.sub('@[a-zA-Z0-9_]+', ':\1:', adan)
                     sekuhara = bot.block01(status)
+                    bougen = bot.block02(status)
                     if len(adan) > 60:
                         toot_now = "٩(๑`^´๑)۶長い！！！！！！"
                     else:
-                        if not sekuhara:
+                        if sekuhara:
+                            toot_now = "(｡>﹏<｡)そんないやらしい呼び方出来ないよーー……"
+                        elif bougen:
+                            toot_now = "(｡>﹏<｡)ふぇぇ暴言怖いよーー……"
+                        else:
                             with codecs.open('date\\adana\\' + account["acct"] + '.txt', 'w', 'UTF-8') as f:
                                 f.write(adan)
                             toot_now = "@{1} ٩(๑> ₃ <)۶分かったーーーー！！\n「{0}」って呼ぶようにするね！！".format(adan, account["acct"])
-                        else:
-                            toot_now = "(｡>﹏<｡)そんないやらしい呼び方出来ないよーー……"
                     bot.rets(6, toot_now, status["visibility"], status["id"])
-            elif re.compile("ももな.*:@([A-Za-z0-9_]+): ?のこと.*[｢「](.+)[」｣]って[呼よ]んで").search(status['content']):
+            elif re.compile("ももな.*:@([A-Za-z0-9_]+): ?(さん)?のこと.*[｢「](.+)[」｣]って[呼よ]んで").search(status['content']):
                 ad = re.search("ももな.*:@([A-Za-z0-9_]+): ?のこと.*[｢「](.+)[」｣]って[呼よ]んで", status['content'])
                 acct = ad.group(1)
                 print("○hitしました♪")
