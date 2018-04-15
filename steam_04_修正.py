@@ -519,7 +519,7 @@ class bot():
                         toot_now = (":@{0}: {1}\n{2}\n#ニコフレ挨拶部".format(account['acct'], name, posting))
                         bot.rets(6, toot_now, "public")
                     else:
-                        try:
+                        try:  # 新しいVerに向けてコードを組まないといけない…… 
                             f = codecs.open('at_time\\' + account["acct"] + '.txt', 'r', 'UTF-8')
                             nstr = f.read()
                             f.close
@@ -722,7 +722,15 @@ class bot():
                     toot_now = (":@{}:のあだ名は設定してないよ！！！！".format(account["acct"]))
                 bot.rets(6, toot_now, "public")
 
-
+    def res05(status):  # t.co警察
+        account = status["account"]
+        content = Re1.text(status["content"])
+        if account["acct"] != "JC":
+            matches = re.search("t.co", content)
+            if matches:
+                toot_now = ("t.co！？".format(account["acct"]))
+                bot.rets(2, toot_now, "public")
+    
     def fav01(status):
         account = status["account"]
         if re.compile("(ももな|:@JC:|ちゃんもも|:nicoru\d*:|\WJC\W|もなな)").search(status['content']):
