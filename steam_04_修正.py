@@ -346,7 +346,7 @@ class bot():
                 j = False
         return j
 
-    def trial01(name, point,ids): # デバック用
+    def trial01(name, point, ids): # デバック用
         path = 'thank\\' + name + '.txt'
         if os.path.exists(path):
             f = open(path, 'r')
@@ -817,9 +817,9 @@ class game():
         profile_emojis = status["profile_emojis"]
         if account["acct"] != "JC":
             spo = None
-            if re.compile("ももな.*:@([A-Za-z0-9_]+): ?(は|って)こんな(人|ひと|やつ|奴|方).*[：:]").search(content):
+            if re.compile("ももな.*:@([A-Za-z0-9_]+): ?(さん)?(は|って)こんな(人|ひと|やつ|奴|方).*[：:]").search(content):
                 print("○hitしました♪")
-                word = re.search("ももな.*:@([A-Za-z0-9_]+): ?(は|って)こんな(人|ひと|やつ|奴|方).*[：:](<br />)?(.+)", str(content))
+                word = re.search("ももな.*:@([A-Za-z0-9_]+): ?(さん)?(は|って)こんな(人|ひと|やつ|奴|方).*[：:](<br />)?(.+)", str(content))
                 acct = word.group(1)
                 tex1 = word.group(5)
                 over = False
@@ -877,9 +877,9 @@ class game():
                 else:
                     toot_now = (":@{}:は実在しない人だよ……(｡>﹏<｡)".format(acct) + "\n#ももな図鑑")
                 bot.rets(6, toot_now, "public")
-            elif re.compile("ももな.*:@([A-Za-z0-9_]+): ?((について|の(こと|事))(教|おし)[えへ]て|って[誰何])").search(content):
+            elif re.compile("ももな.*:@([A-Za-z0-9_]+): ?(さん)?((について|の(こと|事))(教|おし)[えへ]て|って[誰何])").search(content):
                 print("○hitしました♪")
-                word = re.search("ももな.*:@([A-Za-z0-9_]+): ?((について|の(こと|事))(教|おし)[えへ]て|って[誰何])", str(content))
+                word = re.search("ももな.*:@([A-Za-z0-9_]+): ?(さん)?((について|の(こと|事))(教|おし)[えへ]て|って[誰何])", str(content))
                 acct = word.group(1)
                 try:
                     with open("game\\prof\\{}.txt".format(acct),"r") as f:
