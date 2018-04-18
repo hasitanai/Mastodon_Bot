@@ -520,9 +520,8 @@ class bot():
                         bot.rets(6, toot_now, "public")
                     else:
                         try:  # 新しいVerに向けてコードを組まないといけない…… 
-                            f = codecs.open('at_time\\' + account["acct"] + '.txt', 'r', 'UTF-8')
-                            nstr = f.read()
-                            f.close
+                            with codecs.open('at_time\\' + account["acct"] + '.txt', 'r', 'UTF-8') as f:
+                                nstr = f.read()
                             print(nstr)
                             tstr = re.sub("\....Z", "", nstr)
                             last_time = datetime.strptime(tstr, '%Y-%m-%dT%H:%M:%S')
@@ -855,13 +854,12 @@ class game():
                             except:
                                 with open("game\\prof\\{}.txt".format(acct), "w") as f:
                                     f.write(tex0)
-                            else:
-                                pass
+                                print("○上書きできなかったよ……")
                             if len(tex0) > 400:
-                                toot_now = "これ以上:@{}:のこと覚えられないよ……整頓するからもう少し待ってね(｡>﹏<｡)".format(acct)
+                                toot_now = ("これ以上:@{}:のこと覚えられないよ……整頓するからもう少し待ってね(｡>﹏<｡)".format(acct))
                                 bot.rets(6, toot_now, "public")
                             elif re.search("[^:]?@[A-Za-z0-9_]+[^:]?", tex1):
-                                 toot_now = "٩(๑`^´๑)۶リプライのいたずらしちゃダメ！！！！"
+                                 toot_now = ("٩(๑`^´๑)۶リプライのいたずらしちゃダメ！！！！")
                                  count.emo03(account["acct"], -64)
                             else:
                                 with open("game\\prof\\{}.txt".format(acct),"a") as f:
