@@ -820,7 +820,7 @@ class game():
                 print("○hitしました♪")
                 word = re.search("ももな.*:@([A-Za-z0-9_]+): ?(さん)?(は|って)こんな(人|ひと|やつ|奴|方).*[：:](<br />)?(.+)", str(content))
                 acct = word.group(1)
-                tex1 = word.group(5)
+                tex1 = word.group(6)
                 over = False
                 user_check = False
                 for x in profile_emojis:  # ユーザー絵文字検出器～～ﾟ+.･ﾟ+｡(〃・ω・〃)｡+ﾟ･.+ﾟ
@@ -899,11 +899,11 @@ class game():
         account = status["account"]
         content = Re1.text(status["content"])
         gameIn = ("(劇場|げきじょう|[Cc]inema|シネマ)(ゲーム|げーむ)[：:]"+
-                  "<br />【(.+)】<br />起[：:](.+)<br />承[：:](.+)<br />転[：:](.+)<br />結[：:](.+)")
+                  "\n【(.+)】\n起[：:](.+)\n承[：:](.+)\n転[：:](.+)\n結[：:](.+)")
         gameOut = "(劇場|げきじょう|[Cc]inema|シネマ)(ゲーム|げーむ)"+".*(ひとつ|おねが[いひ]|お願[いひ]|[1１一]つ)"
         if re.compile(gameIn).search(content):
             print("○hitしました♪")
-            word = re.search(gameIn+"<br />.*", str(content))
+            word = re.search(gameIn+"(\n.*)?", str(content))
             sekuhara = bot.block01(status)
             if sekuhara:
                 bot.rets(5, "٩(๑`^´๑)۶えっちなのはよくない！！！！", "public")
