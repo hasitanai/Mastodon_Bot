@@ -725,7 +725,7 @@ class bot():
         account = status["account"]
         content = Re1.text(status["content"])
         if account["acct"] != "JC":
-            matches = re.search("t.co", content)
+            matches = re.search("t\.co", content)
             if matches:
                 toot_now = ("t.co！？".format(account["acct"]))
                 bot.rets(2, toot_now, "public")
