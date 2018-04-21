@@ -257,6 +257,7 @@ class LTL():
         bot.res02(status)
         bot.res03(status)
         bot.res04(status)
+        bot.res05(status)
         bot.check00(status)
         bot.check02(status)
         game.poem(status)
@@ -721,14 +722,26 @@ class bot():
                     toot_now = (":@{}:のあだ名は設定してないよ！！！！".format(account["acct"]))
                 bot.rets(6, toot_now, "public")
 
-    def res05(status):  # t.co警察
+    def res05(status):  # t.co警察とか
         account = status["account"]
         content = Re1.text(status["content"])
         if account["acct"] != "JC":
-            matches = re.search("t\.co", content)
-            if matches:
+            if re.search("t\.co", content):
                 toot_now = ("t.co！？".format(account["acct"]))
                 bot.rets(2, toot_now, "public")
+                bot.thank(account, -64)
+        else:
+            if re.search("なんでも|何でも|ナンデモ", content):
+                if not count.n:
+                    toot_now = ("ん？".format(account["acct"]))
+                    bot.rets(2, toot_now, "public")
+                    count.n = True
+                    def cool():
+                        return count.n = False
+                    t = threading.Timer(180, cool)
+                    t.start()
+                else:
+                    
     
     def fav01(status):
         account = status["account"]
@@ -1351,6 +1364,7 @@ class count():
     sec = 0
     timer_hello = 0
     memo = 0
+    n = False
 
     def emo01(time=10800):  # 定期的に評価を下げまーーす♪（無慈悲）
         while 1:
