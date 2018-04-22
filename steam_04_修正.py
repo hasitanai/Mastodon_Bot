@@ -725,23 +725,28 @@ class bot():
     def res05(status):  # t.co警察とか
         account = status["account"]
         content = Re1.text(status["content"])
-        if account["acct"] != "JC":
-            if re.search("t\.co", content):
-                toot_now = ("t.co！？".format(account["acct"]))
-                bot.rets(2, toot_now, "public")
-                bot.thank(account, -64)
-        else:
-            if re.search("なんでも|何でも|ナンデモ", content):
-                if not count.n:
-                    toot_now = ("ん？".format(account["acct"]))
+        if re.search("(?:[^a-z0-9_-]|^)t\.co/[a-zA-Z0-9]", content):
+            if count.t == False:
+                if account["acct"] != "JC":
+                    print("○hitしました♪")
+                    toot_now = ("t.co！？".format(account["acct"]))
                     bot.rets(2, toot_now, "public")
-                    count.n = True
+                    bot.thank(account, -64)
+                    count.t = True
                     def cool():
-                        return count.n = False
-                    t = threading.Timer(180, cool)
+                        count.t = False
+                    t = threading.Timer(120, cool)
                     t.start()
-                else:
-                    
+        elif re.compile("なんでも|何でも|ナンデモ|ナンでも").search(content):
+            if count.n == False:
+                print("○hitしました♪")
+                toot_now = ("ん？".format(account["acct"]))
+                bot.rets(2, toot_now, "public")
+                count.n = True
+                def cool():
+                    count.n = False
+                t = threading.Timer(180, cool)
+                t.start()
     
     def fav01(status):
         account = status["account"]
@@ -1365,6 +1370,7 @@ class count():
     timer_hello = 0
     memo = 0
     n = False
+    t = False
 
     def emo01(time=10800):  # 定期的に評価を下げまーーす♪（無慈悲）
         while 1:
