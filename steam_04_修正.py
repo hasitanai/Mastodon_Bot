@@ -253,6 +253,7 @@ class LTL():
         # 以下bot機能の一覧
         bot.check01(status)
         bot.fav01(status)
+        bot.fav02(status)
         bot.res01(status)
         bot.res02(status)
         bot.res03(status)
@@ -562,6 +563,15 @@ class bot():
                         
                         except:
                             print("○初あいさつします（*'∀'人）")
+                            try:
+                                v = threading.Timer(2, mastodon.status_reblog,[status["id"]])
+                                v.start()
+                                jc = mastodon.acount("5667")
+                                ct = jc["statuses_count"]
+                                ct += 1
+                            except:
+                                print("○失敗しました")
+                                pass
                             if account['statuses_count'] <= 2:
                                 if account['display_name'] == "":
                                     name = account['acct']
@@ -581,6 +591,14 @@ class bot():
                             if shinki is True:
                                 bot.toot("@lamazeP 新規さんが来たよーー（小声）\n【" + str(account['acct']) + "】",
                                          "direct", status["id"])
+                            try:
+                                if re.match('^\d+000$', str(ct)):
+                                        toot_now = "°˖✧◝(⁰▿⁰)◜✧˖" + str(ct) + 'toot達成ーーーー♪♪'
+                                        g_vis = "public"
+                                        bot.rets(4, toot_now, g_vis)
+                            except:
+                                print("○キリ番に気づいていないようです")
+                                pass
         else:
             print("○反応がない人なので挨拶しません（*'∀'人）")
 
@@ -755,6 +773,13 @@ class bot():
             v = threading.Timer(5, bot.fav_now,[status["id"]])
             v.start()
 
+    def fav02(status):
+        account = status["account"]
+        if re.compile("(ラマーズ[PpＰｐ])|[Ll]amaze[Pp]").search(status['content']):
+            bot.thank(account, 10)
+            v = threading.Timer(5, bot.fav_now,[status["id"]])
+            v.start()
+            
     def thank(account, point):
         path = 'thank\\' + account["acct"] + '.txt'
         if os.path.exists(path):
