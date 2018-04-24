@@ -735,7 +735,7 @@ class bot():
                     count.t = True
                     def cool():
                         count.t = False
-                    t = threading.Timer(120, cool)
+                    t = threading.Timer(90, cool)
                     t.start()
         elif re.compile("なんでも|何でも|ナンデモ|ナンでも").search(content):
             if count.n == False:
