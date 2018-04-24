@@ -315,7 +315,7 @@ class bot():
             for x in f:
                 l.append(x.rstrip("\r\n"))
         m = len(l)
-        for x in range(m):
+        for x in range(0, m):
             if re.compile(str(l[x])).search(re.sub("<p>|</p>", "", str(status))):
                 j = True
                 print("う～う～！セクハラ検出しました！　→" + str(l[x]))
@@ -335,7 +335,7 @@ class bot():
             for x in f:
                 l.append(x.rstrip("\r\n"))
         m = len(l)
-        for x in range(m):
+        for x in range(0, m):
             if re.compile(str(l[x])).search(re.sub("<p>|</p>", "", str(status))):
                 j = True
                 print("う～う～！暴言検出しました！　→" + str(l[x]))
