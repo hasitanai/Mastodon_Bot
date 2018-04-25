@@ -743,18 +743,20 @@ class bot():
     def res05(status):  # t.co警察とか
         account = status["account"]
         content = Re1.text(status["content"])
-        if re.search("(?:[^a-z0-9_-]|^)t\.co/[a-zA-Z0-9]", content):
-            if count.t == False:
-                if account["acct"] != "JC":
+        if re.search('href="(?:[^a-z0-9_-]|^)t\.co/[a-zA-Z0-9]', status["content"]):
+            if account["acct"] != "JC":
+                if count.t == False:
                     print("○hitしました♪")
                     toot_now = ("t.co！？".format(account["acct"]))
                     bot.rets(2, toot_now, "public")
-                    bot.thank(account, -64)
                     count.t = True
                     def cool():
                         count.t = False
                     t = threading.Timer(90, cool)
                     t.start()
+                else:
+                    print("○t.coしつこい٩(๑`^´๑)۶")
+                bot.thank(account, -64)
         elif re.compile("なんでも|何でも|ナンデモ|ナンでも").search(content):
             if count.n == False:
                 print("○hitしました♪")
@@ -775,7 +777,7 @@ class bot():
 
     def fav02(status):
         account = status["account"]
-        if re.compile("(ラマーズ[PpＰｐ])|[Ll]amaze[Pp]").search(status['content']):
+        if re.compile("(ラマーズ[PpＰｐ]|[Ll]amaze[Pp])").search(status['content']):
             bot.thank(account, 10)
             v = threading.Timer(5, bot.fav_now,[status["id"]])
             v.start()
