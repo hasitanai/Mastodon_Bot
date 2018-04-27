@@ -606,7 +606,7 @@ class bot():
         account = status["account"]
         content = Re1.text(status["content"])
         if account["acct"] != "JC":
-            matches = re.search("([^>]+)とマストドン(どちら|どっち)が大[切事]か[分わ]かってない", content)
+            matches = re.search("([^>]+)とマストドン[、]?(どちら|どっち)が大[切事]か[分わ]かってない", content)
             if matches:
                 print("○hitしました♪")
                 sekuhara = bot.block01(status)
@@ -743,7 +743,7 @@ class bot():
     def res05(status):  # t.co警察とか
         account = status["account"]
         content = Re1.text(status["content"])
-        if re.search('href="(?:[^a-z0-9_-]|^)t\.co/[a-zA-Z0-9]', status["content"]):
+        if re.search('(?:[^a-z0-9_-]|^)t\.co/[a-zA-Z0-9]', status["content"]):
             if account["acct"] != "JC":
                 if count.t == False:
                     print("○hitしました♪")
