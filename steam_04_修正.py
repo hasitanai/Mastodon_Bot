@@ -204,6 +204,7 @@ class men_toot(StreamListener):
         except Exception as e:
             print("エラー情報【USER】\n" + traceback.format_exc())
             with open('error.log', 'a') as f:
+                f.write(status)
                 traceback.print_exc(file=f)
             pass
 
@@ -222,6 +223,7 @@ class res_toot(StreamListener):
         except Exception as e:
             print("エラー情報【LOCAL】\n" + traceback.format_exc())
             with open('error.log', 'a') as f:
+                f.write(status)
                 traceback.print_exc(file=f)
             pass
 
@@ -756,7 +758,7 @@ class bot():
                     t.start()
                 else:
                     print("○t.coしつこい٩(๑`^´๑)۶")
-                bot.thank(account, -64)
+                bot.thank(account, -32)
         elif re.compile("なんでも|何でも|ナンデモ|ナンでも").search(content):
             if count.n == False:
                 print("○hitしました♪")
@@ -775,10 +777,20 @@ class bot():
             v = threading.Timer(5, bot.fav_now,[status["id"]])
             v.start()
 
-    def fav02(status):
+    def fav02(status):  # 期間限定用
         account = status["account"]
         if re.compile("(ラマーズ[PpＰｐ]|[Ll]amaze[Pp])").search(status['content']):
-            bot.thank(account, 10)
+            bot.thank(account, 120)
+            v = threading.Timer(5, bot.fav_now,[status["id"]])
+            v.start()
+        elif re.compile("(ラマーズ|[Ll]amaze)(さん|くん|ちゃん|君)").search(status['content']):
+            bot.thank(account, 6)
+            v = threading.Timer(5, bot.fav_now,[status["id"]])
+            v.start()
+        elif re.compile("[らラ][まマ]([ＰｐpP]|[ぴピ][いぃー～]|[たさ]ん|ちゃん)").search(status['content']):
+            bot.thank(account, -120)
+        elif re.compile("P名は略さずに呼んであげよう").search(status['content']):
+            bot.thank(account, 1200)
             v = threading.Timer(5, bot.fav_now,[status["id"]])
             v.start()
             
@@ -892,12 +904,12 @@ class game():
                                 else:
                                     tex3 = tex3 + x
                             try:
-                                with open("game\\prof\\{}.txt".format(acct), "w") as f:
+                                with codecs.open("game\\prof\\{}.txt".format(acct), "w", 'utf-8') as f:
                                     print(tex3)
                                     f.write(tex3)
                                 print("○上書きしたよ！！！！")
                             except:
-                                with open("game\\prof\\{}.txt".format(acct), "w") as f:
+                                with codecs.open("game\\prof\\{}.txt".format(acct), "w", 'utf-8') as f:
                                     f.write(tex0)
                                 print("○上書きできなかったよ……")
                             if len(tex0) > 400:
@@ -907,14 +919,14 @@ class game():
                                  toot_now = ("٩(๑`^´๑)۶リプライのいたずらしちゃダメ！！！！")
                                  count.emo03(account["acct"], -64)
                             else:
-                                with open("game\\prof\\{}.txt".format(acct),"a") as f:
+                                with codecs.open("game\\prof\\{}.txt".format(acct),"a", 'utf-8') as f:
                                     f.write(tex2+"\n")
                                 if over == True:
                                     toot_now = (":@{0}:ありがと！！\n:@{1}:のこと、覚え直した！！！！".format(account["acct"], acct)+"\n#ももな図鑑")
                                 else:
                                     toot_now = (":@{0}:ありがと！！\n:@{1}:の知ってること、また一つ覚えた！！！！".format(account["acct"], acct)+"\n#ももな図鑑")
                         except:
-                            with open("game\\prof\\{}.txt".format(acct),"a") as f:
+                            with codecs.open("game\\prof\\{}.txt".format(acct),"a", 'utf-8') as f:
                                 f.write(tex2+"\n")
                             toot_now = (":@{0}:ありがと！！\n:@{1}:のこと覚えた！！！！".format(account["acct"], acct)+"\n#ももな図鑑")
                 else:
