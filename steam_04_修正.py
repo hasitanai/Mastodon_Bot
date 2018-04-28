@@ -124,7 +124,7 @@ class men_toot(StreamListener):
                         else:
                             pass
                         print(str(sec))
-                        if re.compile("(アラーム|[Aa][Rr][Aa][Mm])(.*)「(.*)」").search(content):
+                        if re.compile("(アラーム|[Aa][Rr][Aa][Mm])(.*)「(.+)」").search(content):
                             mes = re.search("「(.*)」", content)
                             toot_now = ("@" + account["acct"] + " " + "（*'∀'人）時間だよーー♪♪\n"
                                         "「" + mes.group(1) + "」")
@@ -134,6 +134,7 @@ class men_toot(StreamListener):
                         in_reply_to_id = status["id"]
                         t = threading.Timer(sec, bot.toot, [toot_now, g_vis, status['id']])
                         t.start()
+                        print("●アラームを設定したよ！")
                         #bot.rets(sec, toot_now, g_vis,status['id'] )
                     elif re.compile(
                                     "(フォロー|follow)(して|く[うぅー]*ださ[あぁー]*い|お願[あぁー]*い|"
@@ -789,7 +790,7 @@ class bot():
             v.start()
         elif re.compile("[らラ][まマ]([ＰｐpP]|[ぴピ][いぃー～]|[たさ]ん|ちゃん)").search(status['content']):
             bot.thank(account, -120)
-        elif re.compile("P名は略さずに呼んであげよう").search(status['content']):
+        elif re.compile("[pPｐＰ]名は略さずに呼んで(あげよう)?").search(status['content']):
             bot.thank(account, 1200)
             v = threading.Timer(5, bot.fav_now,[status["id"]])
             v.start()
@@ -891,9 +892,9 @@ class game():
                     else:
                         tex2 = tex1 + "（by:@{}:）".format(account["acct"])
                         try:
-                            with open("game\\prof\\{}.txt".format(acct),"r") as f:
+                            with codecs.open("game\\prof\\{}.txt".format(acct),"r", 'utf-8') as f:
                                 tex0 = f.read()
-                            with open("game\\prof\\{}.txt".format(acct),"r") as f:
+                            with codecs.open("game\\prof\\{}.txt".format(acct),"r", 'utf-8') as f:
                                 tex0s = f.readlines()
                             resch = "^.*（by:@{}:）\n".format(account["acct"])
                             tex3 = ""
@@ -926,6 +927,7 @@ class game():
                                 else:
                                     toot_now = (":@{0}:ありがと！！\n:@{1}:の知ってること、また一つ覚えた！！！！".format(account["acct"], acct)+"\n#ももな図鑑")
                         except:
+                            print("エラー情報【図鑑】\n" + traceback.format_exc())
                             with codecs.open("game\\prof\\{}.txt".format(acct),"a", 'utf-8') as f:
                                 f.write(tex2+"\n")
                             toot_now = (":@{0}:ありがと！！\n:@{1}:のこと覚えた！！！！".format(account["acct"], acct)+"\n#ももな図鑑")
