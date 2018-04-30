@@ -751,6 +751,11 @@ class bot():
                 print("○hitしました♪")
                 toot_now = ("い".format(account["acct"]))
                 bot.rets(2, toot_now, "public")
+        elif re.search('ぬるぽ', status["content"]):
+            if account["acct"] != "JC":
+                print("○hitしました♪")
+                toot_now = ("ｶﾞｯ".format(account["acct"]))
+                bot.rets(2, toot_now, "public")   
         elif re.search('(?:[^a-z0-9_-]|^)t\.co/[a-zA-Z0-9]', status["content"]):
             if account["acct"] != "JC":
                 if count.t == False:
