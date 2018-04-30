@@ -746,7 +746,12 @@ class bot():
     def res05(status):  # t.co警察とか
         account = status["account"]
         content = Re1.text(status["content"])
-        if re.search('(?:[^a-z0-9_-]|^)t\.co/[a-zA-Z0-9]', status["content"]):
+        if re.search('^あ$', status["content"]):
+            if account["acct"] != "JC":
+                print("○hitしました♪")
+                toot_now = ("い".format(account["acct"]))
+                bot.rets(2, toot_now, "public")
+        elif re.search('(?:[^a-z0-9_-]|^)t\.co/[a-zA-Z0-9]', status["content"]):
             if account["acct"] != "JC":
                 if count.t == False:
                     print("○hitしました♪")
@@ -892,9 +897,9 @@ class game():
                     else:
                         tex2 = tex1 + "（by:@{}:）".format(account["acct"])
                         try:
-                            with codecs.open("game\\prof\\{}.txt".format(acct),"r", 'utf-8') as f:
+                            with codecs.open("game\\prof\\{}.txt".format(acct),"r", 'utf-8', "ignore") as f:
                                 tex0 = f.read()
-                            with codecs.open("game\\prof\\{}.txt".format(acct),"r", 'utf-8') as f:
+                            with codecs.open("game\\prof\\{}.txt".format(acct),"r", 'utf-8', "ignore") as f:
                                 tex0s = f.readlines()
                             resch = "^.*（by:@{}:）\n".format(account["acct"])
                             tex3 = ""
@@ -905,12 +910,12 @@ class game():
                                 else:
                                     tex3 = tex3 + x
                             try:
-                                with codecs.open("game\\prof\\{}.txt".format(acct), "w", 'utf-8') as f:
+                                with codecs.open("game\\prof\\{}.txt".format(acct), "w", 'utf-8', "ignore") as f:
                                     print(tex3)
                                     f.write(tex3)
                                 print("○上書きしたよ！！！！")
                             except:
-                                with codecs.open("game\\prof\\{}.txt".format(acct), "w", 'utf-8') as f:
+                                with codecs.open("game\\prof\\{}.txt".format(acct), "w", 'utf-8', "ignore") as f:
                                     f.write(tex0)
                                 print("○上書きできなかったよ……")
                             if len(tex0) > 400:
@@ -939,11 +944,11 @@ class game():
                 word = re.search("ももな.*:@([A-Za-z0-9_]+): ?(さん)?((について|の(こと|事))(教|おし)[えへ]て|って[誰何])", str(content))
                 acct = word.group(1)
                 try:
-                    with open("game\\prof\\{}.txt".format(acct),"r") as f:
+                    with codecs.open("game\\prof\\{}.txt".format(acct),"r", 'utf-8', "ignore") as f:
                         tex0 = f.read()
                         spo = ":@{}:はこんな人だよ！！".format(acct)
                     try:
-                        with codecs.open('date\\adana\\' + acct + '.txt', 'r', 'UTF-8') as f:
+                        with codecs.open('date\\adana\\' + acct + '.txt', 'r', 'UTF-8', "ignore") as f:
                             name = f.read()
                             adan = name + "だよ！！"
                     except:
