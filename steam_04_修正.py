@@ -1163,7 +1163,6 @@ class game():
             pass
         count.memo =+ 1
         # ある程度溜まったらメモまとめをお願いするシステムの予定
-        # めそ
         pass
 
     def poem(status):
