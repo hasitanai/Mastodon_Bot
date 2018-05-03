@@ -746,16 +746,26 @@ class bot():
     def res05(status):  # t.co警察とか
         account = status["account"]
         content = Re1.text(status["content"])
-        if re.search('^あ$', status["content"]):
+        if re.search('^あ$', content):
             if account["acct"] != "JC":
                 print("○hitしました♪")
                 toot_now = ("い".format(account["acct"]))
-                bot.rets(2, toot_now, "public")
-        elif re.search('ぬるぽ', status["content"]):
+                bot.rets(1, toot_now, "public")
+        elif re.search('^あっ$', content):
+            if account["acct"] != "JC":
+                print("○hitしました♪")
+                toot_now = ("いっ".format(account["acct"]))
+                bot.rets(1, toot_now, "public")
+        elif re.search('ぬるぽ', content):
             if account["acct"] != "JC":
                 print("○hitしました♪")
                 toot_now = ("ｶﾞｯ".format(account["acct"]))
-                bot.rets(2, toot_now, "public")   
+                bot.rets(1, toot_now, "public")
+        elif re.search('ちくわ大明神', content):
+            if account["acct"] != "JC":
+                print("○hitしました♪")
+                toot_now = ("(๑•̀ㅁ•́๑)誰だ今の！？".format(account["acct"]))
+                bot.rets(2, toot_now, "public")
         elif re.search('(?:[^a-z0-9_-]|^)t\.co/[a-zA-Z0-9]', status["content"]):
             if account["acct"] != "JC":
                 if count.t == False:
