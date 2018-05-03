@@ -780,16 +780,17 @@ class bot():
                 else:
                     print("○t.coしつこい٩(๑`^´๑)۶")
                 bot.thank(account, -32)
-        elif re.compile("なんでも|何でも|ナンデモ|ナンでも").search(content):
-            if count.n == False:
-                print("○hitしました♪")
-                toot_now = ("ん？".format(account["acct"]))
-                bot.rets(2, toot_now, "public")
-                count.n = True
-                def cool():
-                    count.n = False
-                t = threading.Timer(180, cool)
-                t.start()
+        elif re.compile("なんでも|何でも(する|します)|ナンデモ(する|します|シマス)|ナンでも(する|します)").search(content):
+            if not account["acct"] != "4_0s":
+                if count.n == False:
+                    print("○hitしました♪")
+                    toot_now = ("ん？".format(account["acct"]))
+                    bot.rets(2, toot_now, "public")
+                    count.n = True
+                    def cool():
+                        count.n = False
+                    t = threading.Timer(180, cool)
+                    t.start()
     
     def fav01(status):
         account = status["account"]
