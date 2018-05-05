@@ -780,7 +780,7 @@ class bot():
                 else:
                     print("○t.coしつこい٩(๑`^´๑)۶")
                 bot.thank(account, -32)
-        elif re.compile("なんでも|何でも(する|します)|ナンデモ(する|します|シマス)|ナンでも(する|します)").search(content):
+        elif re.compile("なんでも(する|します)|何でも(する|します)|ナンデモ(する|します|シマス)|ナンでも(する|します)").search(content):
             if not account["acct"] != "4_0s":
                 if count.n == False:
                     print("○hitしました♪")
