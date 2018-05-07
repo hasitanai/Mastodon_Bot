@@ -1410,11 +1410,28 @@ class game():
     def habit(status):
         account = status["account"]
         content = Re1.text(status["content"])
+        acct = account["acct"]
         if re.search('とりあえず', content):
             print("◆とりあえず警察だ！！！！")
-            
-            
-            
+            today = time.today().strftime("%Y-%m-%d")
+            load = game.load_json
+            dump = game.dump_json
+            data = load("habit", acct)
+            if data["tori"]:
+                tori = data["tori"]
+                if tori[today]:
+                    a = tori[today]
+                else: a = 0
+            else:
+                a = 0
+                data = {}
+                data.update({"tori": {}})
+            a = a + 1
+            data.update({today: a})
+            dump("habit", acct)
+            obj.tori = obj.tori + 1
+            if obj.tori % 3 == 1:
+                print("鶏から！") 
 
     def honyaku(status):
         #ネイティオ語が分かるようになる装置
