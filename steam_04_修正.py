@@ -14,12 +14,10 @@ from dateutil.tz import tzutc  # 変更予定
 mastodon = None
 
 #Winのプロンプトから起動するならこれ追加ね↓
-"""
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer,
                               encoding=sys.stdout.encoding,
                               errors='backslashreplace',
                               line_buffering=sys.stdout.line_buffering)
-                              """
 warnings.simplefilter("ignore", UnicodeWarning)
 
 """ログイントークン取得済みで動かしてね（*'∀'人）"""
@@ -756,7 +754,7 @@ class bot():
                 print("○hitしました♪")
                 toot_now = ("いっ".format(account["acct"]))
                 bot.rets(1, toot_now, "public")
-        elif re.search('ぬるぽ', content):
+        elif re.search('(ぬるぽ|NullPointerException)', content):
             if account["acct"] != "JC":
                 print("○hitしました♪")
                 toot_now = ("ｶﾞｯ".format(account["acct"]))
@@ -1408,6 +1406,15 @@ class game():
         except:
             result = "えっ？"
         return result
+
+    def habit(status):
+        account = status["account"]
+        content = Re1.text(status["content"])
+        if re.search('とりあえず', content):
+            print("◆とりあえず警察だ！！！！")
+            
+            
+            
 
     def honyaku(status):
         #ネイティオ語が分かるようになる装置
