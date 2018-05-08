@@ -1,5 +1,5 @@
 from mastodon import *
-import time, re, sys, os, json, random, io, gc, math
+import re, sys, os, json, random, io, gc, math
 import threading, requests, pprint, codecs
 from time import sleep
 from datetime import timedelta, datetime
@@ -54,10 +54,11 @@ class Log():  # toot記録用クラス٩(๑❛ᴗ❛๑)۶
         name = self.account["display_name"]
         acct = self.account["acct"]
         non_bmp_map = self.non_bmp_map
-        print(str(name).translate(non_bmp_map) + "@" + str(
-            acct).translate(self.non_bmp_map))
-        print(str(self.content).translate(non_bmp_map))
-        print(str(self.mentions).translate(non_bmp_map))
+        text=(str(name).translate(non_bmp_map) + "@" + str(acct).translate(self.non_bmp_map)) +"\n"+
+              str(self.content).translate(non_bmp_map) +"\n"+
+              str(self.mentions).translate(non_bmp_map)
+              )
+        print(text)
 
     def write(self):
         global nowing
@@ -1431,7 +1432,7 @@ class game():
             dump("habit", acct)
             obj.tori = obj.tori + 1
             if obj.tori % 3 == 1:
-                print("鶏から！") 
+                print("鶏から！")    
 
     def honyaku(status):
         #ネイティオ語が分かるようになる装置
