@@ -1,5 +1,5 @@
 from mastodon import *
-import re, sys, os, json, random, io, gc, math
+import time, re, sys, os, json, random, io, gc, math
 import threading, requests, pprint, codecs
 from time import sleep
 from datetime import timedelta, datetime
@@ -14,10 +14,12 @@ from dateutil.tz import tzutc  # 変更予定
 mastodon = None
 
 #Winのプロンプトから起動するならこれ追加ね↓
+"""
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer,
                               encoding=sys.stdout.encoding,
                               errors='backslashreplace',
                               line_buffering=sys.stdout.line_buffering)
+"""
 warnings.simplefilter("ignore", UnicodeWarning)
 
 """ログイントークン取得済みで動かしてね（*'∀'人）"""
@@ -54,10 +56,7 @@ class Log():  # toot記録用クラス٩(๑❛ᴗ❛๑)۶
         name = self.account["display_name"]
         acct = self.account["acct"]
         non_bmp_map = self.non_bmp_map
-        text=(str(name).translate(non_bmp_map) + "@" + str(acct).translate(self.non_bmp_map)) +"\n"+
-              str(self.content).translate(non_bmp_map) +"\n"+
-              str(self.mentions).translate(non_bmp_map)
-              )
+        text=(str(name).translate(non_bmp_map)+"@"+str(acct).translate(self.non_bmp_map)+"\n"+str(self.content).translate(non_bmp_map) +"\n"+str(self.mentions).translate(non_bmp_map))
         print(text)
 
     def write(self):
@@ -661,7 +660,7 @@ class bot():
                     name = ad.group(1)
                     adan = Re1.text(name)
                     adan = re.sub(':', '', adan)
-                    adan = re.sub('@[a-zA-Z0-9_]+', ':\1:', adan)
+                    adan = re.sub('(@[a-zA-Z0-9_]+)', ':\1:', adan)
                     sekuhara = bot.block01(status)
                     bougen = bot.block02(status)
                     if len(adan) > 60:
@@ -684,7 +683,7 @@ class bot():
                     name = ad.group(2)
                     adan = Re1.text(name)
                     adan = re.sub(':', '', adan)
-                    adan = re.sub('@[a-zA-Z0-9_]+', ':\1:', adan)
+                    adan = re.sub('@[a-zA-Z0-9_]+', '', adan)
                     sekuhara = bot.block01(status)
                     bougen = bot.block02(status)
                     if acct == account["acct"]:
@@ -810,7 +809,7 @@ class bot():
             v.start()
         elif re.compile("[らラ][まマ]([ＰｐpP]|[ぴピ][いぃー～]|[たさ]ん|ちゃん)").search(status['content']):
             bot.thank(account, -120)
-        elif re.compile("[pPｐＰ]名は略さずに呼んで(あげよう)?").search(status['content']):
+        elif re.compile("[pPｐＰ]名?は略さずに呼(ぶべき|ぼう|んで)").search(status['content']):
             bot.thank(account, 1200)
             v = threading.Timer(5, bot.fav_now,[status["id"]])
             v.start()
@@ -887,6 +886,38 @@ class game():
     
     def fav(id):
         mastodon.status_favourite(id)
+
+    def load_json(folder, name):
+        file = ("game\\{0}\\{1}.json").format(folder, name)
+        if os.path.exists(file):
+            with codecs.open(file, 'r', 'utf-8', "ignore") as f:
+                    date = json.load(f)
+        else: date = ""
+        return date
+
+    def load_txt(folder, name):
+        file = ("game\\{0}\\{1}.txt").format(folder, name)
+        if os.path.exists(file):
+            with codecs.open(file, 'r', 'utf-8', "ignore") as f:
+                    date = f.read()
+        else: date = ""
+        return date
+
+    def dump_json(folder, name, date, mode):
+        dir = "game\\{0}".format(folder)
+        if not os.path.isdir(dir):
+            os.mkdir(dir)
+        file = ("game\\{0}\\{1}.json").format(folder, name)
+        with codecs.open(file, mode, 'utf-8', "ignore") as f:
+            json.dump(date, f)
+
+    def write_txt(folder, name, date, mode):
+        dir = "game\\{0}".format(folder)
+        if not os.path.isdir(dir):
+            os.mkdir(dir)
+        file = ("game\\{0}\\{1}.txt").format(folder, name)
+        with codecs.open(file, mode, 'utf-8', "ignore") as f:
+            f.write(date)
 
     def prof(status):
         account = status["account"]
@@ -1414,24 +1445,28 @@ class game():
         acct = account["acct"]
         if re.search('とりあえず', content):
             print("◆とりあえず警察だ！！！！")
-            today = time.today().strftime("%Y-%m-%d")
+            today = datetime.now().strftime("%Y-%m-%d")
             load = game.load_json
             dump = game.dump_json
-            data = load("habit", acct)
-            if data["tori"]:
-                tori = data["tori"]
-                if tori[today]:
-                    a = tori[today]
-                else: a = 0
-            else:
+            date = load("habit", acct)
+            try:
+                if date["tori"]:
+                    tori = date["tori"]
+                    if tori[today]:
+                        a = tori[today]
+                    else: a = 0
+            except:
                 a = 0
-                data = {}
-                data.update({"tori": {}})
+                date = {}
+                date.update({"tori": {}})
             a = a + 1
-            data.update({today: a})
-            dump("habit", acct)
+            date["tori"].update({today: a})
+            dump("habit", acct, date, "w")
             obj.tori = obj.tori + 1
-            if obj.tori % 3 == 1:
+            lx = obj.tori % 3
+            if lx == 1:
+                toot_now = ("青鶏の脳死和え{}丁！".format(str(obj.tori)))
+                bot.rets(3, toot_now, "public")
                 print("鶏から！")    
 
     def honyaku(status):
