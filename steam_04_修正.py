@@ -1,7 +1,7 @@
 from mastodon import *
-import time, re, sys, os, json, random, io, gc, math
+import re, sys, os, json, random, io, gc, math
 import threading, requests, pprint, codecs, asyncio
-from time import sleep
+from time import *
 from datetime import timedelta, datetime, timezone
 import warnings, traceback
 import xlrd, xlsxwriter
@@ -1463,13 +1463,13 @@ class game(bot):
                     else:
                         a = 0
                 else:
-                    date.update({"tori": 0})
+                    date.update({"tori": {}})
                     a = 0
             except:
                 a = 0
-                if date == None:
+                if not date:
                     date = {}
-                date.update({"tori": 0})
+                date.update({"tori": {}})
             a = a + 1
             date["tori"].update({today: a})
             dump("habit", acct, date, "w")
@@ -1495,8 +1495,55 @@ class game(bot):
         pass
 
 
+class clock(bot):
+    def __init__(self, wait=0.000001):
+        self.sleep = wait
+        self.cooltime = False
+
+    def clock(self):
+        while 1:
+            self.now = datetime.now(JST)
+            #  self.timelog(self.now)
+            self.prof()
+
+    def timelog(self, time):
+        sys.stdout.write("\rroading... {}".format(str(time)))
+        sys.stdout.flush()
+        sleep(self.sleep)
+
+    def prof(self):
+        sleep(self.sleep)
+        if self.now.minute == 4 or self.now.minute == 24 or self.now.minute == 44:
+            if self.cooltime == False:
+                self.cooltime = True
+                ls = os.listdir("game/prof/")
+                x = len(ls)
+                y = random.randint(1, x)
+                z = ls[y-1]
+                name, ext = os.path.splitext(z)
+                tex0 = self.load_txt("prof", name)
+                spo = "【定期】:@{}:を紹介するよ！！".format(name)
+                try:
+                    with codecs.open('date\\adana\\' + name + '.txt', 'r', 'UTF-8', "ignore") as f:
+                        name = f.read()
+                        adan = name + "だよ！！"
+                except:
+                    adan = "まだないみたいだよ！！"
+                toot_now = (tex0 + "\nあだ名は{}".format(adan) +
+                            "\n"
+                            "もっとみんなのことを知りたいな……💞\n"
+                            "詳しくは固定トゥートで！！\n"
+                            "#ももな図鑑")
+                self.rets(10, toot_now, "public", spo=spo)
+                def cool():
+                    self.cooltime = False
+                    print("クールタイム終了！！")
+                q = threading.Timer(120, cool)
+                q.start()
+
+
 class count():
-    CT = time.time()
+    CT = time()
     end = 0
     sec = 0
     timer_hello = 0
@@ -1616,6 +1663,8 @@ if __name__ == '__main__':
     uuu = threading.Thread(target=ready.local)
     lll = threading.Thread(target=ready.user)
     fff = threading.Thread(target=count.emo01)
+    ccc = threading.Thread(target=clock().clock)
     uuu.start()
     lll.start()
     fff.start()
+    ccc.start()
