@@ -88,7 +88,7 @@ class bot():
             count.end = 0
 
     def rets(self, sec, toot_now, g_vis, rep=None, spo=None):
-        now = time.time()
+        now = time()
         delay = now - count.CT
         loss = count.end - int(delay)
         if loss < 0:
@@ -102,7 +102,7 @@ class bot():
         del t
         del s
         gc.collect()
-        count.CT = time.time()
+        count.CT = time()
         count.end = ing
 
     def toot(self, toot_now, g_vis, rep=None, spo=None):
@@ -233,7 +233,7 @@ class Home(StreamListener, bot):
                 print(str(account["display_name"]).translate(non_bmp_map) +
                       "@" + str(account["acct"]) + "がブーストしてくれたよ(๑˃́ꇴ˂̀๑)\n")
                 self.thank(account, 32)
-            print("---")
+            print(" ")
             pass
         except Exception as e:
             print("エラー情報【USER】\n" + traceback.format_exc())
@@ -304,14 +304,13 @@ def LTL(status):  # ここに受け取ったtootに対してどうするか追�
 
 
 def men(status):
-    bot = bot()
     account = status["account"]
     mentions = status["mentions"]
     content = unesc(Re1.text(status["content"]))
     non_bmp_map = Re1.non_bmp_map()
-    log = threading.Thread(Log(status).read())
+    log = threading.Thread(Log(status).read("ホーム"))
     log.run()
-    bot.thank(account, 64)
+    bot().thank(account, 64)
     if mentions:
         if re.compile("おは|おあひょ").search(content):
             toot_now = "@" + str(account["acct"]) + " " + "（*'∀'人）おあひょーーーー♪"
@@ -351,7 +350,7 @@ def men(status):
             else:
                 toot_now = "@" + account["acct"] + " " + "（*'∀'人）時間だよーー♪♪"
             g_vis = status["visibility"]
-            t = threading.Timer(sec, bot.toot, [toot_now, g_vis, status['id']])
+            t = threading.Timer(sec, bot().toot, [toot_now, g_vis, status['id']])
             t.start()
             print("●アラームを設定したよ！")
             # bot.rets(sec, toot_now, g_vis,status['id'] )
@@ -755,10 +754,10 @@ class res(bot):
             with open(abs_name, 'r')as f:
                 x = f.read()
                 y = int(x)
-            if re.compile("ももな.*あだ[名な][｢「](.+)[」｣]って呼んで").search(status['content']):
+            if re.compile("ももな.*あだ[名な][｢「](.+)[」｣](って|と)[呼よ]んで").search(status['content']):
                 if y >= 0:
                     print("○hitしました♪")
-                    ad = re.search("ももな.*あだ[名な][｢「](.+)[」｣]って[呼よ]んで", status['content'])
+                    ad = re.search("ももな.*あだ[名な][｢「](.+)[」｣](って|と)[呼よ]んで", status['content'])
                     name = ad.group(1)
                     adan = Re1.text(name)
                     adan = re.sub(':', '', adan)
@@ -882,17 +881,15 @@ class res(bot):
                 else:
                     print("○t.coしつこい٩(๑`^´๑)۶")
                 self.thank(account, -32)
-        elif re.compile("なんでも(する|します)|何でも(する|します)|ナンデモ(する|します|シマス)|ナンでも(する|します)").search(content):
+        elif re.compile("(なんでも(する|します)|何でも(する|します)|ナンデモ(する|します|シマス)|ナンでも(する|します))").search(content):
             if not account["acct"] != "4_0s":
                 if count.n == False:
                     print("○hitしました♪")
                     toot_now = ("ん？".format(account["acct"]))
                     self.rets(2, toot_now, "public")
                     count.n = True
-
                     def cool():
                         count.n = False
-
                     t = threading.Timer(180, cool)
                     t.start()
 
@@ -955,7 +952,8 @@ class game(bot):
                             tex3 = ""
                             for x in tex0s:
                                 print(x)
-                                if re.search(resch, x):
+                                if re.search(account["acct"], x):
+                                    print(x)
                                     over = True
                                 else:
                                     tex3 = tex3 + x
@@ -970,7 +968,6 @@ class game(bot):
                                 print("○上書きできなかったよ……")
                             if len(tex0) > 400:
                                 toot_now = ("これ以上:@{}:のこと覚えられないよ……整頓するからもう少し待ってね(｡>﹏<｡)".format(acct))
-                                self.rets(6, toot_now, "public")
                             elif re.search("[^:]?@[A-Za-z0-9_]+[^:]?", tex1):
                                 toot_now = ("٩(๑`^´๑)۶リプライのいたずらしちゃダメ！！！！")
                                 count.emo03(account["acct"], -64)
@@ -1658,8 +1655,8 @@ if __name__ == '__main__':
     if m is "":
         pass
     else:
-        bot.rets(5, "(*ﾟ﹃ﾟ*)……はっ！！！！", "public")
-        bot.rets(5, m, "public")
+        bot().rets(5, "(*ﾟ﹃ﾟ*)……はっ！！！！", "public")
+        bot().rets(5, m, "public")
     uuu = threading.Thread(target=ready.local)
     lll = threading.Thread(target=ready.user)
     fff = threading.Thread(target=count.emo01)
