@@ -948,7 +948,6 @@ class game(bot):
                                 tex0 = f.read()
                             with codecs.open("game\\prof\\{}.txt".format(acct), "r", 'utf-8', "ignore") as f:
                                 tex0s = f.readlines()
-                            resch = "^.*（by:@{}:）\n".format(account["acct"])
                             tex3 = ""
                             for x in tex0s:
                                 print(x)
@@ -1446,26 +1445,25 @@ class game(bot):
         account = status["account"]
         content = Re1.text(status["content"])
         acct = account["acct"]
-        if re.search('とりあえず', content):
+        if re.search('とり(あえず|ま)', content):
             print("◆とりあえず警察だ！！！！")
             today = datetime.now().strftime("%Y-%m-%d")
             load = game.load_json
             dump = game.dump_json
             date = load("habit", acct)
-            try:
+            if date != "":
                 if date["tori"]:
                     tori = date["tori"]
-                    if tori[today]:
+                    try:
                         a = tori[today]
-                    else:
+                    except:
                         a = 0
                 else:
                     date.update({"tori": {}})
                     a = 0
-            except:
+            else:
                 a = 0
-                if not date:
-                    date = {}
+                date = {}
                 date.update({"tori": {}})
             a = a + 1
             date["tori"].update({today: a})
