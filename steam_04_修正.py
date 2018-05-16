@@ -1445,6 +1445,49 @@ class game(bot):
         account = status["account"]
         content = Re1.text(status["content"])
         acct = account["acct"]
+        toot_now = None
+        if re.search('[待ま]って|(いや|ちょっと)([待ま]って($|よ|ください)|[待ま]て($|や|よ|待て)|[待ま]った)', content):
+            print("◆待たない！！！！")
+            today = datetime.now().strftime("%Y-%m-%d")
+            load = game.load_json
+            dump = game.dump_json
+            date = load("habit", acct)
+            if date != "":
+                if date["wait"]:
+                    tori = date["wait"]
+                    try:
+                        a = tori[today]
+                    except:
+                        a = 0
+                else:
+                    date.update({"wait": {}})
+                    a = 0
+            else:
+                a = 0
+                date = {}
+                date.update({"tori": {}})
+            a = a + 1
+            date["wait"].update({today: a})
+            dump("habit", acct, date, "w")
+            count.tori = count.tori + 1
+            lx = random.randint(0, 15)
+            def text(lx):
+                if lx > 4:
+                    text=("(๑•̀ㅁ•́๑)いや待てない！！")
+                elif lx > 8:
+                    text = ("(๑•̀ㅁ•́๑)待てない！！")
+                elif lx > 12:
+                    text = ("(๑•̀ㅁ•́๑)待ちません！！")
+                elif lx > 13:
+                    text = ("(๑•̀ㅁ•́๑)時間は待ってはくれないよ！！")
+                elif lx > 14:
+                    text = ("(๑•̀ㅁ•́๑)その待ったは無効でーーーーす！！")
+                else:
+                    text = ("(๑•̀ㅁ•́๑)待った警察だ！！")
+                return text
+            toot_now = text(lx)
+            self.rets(5, toot_now, "public")
+
         if re.search('とり(あえず|ま)', content):
             print("◆とりあえず警察だ！！！！")
             today = datetime.now().strftime("%Y-%m-%d")
@@ -1471,9 +1514,11 @@ class game(bot):
             count.tori = count.tori + 1
             lx = count.tori % 3
             if lx == 1:
-                toot_now = ("青鶏の味噌和え{}丁！".format(str(count.tori)))
-                self.rets(5, toot_now, "public")
-                print("鶏から！")
+                if toot_now == None:
+                    toot_now = ("青鶏の味噌和え{}丁！".format(str(count.tori)))
+                    self.rets(5, toot_now, "public")
+                    print("鶏から！")
+
 
     def honyaku(self, status):
         # ネイティオ語が分かるようになる装置
