@@ -12,12 +12,12 @@ from dateutil.tz import tzutc  # 変更予定
 mastodon = None
 
 # Winのプロンプトから起動するならこれ追加ね↓
-"""
+
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer,
                               encoding=sys.stdout.encoding,
                               errors='backslashreplace',
                               line_buffering=sys.stdout.line_buffering)
-"""
+
 warnings.simplefilter("ignore", UnicodeWarning)
 
 """ログイントークン取得済みで動かしてね（*'∀'人）"""
@@ -1446,7 +1446,7 @@ class game(bot):
         content = Re1.text(status["content"])
         acct = account["acct"]
         toot_now = None
-        if re.search('[待ま]って|(いや|ちょっと)([待ま]って($|よ|ください)|[待ま]て($|や|よ|待て)|[待ま]った)', content):
+        if re.search('[待ま]って$|[待ま]て$|(いや|ちょっと)([待ま]って(よ|ください)|[待ま]て(や|よ|待て)|[待ま]った)', content):
             print("◆待たない！！！！")
             today = datetime.now().strftime("%Y-%m-%d")
             load = game.load_json
@@ -1465,7 +1465,7 @@ class game(bot):
             else:
                 a = 0
                 date = {}
-                date.update({"tori": {}})
+                date.update({"wait": {}})
             a = a + 1
             date["wait"].update({today: a})
             dump("habit", acct, date, "w")
@@ -1512,8 +1512,8 @@ class game(bot):
             date["tori"].update({today: a})
             dump("habit", acct, date, "w")
             count.tori = count.tori + 1
-            lx = count.tori % 3
-            if lx == 1:
+            lx = random.randint(0,100)
+            if lx >= 90:
                 if toot_now == None:
                     toot_now = ("青鶏の味噌和え{}丁！".format(str(count.tori)))
                     self.rets(5, toot_now, "public")
