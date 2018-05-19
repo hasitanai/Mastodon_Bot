@@ -215,7 +215,7 @@ class clock(bot):
     def clock(self):
         while 1:
             self.now = datetime.now(JST)
-            self.timelog(self.now)
+            # self.timelog(self.now)
 
     def timelog(self, time):
         sys.stdout.write("\rroading... {}".format(str(time)))
