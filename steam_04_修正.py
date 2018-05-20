@@ -1445,8 +1445,10 @@ class game(bot):
         account = status["account"]
         content = Re1.text(status["content"])
         acct = account["acct"]
+        created_at = status['created_at']
         toot_now = None
-        if re.search('[待ま]って$|[待ま]て$|(いや|ちょっと)([待ま]って(よ|ください)|[待ま]て(や|よ|待て)|[待ま]った)', content):
+        if re.search('[待ま]って$|[待ま]て$|^[待ま]って|^[待ま]て|(いや|ちょっと)([待ま]って(よ|ください)|'
+                     '[待ま]て(や|よ|[待ま]て)|[待ま]った)', content):
             print("◆待たない！！！！")
             today = datetime.now().strftime("%Y-%m-%d")
             load = game.load_json
@@ -1527,8 +1529,40 @@ class game(bot):
 
     def callmomona(self, status):
         # 呼ばれた回数を数えるやつ！
-        # 未定！
-        pass
+        account = status["account"]
+        content = Re1.text(status["content"])
+        acct = account["acct"]
+        created_at = status['created_at']
+        if re.search('とり(あえず|ま)', content):
+            print("◆呼ばれた気がした！！！！")
+            today = datetime.now().strftime("%Y-%m-%d")
+            load = game.load_json
+            dump = game.dump_json
+            date = load("habit", acct)
+            if date != "":
+                if date["tori"]:
+                    tori = date["tori"]
+                    try:
+                        a = tori[today]
+                    except:
+                        a = 0
+                else:
+                    date.update({"tori": {}})
+                    a = 0
+            else:
+                a = 0
+                date = {}
+                date.update({"tori": {}})
+            a = a + 1
+            date["tori"].update({today: a})
+            dump("habit", acct, date, "w")
+            count.tori = count.tori + 1
+            lx = random.randint(0,100)
+            if lx >= 90:
+                if toot_now == None:
+                    toot_now = ("青鶏の味噌和え{}丁！".format(str(count.tori)))
+                    self.rets(5, toot_now, "public")
+                    print("鶏から！")
 
     def throw(self, status):
         # ぶん投げるボケシステム
