@@ -1450,7 +1450,9 @@ class game(bot):
         if re.search('[待ま]って$|[待ま]て$|^[待ま]って|^[待ま]て|(いや|ちょっと)([待ま]って(よ|ください)|'
                      '[待ま]て(や|よ|[待ま]て)|[待ま]った)', content):
             print("◆待たない！！！！")
-            today = datetime.now().strftime("%Y-%m-%d")
+            tstr = re.sub("\....Z", "", nstr)
+            today = datetime.strptime(created_at, '%Y-%m-%dT\d{2}:\d{2}:\d{2}')
+            # today = datetime.now().strftime("%Y-%m-%d")
             load = game.load_json
             dump = game.dump_json
             date = load("habit", acct)
@@ -1492,7 +1494,7 @@ class game(bot):
 
         if re.search('とり(あえず|ま)', content):
             print("◆とりあえず警察だ！！！！")
-            today = datetime.now().strftime("%Y-%m-%d")
+            today = datetime.strptime(created_at, '%Y-%m-%dT\d{2}:\d{2}:\d{2}')
             load = game.load_json
             dump = game.dump_json
             date = load("habit", acct)
