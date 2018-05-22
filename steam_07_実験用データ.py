@@ -183,7 +183,7 @@ class game(bot):
         acct = account["acct"]
         if re.search('お[おぉー～]あ[ー～]ひょ[おぉー～]', content):
             print("◆おあひょう文化だ！！！！")
-            today = datetime.now().strftime("%Y-%m-%d")
+            today = datetime.strptime(created_at, '%Y-%m-%dT\d{2}:\d{2}:\d{2}')
             load = self.load_json
             dump = self.dump_json
             date = load("habit", acct)
