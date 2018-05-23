@@ -1451,8 +1451,8 @@ class game(bot):
                      '[待ま]て(や|よ|[待ま]て)|[待ま]った)', content):
             print("◆待たない！！！！")
             tstr = re.sub("\....Z", "", nstr)
-            today = datetime.strptime(created_at, '%Y-%m-%dT\d{2}:\d{2}:\d{2}')
-            # today = datetime.now().strftime("%Y-%m-%d")
+            #today = datetime.now().strftime("%Y-%m-%d")
+            today = datetime.strptime(re.sub("T..:..:..\....Z", "", created_at), '%Y-%m-%d')
             load = game.load_json
             dump = game.dump_json
             date = load("habit", acct)
@@ -1494,7 +1494,8 @@ class game(bot):
 
         if re.search('とり(あえず|ま)', content):
             print("◆とりあえず警察だ！！！！")
-            today = datetime.strptime(created_at, '%Y-%m-%dT\d{2}:\d{2}:\d{2}')
+            #today = datetime.strptime(created_at, '%Y-%m-%d')
+            today = datetime.strptime(re.sub("T..:..:..\....Z", "", created_at), '%Y-%m-%d')
             load = game.load_json
             dump = game.dump_json
             date = load("habit", acct)
@@ -1537,7 +1538,7 @@ class game(bot):
         created_at = status['created_at']
         if re.search('とり(あえず|ま)', content):
             print("◆呼ばれた気がした！！！！")
-            today = datetime.now().strftime("%Y-%m-%d")
+            today = datetime.strptime(created_at, '%Y-%m-%dT\d{2}:\d{2}:\d{2}')
             load = game.load_json
             dump = game.dump_json
             date = load("habit", acct)
