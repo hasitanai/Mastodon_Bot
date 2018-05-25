@@ -1538,34 +1538,25 @@ class game(bot):
         created_at = status['created_at']
         if re.search('とり(あえず|ま)', content):
             print("◆呼ばれた気がした！！！！")
-            today = datetime.strptime(created_at, '%Y-%m-%dT\d{2}:\d{2}:\d{2}')
+            today = datetime.strptime(re.sub("T..:..:..\....Z", "", created_at), '%Y-%m-%d')
             load = game.load_json
             dump = game.dump_json
-            date = load("habit", acct)
+            date = load("callmomona", acct)
             if date != "":
-                if date["tori"]:
-                    tori = date["tori"]
-                    try:
-                        a = tori[today]
-                    except:
-                        a = 0
-                else:
-                    date.update({"tori": {}})
+                try:
+                    a = date[today]
+                except:
                     a = 0
             else:
                 a = 0
-                date = {}
-                date.update({"tori": {}})
             a = a + 1
-            date["tori"].update({today: a})
-            dump("habit", acct, date, "w")
+            date.update({today: a})
+            dump("callmomona", acct, date, "w")
             count.tori = count.tori + 1
             lx = random.randint(0,100)
             if lx >= 90:
-                if toot_now == None:
-                    toot_now = ("青鶏の味噌和え{}丁！".format(str(count.tori)))
-                    self.rets(5, toot_now, "public")
-                    print("鶏から！")
+                toot_now = ("呼んだーーーー？？")
+                self.rets(5, toot_now, "public")
 
     def throw(self, status):
         # ぶん投げるボケシステム
