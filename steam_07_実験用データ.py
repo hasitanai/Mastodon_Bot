@@ -206,9 +206,8 @@ class game(bot):
             dump("habit", acct, date, "w")
             count.oahyo = count.oahyo + 1
 
-
 class clock(bot):
-    def __init__(self, wait=0.000001):
+    def __init__(self, wait=0.001):
         self.sleep = wait
         self.cooltime = False
 
