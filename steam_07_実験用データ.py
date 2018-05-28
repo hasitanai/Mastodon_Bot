@@ -177,6 +177,29 @@ class bot():
 
 
 class game(bot):
+    def ck(name, ct):
+        today = datetime.strptime(created_at, '%Y-%m-%dT\d{2}:\d{2}:\d{2}')
+        load = self.load_json
+        dump = self.dump_json
+        date = load("habit", acct)
+        try:
+            if date[name]:
+                if date[name][today]:
+                    a = date[name][today]
+                else:
+                    a = 0
+            else:
+                date.update({name: 0})
+        except:
+            a = 0
+            if not date:
+                date = {}
+                date.update({name: 0})
+        a = a + 1
+        date[name].update({today: a})
+        dump("habit", acct, date, "w")
+        ct = ct + 1
+
     def habit(self, status):
         account = status["account"]
         content = Re1.text(status["content"])
@@ -228,7 +251,7 @@ class game(bot):
             a = a + 1
             date["shine"].update({today: a})
             dump("habit", acct, date, "w")
-            count.oahyo = count.oahyo + 1
+            count.shine = count.shine + 1
 
 class clock(bot):
     def __init__(self, wait=0.001):
@@ -256,6 +279,7 @@ class count:
     t = False
     tori = 0
     oahyo = 0
+    shine = 0
 
 
 game = game(mastodon)
