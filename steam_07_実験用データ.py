@@ -230,28 +230,7 @@ class game(bot):
             count.oahyo = count.oahyo + 1
         if re.search('死ね', content):
             print("◆怖いよ！！！！")
-            today = datetime.strptime(created_at, '%Y-%m-%dT\d{2}:\d{2}:\d{2}')
-            load = self.load_json
-            dump = self.dump_json
-            date = load("habit", acct)
-            try:
-                if date["shine"]:
-                    shine = date["shine"]
-                    if shine[today]:
-                        a = shine[today]
-                    else:
-                        a = 0
-                else:
-                    date.update({"shine": 0})
-            except:
-                a = 0
-                if not date:
-                    date = {}
-                    date.update({"shine": 0})
-            a = a + 1
-            date["shine"].update({today: a})
-            dump("habit", acct, date, "w")
-            count.shine = count.shine + 1
+            self.ct("shine", count.shine)
 
 class clock(bot):
     def __init__(self, wait=0.001):
