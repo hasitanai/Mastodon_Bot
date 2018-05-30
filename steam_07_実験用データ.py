@@ -231,6 +231,9 @@ class game(bot):
         if re.search('死ね', content):
             print("◆怖いよ！！！！")
             self.ct("shine", count.shine)
+        if re.search('しまった', content):
+            print("◆あらら？")
+            self.ct("shimatta", count.shine)
 
 class clock(bot):
     def __init__(self, wait=0.001):
