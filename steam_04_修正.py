@@ -515,8 +515,11 @@ class res(bot):
     def check02(self, status):
         account = status["account"]
         created_at = status['created_at']
-        with codecs.open('at_time\\' + account["acct"] + '.txt', 'w', 'UTF-8') as f:  # 書き込みモードで開く
-            f.write(str(status["created_at"]))  # \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z
+        if isinstance(created_at, str):
+            with codecs.open('at_time\\' + account["acct"] + '.txt', 'w', 'UTF-8') as f:  # 書き込みモードで開く
+                f.write(str(status["created_at"]))  # \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z
+        elif isinstance(created_at, str):
+
 
     def check03(self, status):
         account = status["account"]
