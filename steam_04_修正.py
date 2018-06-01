@@ -517,8 +517,14 @@ class res(bot):
         created_at = status['created_at']
         if isinstance(created_at, str):
             with codecs.open('at_time\\' + account["acct"] + '.txt', 'w', 'UTF-8') as f:  # 書き込みモードで開く
-                f.write(str(status["created_at"]))  # \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z
-        elif isinstance(created_at, str):
+                f.write(created_at)  # \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z
+        elif isinstance(created_at, datetime):
+            z = created_at.isoformat()
+            y = re.sub("...$", "Z",z)
+            with codecs.open('at_time\\' + account["acct"] + '.txt', 'w', 'UTF-8') as f:  # 書き込みモードで開く
+                f.write(y)  # \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z
+        else:
+            print("▼書き込めませんでした")
 
 
     def check03(self, status):
