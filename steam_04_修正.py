@@ -1455,7 +1455,7 @@ class game(bot):
         content = Re1.text(status["content"])
         acct = account["acct"]
         created_at = status['created_at']
-        def ck(name, ct):
+        def ck(name, ct=None):
             today = datetime.now().strftime("%Y-%m-%d")
             #today = datetime.strptime(created_at, '%Y-%m-%dT\d{2}:\d{2}:\d{2}')
             load = self.load_json
@@ -1477,46 +1477,24 @@ class game(bot):
             a = a + 1
             date[name].update({today: a})
             dump("habit", acct, date, "w")
-            ct = ct + 1
-
+            is not ct == None:
+                ct = ct + 1
         toot_now = None
         if re.search('[待ま]って$|[待ま]て$|^[待ま]って|^[待ま]て|(いや|ちょっと)([待ま]って(よ|ください)|'
                      '[待ま]て(や|よ|[待ま]て)|[待ま]った)', content):
             print("◆待たない！！！！")
-            today = datetime.now().strftime("%Y-%m-%d")
-            #today = datetime.strptime(re.sub("T..:..:..\....Z", "", created_at), '%Y-%m-%d')
-            load = game.load_json
-            dump = game.dump_json
-            date = load("habit", acct)
-            if date != "":
-                if date["wait"]:
-                    tori = date["wait"]
-                    try:
-                        a = tori[today]
-                    except:
-                        a = 0
-                else:
-                    date.update({"wait": {}})
-                    a = 0
-            else:
-                a = 0
-                date = {}
-                date.update({"wait": {}})
-            a = a + 1
-            date["wait"].update({today: a})
-            dump("habit", acct, date, "w")
-            count.tori = count.tori + 1
+            ck("wait", count.wait)
             lx = random.randint(0, 15)
             def text(lx):
-                if lx > 4:
+                if lx < 4:
                     text=("(๑•̀ㅁ•́๑)いや待てない！！")
-                elif lx > 8:
+                elif lx < 8:
                     text = ("(๑•̀ㅁ•́๑)待てない！！")
-                elif lx > 12:
+                elif lx < 12:
                     text = ("(๑•̀ㅁ•́๑)待ちません！！")
-                elif lx > 13:
+                elif lx < 13:
                     text = ("(๑•̀ㅁ•́๑)時間は待ってはくれないよ！！")
-                elif lx > 14:
+                elif lx < 14:
                     text = ("(๑•̀ㅁ•́๑)その待ったは無効でーーーーす！！")
                 else:
                     text = ("(๑•̀ㅁ•́๑)待った警察だ！！")
@@ -1585,7 +1563,7 @@ class game(bot):
             count.oahyo = count.oahyo + 1
         if re.search('死ね', content):
             print("◆怖いよ！！！！")
-            self.ck("shine", count.shine)
+            ck("shine", count.shine)
 
     def honyaku(self, status):
         # ネイティオ語が分かるようになる装置
@@ -1680,7 +1658,6 @@ class count():
     memo = 0
     n = False
     t = False
-    tori = 0
 
     def emo01(time=10800):  # 定期的に評価を下げまーーす♪（無慈悲）
         while 1:
