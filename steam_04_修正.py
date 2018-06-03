@@ -1529,7 +1529,7 @@ class game(bot):
             dump("habit", acct, date, "w")
             count.tori = count.tori + 1
             lx = random.randint(0,100)
-            if lx >= 90:
+            if lx >= 50:
                 if toot_now == None:
                     toot_now = ("青鶏の味噌和え{}丁！".format(str(count.tori)))
                     self.rets(5, toot_now, "public")
@@ -1537,37 +1537,16 @@ class game(bot):
 
         if re.search('お[おぉー～]あ[ー～]ひょ[おぉー～]', content):
             print("◆おあひょう文化だ！！！！")
-            today = datetime.now().strftime("%Y-%m-%d")
-            #today = datetime.strptime(created_at, '%Y-%m-%d')
-            #today = datetime.strptime(created_at, '%Y-%m-%dT\d{2}:\d{2}:\d{2}')
-            load = self.load_json
-            dump = self.dump_json
-            date = load("habit", acct)
-            try:
-                if date["oahyo"]:
-                    oahyo = date["oahyo"]
-                    if oahyo[today]:
-                        a = oahyo[today]
-                    else:
-                        a = 0
-                else:
-                    date.update({"oahyo": 0})
-            except:
-                a = 0
-                if not date:
-                    date = {}
-                    date.update({"oahyo": 0})
-            a = a + 1
-            date["oahyo"].update({today: a})
-            dump("habit", acct, date, "w")
-            count.oahyo = count.oahyo + 1
-        if re.search('死ね', content):
-            print("◆怖いよ！！！！")
-            ck("shine", count.shine)
+            ck("oahyo", count.oahyo)
+        if re.search('死ね|死んで|^しね$|ﾀﾋね|氏ね$', content):
+            if not re.search('死ねる|死ねない|死んで(ほしく|欲しく)ない', content):
+                print("◆怖いよ！！！！")
+                ck("shine", count.shine)
+                self.thank(account, -80)
 
     def honyaku(self, status):
         # ネイティオ語が分かるようになる装置
-        # 未定！
+        # きりぼっとが代用してくれてるので中止
         pass
 
     def callmomona(self, status):
@@ -1576,7 +1555,7 @@ class game(bot):
         content = Re1.text(status["content"])
         acct = account["acct"]
         created_at = status['created_at']
-        if re.search('とり(あえず|ま)', content):
+        if re.search('ももな', content):
             print("◆呼ばれた気がした！！！！")
             today = datetime.strptime(re.sub("T..:..:..\....Z", "", created_at), '%Y-%m-%d')
             load = game.load_json
@@ -1658,6 +1637,10 @@ class count():
     memo = 0
     n = False
     t = False
+    tori = 0
+    wait = 0
+    oahyo = 0
+    shine = 0
 
     def emo01(time=10800):  # 定期的に評価を下げまーーす♪（無慈悲）
         while 1:
