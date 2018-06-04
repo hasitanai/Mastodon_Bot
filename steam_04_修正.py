@@ -1457,7 +1457,6 @@ class game(bot):
         created_at = status['created_at']
         def ck(name, ct=None):
             today = datetime.now().strftime("%Y-%m-%d")
-            #today = datetime.strptime(created_at, '%Y-%m-%dT\d{2}:\d{2}:\d{2}')
             load = self.load_json
             dump = self.dump_json
             date = load("habit", acct)
@@ -1504,30 +1503,7 @@ class game(bot):
 
         if re.search('とり(あえず|ま)', content):
             print("◆とりあえず警察だ！！！！")
-            today = datetime.now().strftime("%Y-%m-%d")
-            #today = datetime.strptime(created_at, '%Y-%m-%d')
-            #today = datetime.strptime(re.sub("T..:..:..\....Z", "", created_at), '%Y-%m-%d')
-            load = game.load_json
-            dump = game.dump_json
-            date = load("habit", acct)
-            if date != "":
-                if date["tori"]:
-                    tori = date["tori"]
-                    try:
-                        a = tori[today]
-                    except:
-                        a = 0
-                else:
-                    date.update({"tori": {}})
-                    a = 0
-            else:
-                a = 0
-                date = {}
-                date.update({"tori": {}})
-            a = a + 1
-            date["tori"].update({today: a})
-            dump("habit", acct, date, "w")
-            count.tori = count.tori + 1
+            ck("tori", count.tori)
             lx = random.randint(0,100)
             if lx >= 50:
                 if toot_now == None:
