@@ -1446,13 +1446,36 @@ class game(bot):
         content = Re1.text(status["content"])
         acct = account["acct"]
         created_at = status['created_at']
+        def ck(name, ct):
+            today = datetime.now().strftime("%Y-%m-%d")
+            #today = datetime.strptime(created_at, '%Y-%m-%dT\d{2}:\d{2}:\d{2}')
+            load = self.load_json
+            dump = self.dump_json
+            date = load("habit", acct)
+            try:
+                if date[name]:
+                    if date[name][today]:
+                        a = date[name][today]
+                    else:
+                        a = 0
+                else:
+                    date.update({name: 0})
+            except:
+                a = 0
+                if not date:
+                    date = {}
+                    date.update({name: 0})
+            a = a + 1
+            date[name].update({today: a})
+            dump("habit", acct, date, "w")
+            ct = ct + 1
+
         toot_now = None
         if re.search('[待ま]って$|[待ま]て$|^[待ま]って|^[待ま]て|(いや|ちょっと)([待ま]って(よ|ください)|'
                      '[待ま]て(や|よ|[待ま]て)|[待ま]った)', content):
             print("◆待たない！！！！")
-            tstr = re.sub("\....Z", "", nstr)
-            #today = datetime.now().strftime("%Y-%m-%d")
-            today = datetime.strptime(re.sub("T..:..:..\....Z", "", created_at), '%Y-%m-%d')
+            today = datetime.now().strftime("%Y-%m-%d")
+            #today = datetime.strptime(re.sub("T..:..:..\....Z", "", created_at), '%Y-%m-%d')
             load = game.load_json
             dump = game.dump_json
             date = load("habit", acct)
@@ -1494,8 +1517,9 @@ class game(bot):
 
         if re.search('とり(あえず|ま)', content):
             print("◆とりあえず警察だ！！！！")
+            today = datetime.now().strftime("%Y-%m-%d")
             #today = datetime.strptime(created_at, '%Y-%m-%d')
-            today = datetime.strptime(re.sub("T..:..:..\....Z", "", created_at), '%Y-%m-%d')
+            #today = datetime.strptime(re.sub("T..:..:..\....Z", "", created_at), '%Y-%m-%d')
             load = game.load_json
             dump = game.dump_json
             date = load("habit", acct)
@@ -1524,6 +1548,35 @@ class game(bot):
                     self.rets(5, toot_now, "public")
                     print("鶏から！")
 
+        if re.search('お[おぉー～]あ[ー～]ひょ[おぉー～]', content):
+            print("◆おあひょう文化だ！！！！")
+            today = datetime.now().strftime("%Y-%m-%d")
+            #today = datetime.strptime(created_at, '%Y-%m-%d')
+            #today = datetime.strptime(created_at, '%Y-%m-%dT\d{2}:\d{2}:\d{2}')
+            load = self.load_json
+            dump = self.dump_json
+            date = load("habit", acct)
+            try:
+                if date["oahyo"]:
+                    oahyo = date["oahyo"]
+                    if oahyo[today]:
+                        a = oahyo[today]
+                    else:
+                        a = 0
+                else:
+                    date.update({"oahyo": 0})
+            except:
+                a = 0
+                if not date:
+                    date = {}
+                    date.update({"oahyo": 0})
+            a = a + 1
+            date["oahyo"].update({today: a})
+            dump("habit", acct, date, "w")
+            count.oahyo = count.oahyo + 1
+        if re.search('死ね', content):
+            print("◆怖いよ！！！！")
+            self.ck("shine", count.shine)
 
     def honyaku(self, status):
         # ネイティオ語が分かるようになる装置
