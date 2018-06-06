@@ -570,6 +570,16 @@ class res(bot):
         try:
             with codecs.open('date\\adana\\' + account["acct"] + '.txt', 'r', 'UTF-8') as f:
                 name = f.read()
+            if re.compile("^[ -/　-】:-\?\[-`\{-~]+$").search(name):
+                if account['display_name'] == "":
+                    name = account['acct']
+                else:
+                    name = re.sub("[(:（].+[):）]|@[a-zA-Z0-9_]+|\s|＠.+", "", account['display_name'])
+            elif name == "":
+                if account['display_name'] == "":
+                    name = account['acct']
+                else:
+                    name = re.sub("[(:（{\[].+[):）}\]]|@[a-zA-Z0-9_]+|\s|＠.+", "", account['display_name'])
         except:
             if account['display_name'] == "":
                 name = account['acct']
@@ -780,10 +790,13 @@ class res(bot):
                             toot_now = "(｡>﹏<｡)そんないやらしい呼び方出来ないよーー……"
                         elif bougen:
                             toot_now = "(｡>﹏<｡)ふぇぇ暴言怖いよーー……"
+                        elif re.compile("^[　.。,、 -]+$").search(adan):
+                            toot_now = "٩(๑`^´๑)۶ちゃんとあだ名つけて！！！！"
                         else:
                             with codecs.open('date\\adana\\' + account["acct"] + '.txt', 'w', 'UTF-8') as f:
                                 f.write(adan)
-                            toot_now = "@{1} ٩(๑> ₃ <)۶分かったーーーー！！\n「{0}」って呼ぶようにするね！！".format(adan, account["acct"])
+                            toot_now = ("@{1} ٩(๑> ₃ <)۶分かったーーーー！！\n「{0}」って呼ぶようにするね！！" \
+                                        "#ももなのあだ名事情".format(adan, account["acct"]))
                     self.rets(6, toot_now, status["visibility"], status["id"])
             elif re.compile("ももな.*:@([A-Za-z0-9_]+): ?(さん)?のこと.*[｢「](.+)[」｣]って[呼よ]んで").search(status['content']):
                 ad = re.search("ももな.*:@([A-Za-z0-9_]+): ?のこと.*[｢「](.+)[」｣]って[呼よ]んで", status['content'])
@@ -801,6 +814,8 @@ class res(bot):
                             toot_now = "(｡>﹏<｡)そんないやらしい呼び方出来ないよーー……"
                         elif bougen:
                             toot_now = "(｡>﹏<｡)ふぇぇ暴言怖いよーー……"
+                        elif re.compile("^[　.。,、 -]+$").search(adan):
+                            toot_now = "٩(๑`^´๑)۶ちゃんとあだ名つけて！！！！"
                         else:
                             with codecs.open('date\\adana\\' + account["acct"] + '.txt', 'w', 'UTF-8') as f:
                                 f.write(adan)
@@ -1476,7 +1491,7 @@ class game(bot):
             a = a + 1
             date[name].update({today: a})
             dump("habit", acct, date, "w")
-            is not ct == None:
+            if isinstance(ct, int):
                 ct = ct + 1
         toot_now = None
         if re.search('[待ま]って$|[待ま]て$|^[待ま]って|^[待ま]て|(いや|ちょっと)([待ま]って(よ|ください)|'
