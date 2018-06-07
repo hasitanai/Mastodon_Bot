@@ -1519,6 +1519,9 @@ class game(bot):
                 print("◆怖いよ！！！！")
                 ck("shine", count.shine)
                 self.thank(account, -80)
+        if re.search('しまった', content):
+            print("◆あらら？")
+            ct("shimatta", count.shine)
 
     def honyaku(self, status):
         # ネイティオ語が分かるようになる装置
