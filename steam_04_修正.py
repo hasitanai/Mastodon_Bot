@@ -526,7 +526,6 @@ class res(bot):
         else:
             print("▼書き込めませんでした")
 
-
     def check03(self, status):
         account = status["account"]
         ct = account["statuses_count"]
