@@ -1491,13 +1491,14 @@ class game(bot):
             a = a + 1
             date[name].update({today: a})
             dump("habit", acct, date, "w")
-            if isinstance(ct, int):
+            if isinstance(ct,int):
                 ct = ct + 1
+            return ct
         toot_now = None
         if re.search('[待ま]って$|[待ま]て$|^[待ま]って|^[待ま]て|(いや|ちょっと)([待ま]って(よ|ください)|'
                      '[待ま]て(や|よ|[待ま]て)|[待ま]った)', content):
             print("◆待たない！！！！")
-            ck("wait", count.wait)
+            count.wait = ck("wait", count.wait)
             lx = random.randint(0, 15)
             def text(lx):
                 if lx < 4:
@@ -1518,7 +1519,7 @@ class game(bot):
 
         if re.search('とり(あえず|ま)', content):
             print("◆とりあえず警察だ！！！！")
-            ck("tori", count.tori)
+            count.tori = ck("tori", count.tori)
             lx = random.randint(0,100)
             if lx >= 50:
                 if toot_now == None:
@@ -1528,15 +1529,15 @@ class game(bot):
 
         if re.search('お[おぉー～]あ[ー～]ひょ[おぉー～]', content):
             print("◆おあひょう文化だ！！！！")
-            ck("oahyo", count.oahyo)
+            count.oahyo = ck("oahyo", count.oahyo)
         if re.search('死ね|死んで|^しね$|ﾀﾋね|氏ね$', content):
             if not re.search('死ねる|死ねない|死んで(ほしく|欲しく)ない', content):
                 print("◆怖いよ！！！！")
-                ck("shine", count.shine)
+                count.shine = ck("shine", count.shine)
                 self.thank(account, -80)
         if re.search('しまった', content):
             print("◆あらら？")
-            ct("shimatta", count.shine)
+            count.shimatta = ct("shimatta", count.shimatta)
 
     def honyaku(self, status):
         # ネイティオ語が分かるようになる装置
