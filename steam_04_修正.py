@@ -566,6 +566,7 @@ class res(bot):
         account = status["account"]
         content = re.sub("<p>|</p>", "", str(status['content']))
         path = 'thank\\' + account["acct"] + '.txt'
+        xxx = "[(（].+[)）]|@[a-zA-Z0-9_]+|\s|＠.+|:"
         try:
             with codecs.open('date\\adana\\' + account["acct"] + '.txt', 'r', 'UTF-8') as f:
                 name = f.read()
@@ -573,17 +574,17 @@ class res(bot):
                 if account['display_name'] == "":
                     name = account['acct']
                 else:
-                    name = re.sub("[(:（].+[):）]|@[a-zA-Z0-9_]+|\s|＠.+", "", account['display_name'])
+                    name = re.sub(xxx, "", account['display_name'])
             elif name == "":
                 if account['display_name'] == "":
                     name = account['acct']
                 else:
-                    name = re.sub("[(:（{\[].+[):）}\]]|@[a-zA-Z0-9_]+|\s|＠.+", "", account['display_name'])
+                    name = re.sub(xxx, "", account['display_name'])
         except:
             if account['display_name'] == "":
                 name = account['acct']
             else:
-                name = re.sub("[(:（].+[):）]|@[a-zA-Z0-9_]+|\s|＠.+", "", account['display_name'])
+                name = re.sub(xxx, "", account['display_name'])
         if os.path.exists(path):
             f = open(path, 'r')
             x = f.read()
