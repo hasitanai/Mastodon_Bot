@@ -849,7 +849,6 @@ class res(bot):
                 self.rets(6, toot_now, "public")
             elif re.compile("ももな.*あだ[名な](キャンセル|消して)").search(status['content']):
                 print("○hitしました♪")
-                name = re.sub("[(:（].+[):）]|@[a-zA-Z0-9_]+|\s|＠.+", "", account['display_name'])
                 with codecs.open('date\\adana\\' + acct + '.txt', 'w', 'UTF-8') as f:
                     f.write("")
                 toot_now = ("@{} ٩(๑> ₃ <)۶分かったーーーー！！\n次からは普通に呼びかけるね！！".format(account["acct"]))
