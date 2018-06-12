@@ -1469,7 +1469,7 @@ class game(bot):
         content = Re1.text(status["content"])
         acct = account["acct"]
         created_at = status['created_at']
-        def ck(name, ct=None):
+        def ck(name, ct=0):
             today = datetime.now().strftime("%Y-%m-%d")
             load = self.load_json
             dump = self.dump_json
@@ -1490,8 +1490,11 @@ class game(bot):
             a = a + 1
             date[name].update({today: a})
             dump("habit", acct, date, "w")
-            if isinstance(ct,int):
-                ct = ct + 1
+            try:
+                if isinstance(ct,int):
+                    ct = ct + 1
+            except:
+                pass
             return ct
         toot_now = None
         if re.search('[待ま]って$|[待ま]て$|^[待ま]って|^[待ま]て|(いや|ちょっと)([待ま]って(よ|ください)|'
@@ -1536,7 +1539,7 @@ class game(bot):
                 self.thank(account, -80)
         if re.search('しまった', content):
             print("◆あらら？")
-            count.shimatta = ct("shimatta", count.shimatta)
+            count.shimatta = ck("shimatta", count.shimatta)
 
     def honyaku(self, status):
         # ネイティオ語が分かるようになる装置
