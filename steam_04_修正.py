@@ -1493,6 +1493,8 @@ class game(bot):
             try:
                 if isinstance(ct,int):
                     ct = ct + 1
+                else:
+                    ct = 0
             except:
                 pass
             return ct
@@ -1524,8 +1526,13 @@ class game(bot):
             count.tori = ck("tori", count.tori)
             lx = random.randint(0,100)
             if lx >= 50:
-                if toot_now == None:
-                    toot_now = ("青鶏の味噌和え{}丁！".format(str(count.tori)))
+                if toot_now is None:
+                    if count.tori != 0:
+                        toot_now = ("青鶏の味噌和え{}丁！".format(str(count.tori)))
+                    else:
+                        toot_now = ("青鶏の味噌和え……和え……\n"
+                                    "٩(๑`^´๑)۶ああもう！！！！"
+                                    "回数忘れたやり直し！！！！".format(str(count.tori)))
                     self.rets(5, toot_now, "public")
                     print("鶏から！")
 
