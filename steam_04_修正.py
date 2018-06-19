@@ -858,11 +858,11 @@ class res(bot):
                 acct = ad.group(1)
                 print("○hitしました♪")
                 try:
-                    with codecs.open('date\\adana\\' + account["acct"] + '.txt', 'r', 'UTF-8') as f:
+                    with codecs.open('date\\adana\\' + acct + '.txt', 'r', 'UTF-8') as f:
                         name = f.read()
-                    toot_now = (":@{1}:のあだ名は「{0}」だよ！！！！".format(name, account["acct"]))
+                    toot_now = (":@{1}:のあだ名は「{0}」だよ！！！！".format(name, acct))
                 except:
-                    toot_now = (":@{}:のあだ名は設定してないよ！！！！".format(account["acct"]))
+                    toot_now = (":@{}:のあだ名は設定してないよ！！！！".format(acct))
                 self.rets(6, toot_now, "public")
 
     def res05(self, status):  # t.co警察とか
