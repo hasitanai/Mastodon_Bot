@@ -783,7 +783,7 @@ class res(bot):
                     adan = re.sub('(@[a-zA-Z0-9_]+)', ':\1:', adan)
                     sekuhara = self.block01(status)
                     bougen = self.block02(status)
-                    if len(adan) > 60:
+                    if len(adan) > 50:
                         toot_now = "٩(๑`^´๑)۶長い！！！！！！"
                     else:
                         if sekuhara:
@@ -821,7 +821,7 @@ class res(bot):
                                 f.write(adan)
                             toot_now = ("@{1} ٩(๑> ₃ <)۶分かったーーーー！！\n「{0}」って呼ぶようにするね！！"
                                         "#ももなのあだ名事情".format(adan, account["acct"]))
-                    elif len(adan) > 60:
+                    elif len(adan) > 50:
                         toot_now = "٩(๑`^´๑)۶長い！！！！！！"
                     else:
                         try:
