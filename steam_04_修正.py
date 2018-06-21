@@ -895,10 +895,8 @@ class res(bot):
                     toot_now = ("t.co！？".format(account["acct"]))
                     self.rets(2, toot_now, "public")
                     count.t = True
-
                     def cool():
                         count.t = False
-
                     t = threading.Timer(90, cool)
                     t.start()
                 else:
@@ -923,7 +921,7 @@ class res(bot):
             v = threading.Timer(5, self.fav_now, [status["id"]])
             v.start()
 
-    def fav02(self, status):  # 期間限定用
+    def fav02(self, status):  # 期間限定用←とは
         account = status["account"]
         if re.compile("(ラマーズ[PpＰｐ]|[Ll]amaze[Pp])").search(status['content']):
             self.thank(account, 120)
@@ -934,9 +932,9 @@ class res(bot):
             v = threading.Timer(5, self.fav_now, [status["id"]])
             v.start()
         elif re.compile("[らラ][まマ]([ＰｐpP]|[ぴピ][いぃー～]|[たさ]ん|ちゃん)").search(status['content']):
-            self.thank(account, -120)
+            self.thank(account, -240)
         elif re.compile("[pPｐＰ]名?は略さずに呼(ぶべき|ぼう|んで)").search(status['content']):
-            self.thank(account, 1200)
+            self.thank(account, 2400)
             v = threading.Timer(5, self.fav_now, [status["id"]])
             v.start()
 
