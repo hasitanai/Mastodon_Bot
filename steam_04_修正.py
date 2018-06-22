@@ -1025,6 +1025,8 @@ class game(bot):
                     toot_now = (tex0 + "\nあだ名は{}".format(adan) + "\n#ももな図鑑")
                 except:
                     toot_now = ("(｡>﹏<｡)ごめんね……:@{}:がどんな人なのか分からないの……".format(acct) + "\n#ももな図鑑")
+                if len(toot_now) > 500:
+                    toot_now = ("(｡>﹏<｡)ごめんね……:@{}:を紹介しようと思ったけど文字数がオーバーしちゃった……".format(acct) + "\n#ももな図鑑")
                 self.rets(6, toot_now, "public", spo=spo)
 
     def cinema(self, status):
