@@ -1625,6 +1625,9 @@ class clock(bot):
                             "もっとみんなのことを知りたいな……💞\n"
                             "詳しくは固定トゥートで！！\n"
                             "#ももな図鑑")
+                if len(toot_now) > 500:
+                    toot_now = (tex0 + "\nあだ名は{}".format(adan) +
+                            "#ももな図鑑")
                 self.rets(10, toot_now, "public", spo=spo)
                 def cool():
                     self.cooltime = False
