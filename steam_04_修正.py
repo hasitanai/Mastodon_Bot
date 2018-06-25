@@ -1182,7 +1182,7 @@ class game(bot):
         print("拾った回数：{}".format(i))
         return s
 
-    def quiz(self, status):
+    def quiz(self, status):  #滞ってる機能
         account = status["account"]
         content = Re1.text(status["content"])
         if re.compile("クイズ(問題|もんだい)[：:]<br />").search(content):
