@@ -659,7 +659,7 @@ class res(bot):
                                     print("○やなちゃんだ！！（*'∀'人）")
                                     posting = "(｡>﹏<｡)暫く会えなくて寂しかったよーーーー！！！！"
                                 else:
-                                    posting = "（*'∀'人）おひさひさーーーー♪"
+                                    posting = "（*'∀'人）おひさひさーーーー♪\n#ニコフレ挨拶部"
 
                                 toot_now = (":@{0}: {1}\n{2}".format(account['acct'], name, posting))
                                 self.rets(6, toot_now, "public")
