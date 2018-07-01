@@ -657,7 +657,7 @@ class res(bot):
                             if delta.total_seconds() >= 604800:
                                 if account['acct'] == "5":  # やなちゃん専用挨拶
                                     print("○やなちゃんだ！！（*'∀'人）")
-                                    posting = "(｡>﹏<｡)暫く会えなくて寂しかったよーーーー！！！！"
+                                    posting = "(｡>﹏<｡)暫く会えなくて寂しかったよーーーー！！！！\n#ニコフレ挨拶部"
                                 else:
                                     posting = "（*'∀'人）おひさひさーーーー♪\n#ニコフレ挨拶部"
 
@@ -1029,6 +1029,9 @@ class game(bot):
                 if len(toot_now) > 500:
                     toot_now = ("(｡>﹏<｡)ごめんね……:@{}:を紹介しようと思ったけど文字数がオーバーしちゃった……".format(acct) + "\n#ももな図鑑")
                 self.rets(6, toot_now, "public", spo=spo)
+
+    def movie(self, status):
+        
 
     def cinema(self, status):
         account = status["account"]
