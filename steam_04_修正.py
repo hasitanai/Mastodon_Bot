@@ -8,6 +8,7 @@ import xlrd, xlsxwriter
 from xml.sax.saxutils import unescape as unesc
 from shinagalize import shinagalize
 from dateutil.tz import tzutc  # 変更予定
+from urllib import request
 
 mastodon = None
 
@@ -1031,7 +1032,45 @@ class game(bot):
                 self.rets(6, toot_now, "public", spo=spo)
 
     def movie(self, status):
-        
+        account = status["account"]
+        content = Re1.text(status["content"])
+        word = "ももな.*(今日の|きょうの|本日の|ランダム)動画(\d+)"
+        nicoapi = "http://ext.nicovideo.jp/api/getthumbinfo/"
+        list1 = ["sm","nm","so"]  #基本的に使うのはこれ
+        list2 = ["am","fz","ut","dm",
+                 "ax","ca","cd","cw","fx","ig","na","om","sd","sk","yk","yo","za","zb","ze","nl"]
+                # 古い形式
+        if re.compile(word).search(content):
+            g = re.search(word, content)
+            try:
+                idmax = g.group(2)
+                if int(idmax) == 0:
+                    toot_now = "0じゃん！！！！"
+                else:
+                    num = random.randint(1, int(idmax))
+                    for tag in list1:
+                        req = urllib.request.Request(nicoapi + tag + num)
+                        with urllib.request.urlopen(req) as response:
+                            XmlData = response.read()
+                        import xml.etree.ElementTree as ET
+                        root = ET.fromstring(XmlData)
+                        if root.attrib["status"] == "ok":
+                            ok = True
+                            break
+                        else:
+                            ok = False
+                    if ok:
+                        toot_now = ("見つけた！！！！\n" +
+                                    root[0][1].text + "\n" +
+                                    root[0][0].text + "\n" +
+                                    "投稿者は「{}:{}」だよ！！".format(root[0][19].text,root[0][18].text) +
+                                    "\n#ももな動画チャレンジ")
+                    else:
+                        toot_now = ("「{}」の動画番号は削除されてるみたい(｡>﹏<｡)\n#ももな動画チャレンジ".format(
+                            str(num)))
+                g_vis  "public"
+                self.rets(6, toot_now, g_vis)
+
 
     def cinema(self, status):
         account = status["account"]
