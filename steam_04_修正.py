@@ -1045,7 +1045,7 @@ class game(bot):
             try:
                 idmax = g.group(2)
                 if int(idmax) == 0:
-                    toot_now = "0じゃん！！！！"
+                    pass
                 else:
                     num = random.randint(1, int(idmax))
                     for tag in list1:
@@ -1068,8 +1068,10 @@ class game(bot):
                     else:
                         toot_now = ("「{}」の動画番号は削除されてるみたい(｡>﹏<｡)\n#ももな動画チャレンジ".format(
                             str(num)))
-                g_vis  "public"
+                g_vis = "public"
                 self.rets(6, toot_now, g_vis)
+            except:
+                pass
 
 
     def cinema(self, status):
