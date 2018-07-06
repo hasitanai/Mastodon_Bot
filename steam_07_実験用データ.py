@@ -10,6 +10,7 @@ from xml.sax.saxutils import unescape as unesc
 import asyncio
 from shinagalize import shinagalize
 from dateutil.tz import tzutc  # 変更予定
+from urllib import request
 
 url_ins = open("instance.txt").read()
 
@@ -253,8 +254,8 @@ class game(bot):
                 else:
                     num = random.randint(1, int(idmax))
                     for tag in list1:
-                        req = urllib.request.Request(nicoapi + tag + num)
-                        with urllib.request.urlopen(req) as response:
+                        req = request.Request(nicoapi + tag + num)
+                        with request.urlopen(req) as response:
                             XmlData = response.read()
                         import xml.etree.ElementTree as ET
                         root = ET.fromstring(XmlData)
