@@ -412,7 +412,7 @@ def men(status):
 
 
 class res(bot):
-    def block01(self, status):
+    def block01(self, status):  # セクハラチェック
         account = status["account"]
         content = status["content"]
         with codecs.open("NG\sekuhara.txt", 'r', 'utf-8') as f:
@@ -432,7 +432,7 @@ class res(bot):
                 j = False
         return j
 
-    def block02(self, status):
+    def block02(self, status):  # 暴言チェック
         account = status["account"]
         content = status["content"]
         with codecs.open("NG\\bougen.txt", 'r', 'utf-8') as f:
@@ -470,7 +470,7 @@ class res(bot):
         self.toot(toot_now, "direct", ids)
         pass
 
-    def check00(self, status):
+    def check00(self, status):  # アカウント情報を読み込んでチェック
         account = status["account"]
         ct = account["statuses_count"]
         path = 'thank\\' + account["acct"] + '.txt'
@@ -497,7 +497,7 @@ class res(bot):
         else:
             pass
 
-    def check01(self, status):
+    def check01(self, status):  # アカウント情報を記録
         account = status["account"]
         created_at = status['created_at']
         non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
@@ -514,7 +514,7 @@ class res(bot):
             f.write("0")
             f.close()  # ファイルを閉じる
 
-    def check02(self, status):
+    def check02(self, status):  # 最後に書き込んだ時間をチェック
         account = status["account"]
         created_at = status['created_at']
         if isinstance(created_at, str):
@@ -528,7 +528,7 @@ class res(bot):
         else:
             print("▼書き込めませんでした")
 
-    def check03(self, status):
+    def check03(self, status):  # キリ番チェック
         account = status["account"]
         ct = account["statuses_count"]
         if account["acct"] == "Knzk":  # 神崎おにいさん監視隊
@@ -564,7 +564,7 @@ class res(bot):
                 g_vis = "direct"
                 self.rets(4, toot_now, g_vis)
 
-    def res01(self, status):
+    def res01(self, status):  # 挨拶
         account = status["account"]
         content = re.sub("<p>|</p>", "", str(status['content']))
         path = 'thank\\' + account["acct"] + '.txt'
@@ -725,7 +725,7 @@ class res(bot):
         else:
             print("○反応がない人なので挨拶しません（*'∀'人）")
 
-    def res02(self, status):
+    def res02(self, status):  # マストドンして❤
         account = status["account"]
         content = Re1.text(status["content"])
         if account["acct"] != "JC":
@@ -752,7 +752,7 @@ class res(bot):
                     g_vis = "public"
                     self.rets(5, toot_now, g_vis)
 
-    def res03(self, status):
+    def res03(self, status):  # サイコロ機能
         account = status["account"]
         if account['acct'] != "kiri_bot01":
             if account["acct"] != "JC":
@@ -916,7 +916,7 @@ class res(bot):
                     t = threading.Timer(180, cool)
                     t.start()
 
-    def fav01(self, status):
+    def fav01(self, status):  # 呼ばれた気がしたらニコる
         account = status["account"]
         if re.compile("(ももな|:@JC:|ちゃんもも|:nicoru\d*:|\WJC\W|もなな)").search(status['content']):
             self.thank(account, 8)
@@ -942,7 +942,7 @@ class res(bot):
 
 
 class game(bot):
-    def prof(self, status):
+    def prof(self, status):  # ももな図鑑
         account = status["account"]
         content = Re1.text(status["content"])
         profile_emojis = status["profile_emojis"]
@@ -1031,7 +1031,7 @@ class game(bot):
                     toot_now = ("(｡>﹏<｡)ごめんね……:@{}:を紹介しようと思ったけど文字数がオーバーしちゃった……".format(acct) + "\n#ももな図鑑")
                 self.rets(6, toot_now, "public", spo=spo)
 
-    def movie(self, status):
+    def movie(self, status):  # 動画IDをランダムで探す機能
         account = status["account"]
         content = Re1.text(status["content"])
         word = "ももな.*(今日の|きょうの|本日の|ランダム)動画(\d+)"
@@ -1073,8 +1073,7 @@ class game(bot):
             except:
                 pass
 
-
-    def cinema(self, status):
+    def cinema(self, status):  # ももな劇場
         account = status["account"]
         content = Re1.text(status["content"])
         gameIn = ("(劇場|げきじょう|[Cc]inema|シネマ)(ゲーム|げーむ)[：:]" +
@@ -1201,7 +1200,7 @@ class game(bot):
                 self.rets(5, toot_now, "public")
         pass
 
-    def count(self, user):
+    def count(self, user):  # 試験的機能
         i = 0
         f = 0
         b = 0
@@ -1255,7 +1254,7 @@ class game(bot):
                             "[AaＡａ][.．](.+)", str(content))
             pass
 
-    def memo(self, status):
+    def memo(self, status):  # メモ機能　まだ完成してない
         account = status["account"]
         content = Re1.text(status["content"])
         if re.compile("ももな.*(メモ|めも)[：:]").search(content):
@@ -1276,7 +1275,7 @@ class game(bot):
         # ある程度溜まったらメモまとめをお願いするシステムの予定
         pass
 
-    def poem(self, status):
+    def poem(self, status):  # ポエムゲーム
         account = status["account"]
         content = Re1.text(status["content"])
         if account["acct"] == "twotwo":
@@ -1361,7 +1360,7 @@ class game(bot):
                     spo = ":@" + account["acct"] + ":にぽえむ♪♪"
                     self.rets(6, toot_now, g_vis, None, spo)
 
-    def senryu(self, status):
+    def senryu(self, status):  # 川柳ゲーム
         account = status["account"]
         content = Re1.text(status["content"])
         if account["acct"] == "twotwo":
@@ -1440,7 +1439,7 @@ class game(bot):
                     self.rets(6, toot_now, g_vis)
         pass
 
-    def dice(self, inp):
+    def dice(self, inp):  # ももなダイスの中身
         l = []
         n = []
         m = []
@@ -1509,7 +1508,7 @@ class game(bot):
             result = "えっ？"
         return result
 
-    def habit(self, status):
+    def habit(self, status):  # ももなの口癖チェック
         account = status["account"]
         content = Re1.text(status["content"])
         acct = account["acct"]
@@ -1593,12 +1592,12 @@ class game(bot):
             print("◆あらら？")
             count.shimatta = ck("shimatta", count.shimatta)
 
-    def honyaku(self, status):
+    def honyaku(self, status):  # ももな翻訳（中止）
         # ネイティオ語が分かるようになる装置
         # きりぼっとが代用してくれてるので中止
         pass
 
-    def callmomona(self, status):
+    def callmomona(self, status):  # ももなを呼びかけた回数
         # 呼ばれた回数を数えるやつ！
         account = status["account"]
         content = Re1.text(status["content"])
@@ -1626,7 +1625,7 @@ class game(bot):
                 toot_now = ("呼んだーーーー？？")
                 self.rets(5, toot_now, "public")
 
-    def throw(self, status):
+    def throw(self, status):  # ももなスロー
         # ぶん投げるボケシステム
         pass
 
