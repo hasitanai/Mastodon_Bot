@@ -1042,36 +1042,41 @@ class game(bot):
                 # 古い形式
         if re.compile(word).search(content):
             g = re.search(word, content)
-            try:
-                idmax = g.group(2)
-                if int(idmax) == 0:
-                    pass
-                else:
-                    num = random.randint(1, int(idmax))
-                    for tag in list1:
-                        req = request.Request(nicoapi + tag + num)
-                        with request.urlopen(req) as response:
-                            XmlData = response.read()
-                        import xml.etree.ElementTree as ET
-                        root = ET.fromstring(XmlData)
-                        if root.attrib["status"] == "ok":
-                            ok = True
-                            break
-                        else:
-                            ok = False
-                    if ok:
-                        toot_now = ("見つけた！！！！\n" +
-                                    root[0][1].text + "\n" +
-                                    root[0][0].text + "\n" +
-                                    "投稿者は「{}:{}」だよ！！".format(root[0][19].text,root[0][18].text) +
-                                    "\n#ももな動画チャレンジ")
+            if count.movieCT == true:
+                toot_now = "@{} クールタイム中だよ！！".format(account["acct"])
+                g_vis = "private"
+                self.rets(4, toot_now, g_vis)
+            else:
+                try:
+                    idmax = g.group(2)
+                    if int(idmax) == 0:
+                        pass
                     else:
-                        toot_now = ("「{}」の動画番号は削除されてるみたい(｡>﹏<｡)\n#ももな動画チャレンジ".format(
-                            str(num)))
-                g_vis = "public"
-                self.rets(6, toot_now, g_vis)
-            except:
-                pass
+                        num = random.randint(1, int(idmax))
+                        for tag in list1:
+                            req = request.Request(nicoapi + tag + str(num))
+                            with request.urlopen(req) as response:
+                                XmlData = response.read()
+                            import xml.etree.ElementTree as ET
+                            root = ET.fromstring(XmlData)
+                            if root.attrib["status"] == "ok":
+                                ok = True
+                                break
+                            else:
+                                ok = False
+                        if ok:
+                            toot_now = ("見つけた！！！！\n" +
+                                        root[0][1].text + "\n" +
+                                        root[0][0].text + "\n" +
+                                        "投稿者は「{}:{}」だよ！！".format(root[0][19].text,root[0][18].text) +
+                                        "\n#ももな動画チャレンジ")
+                        else:
+                            toot_now = ("「{}」の動画番号は削除されてるみたい(｡>﹏<｡)\n#ももな動画チャレンジ".format(
+                                str(num)))
+                    g_vis = "public"
+                    self.rets(8, toot_now, g_vis)
+                except:
+                    
 
     def cinema(self, status):  # ももな劇場
         account = status["account"]
@@ -1629,6 +1634,24 @@ class game(bot):
         # ぶん投げるボケシステム
         pass
 
+    def idol_rank(self, status):  # アイソルランク付け機能を動かすヒエラルキー
+        account = status["account"]
+        content = Re1.text(status["content"])
+        profile_emojis = status["profile_emojis"]
+        if account["acct"] != "JC":
+            spo = None
+            if re.compile("ももな.*:@([A-Za-z0-9_]+): ?(さん)?[にへで]?アイドル(投票|とうひょう)").search(content):
+                re.search("ももな.*:@([A-Za-z0-9_]+): ?(さん)?[にへで]?アイドル(投票|とうひょう).*[：:](<br />)?(.+)",
+                acct = word.group(1)
+                tex1 = word.group(5)
+                user_check = False
+                for x in profile_emojis:  # ユーザー絵文字検出器～～ﾟ+.･ﾟ+｡(〃・ω・〃)｡+ﾟ･.+ﾟ
+                    if x["shortcode"] == ("@{}".format(acct)):
+                        print("○ユーザーを確認しました♪")
+                        user_check = True
+                        break
+                if user_check == True:
+                    
 
 class clock(bot):
     def __init__(self, wait=0.000001):
@@ -1692,6 +1715,7 @@ class count():
     wait = 0
     oahyo = 0
     shine = 0
+    movieCT = False
 
     def emo01(time=10800):  # 定期的に評価を下げまーーす♪（無慈悲）
         while 1:
