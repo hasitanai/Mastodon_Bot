@@ -256,7 +256,6 @@ class game(bot):
                 try:
                     idmax = g.group(2)
                     if int(idmax) == 0:
-                        print("１")
                         pass
                     else:
                         num = random.randint(1, int(idmax))
@@ -296,6 +295,61 @@ class game(bot):
                         f.write("\n\n【" + str(datetime.now) + "】\n")
                         traceback.print_exc(file=f)
                     pass
+                    
+    def image(self, status):　#良さげなAPIがない
+        account = status["account"]
+        content = Re1.text(status["content"])
+        word = "ももな.*(今日の|きょうの|本日の|ランダム)(静画|イラスト)(\d+)"
+        nicoapi = "http://seiga.nicovideo.jp/api/theme/data?theme_id="
+        if re.compile(word).search(content):
+            print("ヒットしました！")
+            if count.imageCT == True:
+                toot_now = "@{} クールタイム中だよ！！".format(account["acct"])
+                g_vis = "private"
+                self.rets(4, toot_now, g_vis)
+            else:
+                g = re.search(word, content)
+                try:
+                    idmax = g.group(3)
+                    if int(idmax) == 0:
+                        pass
+                    else:
+                        num = random.randint(1, int(idmax))
+                        req = request.Request(nicoapi + str(num))
+                        with request.urlopen(req) as response:
+                            XmlData = response.read()
+                        import xml.etree.ElementTree as ET
+                        root = ET.fromstring(XmlData)
+                        if root.attrib["status"] == "ok":
+                            ok = True
+                            print("見つけた！")
+                        else:
+                            ok = False
+                        if ok:
+                            toot_now = ("見つけた！！！！\n" +
+                                        root[0][1].text + "\n" +
+                                        root[0][0].text + "\n" +
+                                        "投稿者は「{}:{}」だよ！！".format(root[0][19].text,root[0][18].text) +
+                                        "\n#ももな静画チャレンジ")
+                            g_vis = "public"
+                        else:
+                            toot_now = ("「{}」の静画番号見つからないよ(｡>﹏<｡)\n#ももな静画チャレンジ".format(
+                                str(num)))
+                            g_vis = "public"
+                    self.rets(10, toot_now, g_vis)
+                    def res():
+                        count.imageCT = False
+                    s = threading.Timer(30, res)
+                    s.start()
+                    count.imageCT = True
+                except:
+                    print("失敗！！")
+                    print("例外情報\n" + traceback.format_exc())
+                    with open('except.log', 'a') as f:
+                        f.write("\n\n【" + str(datetime.now) + "】\n")
+                        traceback.print_exc(file=f)
+                    pass
+                    
 
 class clock(bot):
     def __init__(self, wait=0.001):

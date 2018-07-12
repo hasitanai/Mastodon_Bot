@@ -302,6 +302,7 @@ def LTL(status):  # ここに受け取ったtootに対してどうするか追�
     game.quest(status)
     game.habit(status)
     game.callmomona(status)
+    game.movie(status)
     # ここまで
 
 
