@@ -246,37 +246,56 @@ class game(bot):
                  "ax","ca","cd","cw","fx","ig","na","om","sd","sk","yk","yo","za","zb","ze","nl"]
                 # 古い形式
         if re.compile(word).search(content):
-            g = re.search(word, content)
-            try:
-                idmax = g.group(2)
-                if int(idmax) == 0:
-                    pass
-                else:
-                    num = random.randint(1, int(idmax))
-                    for tag in list1:
-                        req = request.Request(nicoapi + tag + num)
-                        with request.urlopen(req) as response:
-                            XmlData = response.read()
-                        import xml.etree.ElementTree as ET
-                        root = ET.fromstring(XmlData)
-                        if root.attrib["status"] == "ok":
-                            ok = True
-                            break
-                        else:
-                            ok = False
-                    if ok:
-                        toot_now = ("見つけた！！！！\n" +
-                                    root[0][1].text + "\n" +
-                                    root[0][0].text + "\n" +
-                                    "投稿者は「{}:{}」だよ！！".format(root[0][19].text,root[0][18].text) +
-                                    "\n#ももな動画チャレンジ")
+            print("ヒットしました！")
+            if count.movieCT == True:
+                toot_now = "@{} クールタイム中だよ！！".format(account["acct"])
+                g_vis = "private"
+                self.rets(4, toot_now, g_vis)
+            else:
+                g = re.search(word, content)
+                try:
+                    idmax = g.group(2)
+                    if int(idmax) == 0:
+                        print("１")
+                        pass
                     else:
-                        toot_now = ("「{}」の動画番号は削除されてるみたい(｡>﹏<｡)\n#ももな動画チャレンジ".format(
-                            str(num)))
-                g_vis = "public"
-                self.rets(6, toot_now, g_vis)
-            except:
-                pass
+                        num = random.randint(1, int(idmax))
+                        for tag in list1:
+                            req = request.Request(nicoapi + tag + str(num))
+                            with request.urlopen(req) as response:
+                                XmlData = response.read()
+                            import xml.etree.ElementTree as ET
+                            root = ET.fromstring(XmlData)
+                            if root.attrib["status"] == "ok":
+                                ok = True
+                                break
+                                print("見つけた！")
+                            else:
+                                ok = False
+                        if ok:
+                            toot_now = ("見つけた！！！！\n" +
+                                        root[0][1].text + "\n" +
+                                        root[0][0].text + "\n" +
+                                        "投稿者は「{}:{}」だよ！！".format(root[0][19].text,root[0][18].text) +
+                                        "\n#ももな動画チャレンジ")
+                            g_vis = "public"
+                        else:
+                            toot_now = ("「{}」の動画番号は削除されてるみたい(｡>﹏<｡)\n#ももな動画チャレンジ".format(
+                                str(num)))
+                            g_vis = "public"
+                    self.rets(10, toot_now, g_vis)
+                    def res():
+                        count.movieCT = False
+                    s = threading.Timer(30, res)
+                    s.start()
+                    count.movieCT = True
+                except:
+                    print("失敗！！")
+                    print("例外情報\n" + traceback.format_exc())
+                    with open('except.log', 'a') as f:
+                        f.write("\n\n【" + str(datetime.now) + "】\n")
+                        traceback.print_exc(file=f)
+                    pass
 
 class clock(bot):
     def __init__(self, wait=0.001):
@@ -305,6 +324,7 @@ class count:
     tori = 0
     oahyo = 0
     shine = 0
+    movieCT = False
 
 
 game = game(mastodon)
