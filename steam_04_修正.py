@@ -1564,7 +1564,7 @@ class game(bot):
             return ct
         toot_now = None
         if re.search('[待ま]って$|[待ま]て$|^[待ま]って|^[待ま]て|(いや|ちょっと)([待ま]って)|'
-                     '[待ま]て(や|よ|[待ま]て)|[待ま]った)', content):
+                     '[待ま]て(や|よ|[待ま]て)|[待ま]った', content):
             print("◆待たない！！！！")
             count.wait = ck("wait", count.wait)
             lx = random.randint(0, 15)
