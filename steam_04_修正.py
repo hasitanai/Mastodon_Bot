@@ -551,9 +551,29 @@ class res(bot):
                 g_vis = "direct"
                 self.rets(4, toot_now, g_vis)
         elif account["acct"] == "lamazeP":  # ラマーズＰ監視隊
-            ct += 5
-            if re.match('^\d+000$', str(ct)):
-                toot_now = "@lamazeP (๑•̀ㅁ•́๑)" + str(ct) + 'tootまであと5だよ！！！！'
+            if re.match('^\d+995$', str(ct)):
+                toot_now = "@lamazeP (๑•̀ㅁ•́๑)" + str(ct+5) + 'tootまであと5だよ！！！！'
+                g_vis = "direct"
+                self.rets(4, toot_now, g_vis)
+            elif re.match('^\d+9997$', str(ct)):
+                toot_now = "@lamazeP (๑•̀ㅁ•́๑)" + str(ct+3) + 'tootまであと3だよ！！！！'
+                g_vis = "direct"
+                self.rets(4, toot_now, g_vis)
+            elif re.match('^\d+9993$', str(ct)):
+                toot_now = "@lamazeP (๑•̀ㅁ•́๑)" + str(ct+7) + 'tootまであと7だよ！！！！'
+                g_vis = "direct"
+                self.rets(4, toot_now, g_vis)
+            
+            elif re.match('^\d+9990$', str(ct)):
+                toot_now = "@lamazeP (๑•̀ㅁ•́๑)" + str(ct+10) + 'tootまであと10だよ！！！！'
+                g_vis = "direct"
+                self.rets(4, toot_now, g_vis)
+            elif re.match('^\d+9999$', str(ct)):
+                toot_now = "@lamazeP (๑•̀ㅁ•́๑)待った！！あと1だよほんとにいいの！？！？"
+                g_vis = "direct"
+                self.rets(2, toot_now, g_vis)
+            elif re.match('^\d+9950$', str(ct)):
+                toot_now = "@lamazeP (๑•̀ㅁ•́๑)" + str(ct+50) + 'tootまであと50だよ！！！！'
                 g_vis = "direct"
                 self.rets(4, toot_now, g_vis)
         else:  # テスト
