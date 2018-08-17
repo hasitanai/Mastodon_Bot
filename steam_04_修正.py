@@ -301,7 +301,7 @@ def LTL(status):  # ここに受け取ったtootに対してどうするか追�
     game.prof(status)
     game.quest(status)
     game.habit(status)
-    game.callmomona(status)
+    #game.callmomona(status)
     game.movie(status)
     # ここまで
 
@@ -956,6 +956,20 @@ class res(bot):
             v.start()
         elif re.compile("[らラ][まマ]([ＰｐpP]|[ぴピ][いぃー～]|[たさ]ん|ちゃん)").search(status['content']):
             self.thank(account, -240)
+            lx = random.randint(0, 20)
+            def text(lx):
+                if lx < 4:
+                    text = ("٩(๑`^´๑)۶略しちゃダメ！")
+                elif lx < 8:
+                    text = ("٩(๑`^´๑)۶略しちゃダメだよ！")
+                elif lx < 12:
+                    text = ("٩(๑`^´๑)۶略さないで！")
+                else:
+                    text = ("")
+                return text
+            toot_now = text(lx)
+            if text != "":
+                self.rets(5, toot_now, "public")
         elif re.compile("[pPｐＰ]名?は略さずに呼(ぶべき|ぼう|んで)").search(status['content']):
             self.thank(account, 2400)
             v = threading.Timer(5, self.fav_now, [status["id"]])
@@ -1623,8 +1637,8 @@ class game(bot):
         if re.search('お[おぉー～]あ[ー～]ひょ[おぉー～]', content):
             print("◆おあひょう文化だ！！！！")
             count.oahyo = ck("oahyo", count.oahyo)
-        if re.search('死ね|死んで|^しね$|ﾀﾋね|氏ね$', content):
-            if not re.search('死ねる|死ねない|死んで(ほしく|欲しく)ない', content):
+        if re.search('死ね|死んで|^しね$|ﾀﾋね|氏ね$|殺す|殺せ', content):
+            if not re.search('死ねる|死ねない|死んで(ほしく|欲しく)ない|殺すな|殺[させ]ない', content):
                 print("◆怖いよ！！！！")
                 count.shine = ck("shine", count.shine)
                 self.thank(account, -80)
@@ -1670,22 +1684,7 @@ class game(bot):
         pass
 
     def idol_rank(self, status):  # アイソルランク付け機能を動かすヒエラルキー
-        account = status["account"]
-        content = Re1.text(status["content"])
-        profile_emojis = status["profile_emojis"]
-        if account["acct"] != "JC":
-            spo = None
-            if re.compile("ももな.*:@([A-Za-z0-9_]+): ?(さん)?[にへで]?アイドル(投票|とうひょう)").search(content):
-                re.search("ももな.*:@([A-Za-z0-9_]+): ?(さん)?[にへで]?アイドル(投票|とうひょう).*[：:](<br />)?(.+)",
-                acct = word.group(1)
-                tex1 = word.group(5)
-                user_check = False
-                for x in profile_emojis:  # ユーザー絵文字検出器～～ﾟ+.･ﾟ+｡(〃・ω・〃)｡+ﾟ･.+ﾟ
-                    if x["shortcode"] == ("@{}".format(acct)):
-                        print("○ユーザーを確認しました♪")
-                        user_check = True
-                        break
-                if user_check == True:
+        pass
                     
 
 class clock(bot):
