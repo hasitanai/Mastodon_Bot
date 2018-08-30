@@ -1830,7 +1830,10 @@ class ready():
     def user(self):
         try:
             listener = Home()
-            mastodon.user_stream(listener)
+            try:
+                mastodon.stream_user(listener)
+            except:
+                mastodon.user_stream(listener)
         except:
             print("例外情報\n" + traceback.format_exc())
             with open('except.log', 'a') as f:
@@ -1843,7 +1846,10 @@ class ready():
     def local(self):
         try:
             listener = Local()
-            mastodon.local_stream(listener)
+            try:
+                mastodon.stream_local(listener)
+            except:
+                mastodon.local_stream(listener)
         except:
             print("例外情報\n" + traceback.format_exc())
             with open('except.log', 'a') as f:
