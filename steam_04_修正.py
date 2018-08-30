@@ -193,20 +193,6 @@ class bot():
         with codecs.open(file, mode, 'utf-8', "ignore") as f:
             f.write(date)
 
-    def dlt(self, nstr):
-        if re.search("\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z", nstr):
-            tstr = re.sub("Z", "", nstr)
-            a = datetime.strptime(tstr, '%Y-%m-%dT%H:%M:%S.%f')
-            return a
-        elif re.search("\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{6}\+00:00", nstr):
-            tstr = re.sub("\d{3}\+00:00", "", nstr)
-            a = datetime.strptime(tstr, '%Y-%m-%d %H:%M:%S.%f')
-            return a
-        elif re.search("\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{6}", nstr):
-            tstr = re.sub("\d{3}$", "", nstr)
-            a = datetime.strptime(tstr, '%Y-%m-%d %H:%M:%S.%f')
-            return a
-
 class Home(StreamListener, bot):
     def on_update(self, status):
         account = status["account"]
@@ -684,9 +670,11 @@ class res(bot):
                             print(nstr)
                             tstr = re.sub("Z$", "", nstr)
                             last_time = datetime.strptime(tstr, '%Y-%m-%dT%H:%M:%S.%f')
-                            nstr = status['created_at']
-                            tstr = self.dlt(str(nstr))
-                            now_time = datetime.strptime(str(tstr), '%Y-%m-%dT%H:%M:%S.%f')
+                            created_at = status['created_at']
+                            if isinstance(created_at, str):
+                                now_time = datetime.strptime(created_at.pla, '%Y-%m-%dT%H:%M:%S.%f')
+                            elif isinstance(created_at, datetime):
+                                now_time = created_at.replace(tzinfo=None)
                             delta = now_time - last_time
                             print(delta)
                             if delta.total_seconds() >= 604800:
