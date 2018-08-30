@@ -75,7 +75,7 @@ class Log():  # toot記録用クラス٩(๑❛ᴗ❛๑)۶
         global nowing
         text = self.content
         acct = self.account["acct"]
-        with codecs.open('log\\' + 'log_' + nowing + '.txt', 'a', 'UTF-8') as f:
+        with codecs.open('log/' + 'log_' + nowing + '.txt', 'a', 'UTF-8') as f:
             f.write(str(text) + ',<acct="' + acct + '">\r\n')
 
 
@@ -120,7 +120,7 @@ class bot():
         print("「(๑•̀ㅁ•́๑)✧＜tootｽﾃﾝﾊﾞｰｲ」")
 
     def thank(self, account, point):
-        path = 'thank\\' + account["acct"] + '.txt'
+        path = 'thank/' + account["acct"] + '.txt'
         if os.path.exists(path):
             f = open(path, 'r')
             x = f.read()
@@ -160,7 +160,7 @@ class bot():
         return x
 
     def load_json(self, folder, name):
-        file = ("game\\{0}\\{1}.json").format(folder, name)
+        file = ("game/{0}/{1}.json").format(folder, name)
         if os.path.exists(file):
             with codecs.open(file, 'r', 'utf-8', "ignore") as f:
                 date = json.load(f)
@@ -169,7 +169,7 @@ class bot():
         return date
 
     def load_txt(self, folder, name):
-        file = ("game\\{0}\\{1}.txt").format(folder, name)
+        file = ("game/{0}/{1}.txt").format(folder, name)
         if os.path.exists(file):
             with codecs.open(file, 'r', 'utf-8', "ignore") as f:
                 date = f.read()
@@ -178,21 +178,33 @@ class bot():
         return date
 
     def dump_json(self, folder, name, date, mode):
-        dir = "game\\{0}".format(folder)
+        dir = "game/{0}".format(folder)
         if not os.path.isdir(dir):
             os.mkdir(dir)
-        file = ("game\\{0}\\{1}.json").format(folder, name)
+        file = ("game/{0}/{1}.json").format(folder, name)
         with codecs.open(file, mode, 'utf-8', "ignore") as f:
             json.dump(date, f)
 
     def write_txt(self, folder, name, date, mode):
-        dir = "game\\{0}".format(folder)
+        dir = "game/{0}".format(folder)
         if not os.path.isdir(dir):
             os.mkdir(dir)
-        file = ("game\\{0}\\{1}.txt").format(folder, name)
+        file = ("game/{0}/{1}.txt").format(folder, name)
         with codecs.open(file, mode, 'utf-8', "ignore") as f:
             f.write(date)
 
+    def dlt(nstr):
+        if re.search("\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z", nstr):
+            tstr = re.sub("\....Z", "", nstr)
+            a = datetime.strptime(tstr, '%Y-%m-%dT%H:%M:%S')
+            return a.replace(tzinfo=tz.tzutc())
+        elif re.search("\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{6}\+00:00", nstr):
+            tstr = re.sub("\+00:00", "", nstr)
+            a = datetime.strptime(tstr, '%Y-%m-%d %H:%M:%S.%f')
+            return a.replace(tzinfo=tz.tzutc())
+        elif re.search("\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{6}", nstr):
+            a = datetime.strptime(nstr, '%Y-%m-%d %H:%M:%S.%f')
+            return a.replace(tzinfo=tz.tzutc())
 
 class Home(StreamListener, bot):
     def on_update(self, status):
@@ -269,7 +281,7 @@ def HTL(status):
     account = status["account"]
     ct = account["statuses_count"]
     if account["acct"] == "JC":
-        path = 'thank\\' + account["acct"] + '.txt'
+        path = 'thank/' + account["acct"] + '.txt'
         if os.path.exists(path):
             f = open(path, 'r')
             x = f.read()
@@ -436,7 +448,7 @@ class res(bot):
     def block02(self, status):  # 暴言チェック
         account = status["account"]
         content = status["content"]
-        with codecs.open("NG\\bougen.txt", 'r', 'utf-8') as f:
+        with codecs.open("NG/bougen.txt", 'r', 'utf-8') as f:
             l = []
             for x in f:
                 l.append(x.rstrip("\r\n"))
@@ -454,7 +466,7 @@ class res(bot):
         return j
 
     def trial01(self, name, point, ids):  # デバック用
-        path = 'thank\\' + name + '.txt'
+        path = 'thank/' + name + '.txt'
         if os.path.exists(path):
             f = open(path, 'r')
             x = f.read()
@@ -474,7 +486,7 @@ class res(bot):
     def check00(self, status):  # アカウント情報を読み込んでチェック
         account = status["account"]
         ct = account["statuses_count"]
-        path = 'thank\\' + account["acct"] + '.txt'
+        path = 'thank/' + account["acct"] + '.txt'
         if os.path.exists(path):
             f = open(path, 'r')
             x = f.read()
@@ -502,9 +514,9 @@ class res(bot):
         account = status["account"]
         created_at = status['created_at']
         non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
-        with codecs.open('acct\\' + account["acct"] + '.txt', 'w', 'UTF-8') as f:  # 書き込みモードで開く
+        with codecs.open('acct/' + account["acct"] + '.txt', 'w', 'UTF-8') as f:  # 書き込みモードで開く
             f.write(str(status["account"]).translate(non_bmp_map))  # アカウント情報の更新
-        path = 'thank\\' + account["acct"] + '.txt'
+        path = 'thank/' + account["acct"] + '.txt'
         if os.path.exists(path):
             f = open(path, 'r')
             x = f.read()
@@ -519,12 +531,12 @@ class res(bot):
         account = status["account"]
         created_at = status['created_at']
         if isinstance(created_at, str):
-            with codecs.open('at_time\\' + account["acct"] + '.txt', 'w', 'UTF-8') as f:  # 書き込みモードで開く
+            with codecs.open('at_time/' + account["acct"] + '.txt', 'w', 'UTF-8') as f:  # 書き込みモードで開く
                 f.write(created_at)  # \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z
         elif isinstance(created_at, datetime):
             z = created_at.isoformat()
-            y = re.sub("...$", "Z",z)
-            with codecs.open('at_time\\' + account["acct"] + '.txt', 'w', 'UTF-8') as f:  # 書き込みモードで開く
+            y = re.sub("...$", "Z", z)
+            with codecs.open('at_time/' + account["acct"] + '.txt', 'w', 'UTF-8') as f:  # 書き込みモードで開く
                 f.write(y)  # \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z
         else:
             print("▼書き込めませんでした")
@@ -588,10 +600,10 @@ class res(bot):
     def res01(self, status):  # 挨拶
         account = status["account"]
         content = re.sub("<p>|</p>", "", str(status['content']))
-        path = 'thank\\' + account["acct"] + '.txt'
+        path = 'thank/' + account["acct"] + '.txt'
         xxx = "[(（].+[)）]|@[a-zA-Z0-9_]+|\s|＠.+|:"
         try:
-            with codecs.open('date\\adana\\' + account["acct"] + '.txt', 'r', 'UTF-8') as f:
+            with codecs.open('date/adana/' + account["acct"] + '.txt', 'r', 'UTF-8') as f:
                 name = f.read()
             if re.compile("^[ -/　-】:-\?\[-`\{-~]+$").search(name):
                 if account['display_name'] == "":
@@ -666,13 +678,13 @@ class res(bot):
                         self.rets(6, toot_now, "public")
                     else:
                         try:  # 新しいVerに向けてコードを組まないといけない……
-                            with codecs.open('at_time\\' + account["acct"] + '.txt', 'r', 'UTF-8') as f:
+                            with codecs.open('at_time/' + account["acct"] + '.txt', 'r', 'UTF-8') as f:
                                 nstr = f.read()
                             print(nstr)
                             tstr = re.sub("\....Z", "", nstr)
                             last_time = datetime.strptime(tstr, '%Y-%m-%dT%H:%M:%S')
                             nstr = status['created_at']
-                            tstr = re.sub("\....Z", "", nstr)
+                            tstr = self.dlt(nstr)
                             now_time = datetime.strptime(tstr, '%Y-%m-%dT%H:%M:%S')
                             delta = now_time - last_time
                             print(delta)
@@ -687,11 +699,11 @@ class res(bot):
                                 self.rets(6, toot_now, "public")
                             elif delta.total_seconds() >= 10800:
                                 if now_time.hour in range(3, 9):
-                                    posting = self.rand_w('time\\kon.txt')
+                                    posting = self.rand_w('time/kon.txt')
                                 elif now_time.hour in range(9, 19):
-                                    posting = self.rand_w('time\\kob.txt')
+                                    posting = self.rand_w('time/kob.txt')
                                 else:
-                                    posting = self.rand_w('time\\oha.txt')
+                                    posting = self.rand_w('time/oha.txt')
                                 if account['acct'] == "5":  # やなちゃん専用挨拶
                                     print("○やなちゃんだ！！（*'∀'人）")
                                     name = "やなちゃん！！！！！！"
@@ -816,7 +828,7 @@ class res(bot):
                         elif re.compile("^[　.。,、 -]+$").search(adan):
                             toot_now = "٩(๑`^´๑)۶ちゃんとあだ名つけて！！！！"
                         else:
-                            with codecs.open('date\\adana\\' + account["acct"] + '.txt', 'w', 'UTF-8') as f:
+                            with codecs.open('date/adana/' + account["acct"] + '.txt', 'w', 'UTF-8') as f:
                                 f.write(adan)
                             toot_now = ("@{1} ٩(๑> ₃ <)۶分かったーーーー！！\n「{0}」って呼ぶようにするね！！" \
                                         "#ももなのあだ名事情".format(adan, account["acct"]))
@@ -840,7 +852,7 @@ class res(bot):
                         elif re.compile("^[　.。,、 -]+$").search(adan):
                             toot_now = "٩(๑`^´๑)۶ちゃんとあだ名つけて！！！！"
                         else:
-                            with codecs.open('date\\adana\\' + account["acct"] + '.txt', 'w', 'UTF-8') as f:
+                            with codecs.open('date/adana/' + account["acct"] + '.txt', 'w', 'UTF-8') as f:
                                 f.write(adan)
                             toot_now = ("@{1} ٩(๑> ₃ <)۶分かったーーーー！！\n「{0}」って呼ぶようにするね！！"
                                         "#ももなのあだ名事情".format(adan, account["acct"]))
@@ -856,7 +868,7 @@ class res(bot):
                                 if account["acct"] == "lamazeP":
                                     y = + 1000000000
                                 if z <= y:
-                                    with codecs.open('date\\adana\\' + acct + '.txt', 'w', 'UTF-8') as f:
+                                    with codecs.open('date/adana/' + acct + '.txt', 'w', 'UTF-8') as f:
                                         f.write(adan)
                                     toot_now = (":@" + account['acct'] + ": ٩(๑> ₃ <)۶分かったーーーー！！\n"
                                                                          ":@{1}:のことは「{0}」って呼ぶようにするね！！"
@@ -872,7 +884,7 @@ class res(bot):
                 self.rets(6, toot_now, "public")
             elif re.compile("ももな.*あだ[名な](キャンセル|消して)").search(status['content']):
                 print("○hitしました♪")
-                with codecs.open('date\\adana\\' + acct + '.txt', 'w', 'UTF-8') as f:
+                with codecs.open('date/adana/' + acct + '.txt', 'w', 'UTF-8') as f:
                     f.write("")
                 toot_now = ("@{} ٩(๑> ₃ <)۶分かったーーーー！！\n次からは普通に呼びかけるね！！".format(account["acct"]))
                 self.rets(6, toot_now, status["visibility"], status["id"])
@@ -881,7 +893,7 @@ class res(bot):
                 acct = ad.group(1)
                 print("○hitしました♪")
                 try:
-                    with codecs.open('date\\adana\\' + acct + '.txt', 'r', 'UTF-8') as f:
+                    with codecs.open('date/adana/' + acct + '.txt', 'r', 'UTF-8') as f:
                         name = f.read()
                     toot_now = (":@{1}:のあだ名は「{0}」だよ！！！！".format(name, acct))
                 except:
@@ -1002,9 +1014,9 @@ class game(bot):
                     else:
                         tex2 = tex1 + "（by:@{}:）".format(account["acct"])
                         try:
-                            with codecs.open("game\\prof\\{}.txt".format(acct), "r", 'utf-8', "ignore") as f:
+                            with codecs.open("game/prof/{}.txt".format(acct), "r", 'utf-8', "ignore") as f:
                                 tex0 = f.read()
-                            with codecs.open("game\\prof\\{}.txt".format(acct), "r", 'utf-8', "ignore") as f:
+                            with codecs.open("game/prof/{}.txt".format(acct), "r", 'utf-8', "ignore") as f:
                                 tex0s = f.readlines()
                             tex3 = ""
                             for x in tex0s:
@@ -1015,12 +1027,12 @@ class game(bot):
                                 else:
                                     tex3 = tex3 + x
                             try:
-                                with codecs.open("game\\prof\\{}.txt".format(acct), "w", 'utf-8', "ignore") as f:
+                                with codecs.open("game/prof/{}.txt".format(acct), "w", 'utf-8', "ignore") as f:
                                     print(tex3)
                                     f.write(tex3)
                                 print("○上書きしたよ！！！！")
                             except:
-                                with codecs.open("game\\prof\\{}.txt".format(acct), "w", 'utf-8', "ignore") as f:
+                                with codecs.open("game/prof/{}.txt".format(acct), "w", 'utf-8', "ignore") as f:
                                     f.write(tex0)
                                 print("○上書きできなかったよ……")
                             if len(tex0) > 400:
@@ -1029,17 +1041,17 @@ class game(bot):
                                 toot_now = ("٩(๑`^´๑)۶リプライのいたずらしちゃダメ！！！！")
                                 count.emo03(account["acct"], -64)
                             else:
-                                with codecs.open("game\\prof\\{}.txt".format(acct), "a", 'utf-8') as f:
+                                with codecs.open("game/prof/{}.txt".format(acct), "a", 'utf-8') as f:
                                     f.write(tex2 + "\n")
                                 if over == True:
                                     toot_now = (
                                     ":@{0}:ありがと！！\n:@{1}:のこと、覚え直した！！！！".format(account["acct"], acct) + "\n#ももな図鑑")
                                 else:
-                                    toot_now = (":@{0}:ありがと！！\n:@{1}:の知ってること、また一つ覚えた！！！！".format(account["acct"],
+                                    toot_now = (":@{0}:ありがと！！\n:@{1}:のこと、また一つ覚えた！！！！".format(account["acct"],
                                                                                                  acct) + "\n#ももな図鑑")
                         except:
                             print("エラー情報【図鑑】\n" + traceback.format_exc())
-                            with codecs.open("game\\prof\\{}.txt".format(acct), "a", 'utf-8') as f:
+                            with codecs.open("game/prof/{}.txt".format(acct), "a", 'utf-8') as f:
                                 f.write(tex2 + "\n")
                             toot_now = (":@{0}:ありがと！！\n:@{1}:のこと覚えた！！！！".format(account["acct"], acct) + "\n#ももな図鑑")
                 else:
@@ -1050,11 +1062,11 @@ class game(bot):
                 word = re.search("ももな.*:@([A-Za-z0-9_]+): ?(さん)?((について|の(こと|事))(教|おし)[えへ]て|って[誰何])", str(content))
                 acct = word.group(1)
                 try:
-                    with codecs.open("game\\prof\\{}.txt".format(acct), "r", 'utf-8', "ignore") as f:
+                    with codecs.open("game/prof/{}.txt".format(acct), "r", 'utf-8', "ignore") as f:
                         tex0 = f.read()
                         spo = ":@{}:はこんな人だよ！！".format(acct)
                     try:
-                        with codecs.open('date\\adana\\' + acct + '.txt', 'r', 'UTF-8', "ignore") as f:
+                        with codecs.open('date/adana/' + acct + '.txt', 'r', 'UTF-8', "ignore") as f:
                             name = f.read()
                             adan = name + "だよ！！"
                     except:
@@ -1149,7 +1161,7 @@ class game(bot):
                     self.rets(5, "٩(๑`^´๑)۶長い！！！！！！", "public")
                     pass
                 else:
-                    f = codecs.open('game\\cinema_word.txt', 'a', 'UTF-8')
+                    f = codecs.open('game/cinema_word.txt', 'a', 'UTF-8')
                     f.write(Title + ">>" + Ki + ">>" + Sho + ">>" + Ten + ">>" + Kets + ">>" + account["acct"] + "\r\n")
                     f.close()
                     v = threading.Timer(5, game.fav, [status["id"]])
@@ -1158,7 +1170,7 @@ class game(bot):
             return
         elif re.compile("ももな.*" + gameOut).search(content):
             if account["acct"] != "JC":
-                f = codecs.open('game\\cinema_word.txt', 'r', 'utf-8')
+                f = codecs.open('game/cinema_word.txt', 'r', 'utf-8')
                 word1 = []
                 for x in f:
                     word1.append(x.rstrip("\r\n").replace('\\n', '\n'))
@@ -1288,14 +1300,14 @@ class game(bot):
                                "[AaＡａ][.．](.+)", str(content))
                 # ファイル読み書きモードで呼び出し
                 try:
-                    with open("game\\quiz.json", "r") as f:
+                    with open("game/quiz.json", "r") as f:
                         quiz = json.load(f)
                 except:
                     quiz = {}
                 # lenを確認して番号振り
                 ("{0}{1}: {2}").format(account["acct"], qz.group(2) + ">>>" + qz.group)
                 # 書き出し処理＆保存
-                with open("game\\quiz.json", "w") as f:
+                with open("game/quiz.json", "w") as f:
                     json.dump(quiz, f)
                 return ("クイズ問題、登録しました（*'∀'人）\n"
                         "問題番号" + "xxx")
@@ -1316,7 +1328,7 @@ class game(bot):
                 memo = re.search("ももな.*(メモ|めも)[：:]?(<br />)(.+)?(<br />)", str(content))
                 tex = memo.group(3)  # 記録用の要素取り出し
                 # 書き出し処理＆保存
-                with codecs.open('game\\memo_word.txt', 'a', 'UTF-8') as f:
+                with codecs.open('game/memo_word.txt', 'a', 'UTF-8') as f:
                     f.write(tex + ">>" + account["acct"] + "\r\n")
                 # self.rets(5, "メモしました（*'∀'人）", "public")
                 return "メモしました（*'∀'人）"
@@ -1342,13 +1354,13 @@ class game(bot):
                     self.rets(5, toot_now, g_vis)
                 else:
                     Poe = re.sub("<br />", "\\n", Poe)
-                    f = codecs.open('game\\poem_word.txt', 'a', 'UTF-8')
+                    f = codecs.open('game/poem_word.txt', 'a', 'UTF-8')
                     f.write(str(Poe) + " &,@" + account["acct"] + "\r\n")
                     f.close()
                     v = threading.Timer(5, game.fav, [status["id"]])
                     v.start()
             elif re.compile("ﾄｩﾄｩﾄｩﾄｩｰﾄｩﾄｩ!").search(content):
-                f = codecs.open('game\\poem_word.txt', 'r', 'utf-8')
+                f = codecs.open('game/poem_word.txt', 'r', 'utf-8')
                 word1 = []
                 for x in f:
                     word1.append(x.rstrip("\r\n").replace('\\n', '\n'))
@@ -1385,14 +1397,14 @@ class game(bot):
                     self.rets(5, toot_now, g_vis)
                 else:
                     Poe = re.sub("<br />", "\\\\n", Poe)
-                    f = codecs.open('game\\poem_word.txt', 'a', 'UTF-8')
+                    f = codecs.open('game/poem_word.txt', 'a', 'UTF-8')
                     f.write(str(Poe) + " &,@" + account["acct"] + "\r\n")
                     f.close()
                     v = threading.Timer(5, game.fav, [status["id"]])
                     v.start()
             elif re.compile("ももな.*(ぽえむ|ポエム)(ゲーム|げーむ).*(ひとつ|おねがい|お願い|１つ|一つ)").search(content):
                 if account["acct"] != "JC":
-                    f = codecs.open('game\\poem_word.txt', 'r', 'utf-8')
+                    f = codecs.open('game/poem_word.txt', 'r', 'utf-8')
                     word1 = []
                     for x in f:
                         word1.append(x.rstrip("\r\n").replace('\\n', '\n'))
@@ -1426,14 +1438,14 @@ class game(bot):
                 if len(sen1) > 6 or len(sen2) > 8 or len(sen3) > 6:
                     pass
                 else:
-                    f = codecs.open('game\\senryu_word.txt', 'a', 'UTF-8')
+                    f = codecs.open('game/senryu_word.txt', 'a', 'UTF-8')
                     f.write(unesc(sen1) + ">>>" + unesc(sen2) + ">>>" +
                             unesc(sen3) + ">>>" + account["acct"] + "\r\n")
                     f.close()
                     v = threading.Timer(5, game.fav, [status["id"]])
                     v.start()
             elif re.compile("ﾄｩﾄｩﾄｩ-ﾄｩｰﾄｩ!").search(content):
-                f = codecs.open('game\\senryu_word.txt', 'r', 'utf-8')
+                f = codecs.open('game/senryu_word.txt', 'r', 'utf-8')
                 word1 = []
                 for x in f:
                     word1.append(x.rstrip("\r\n").replace('\\n', '\n'))
@@ -1465,7 +1477,7 @@ class game(bot):
                 if len(sen1) > 6 or len(sen2) > 8 or len(sen3) > 6:
                     pass
                 else:
-                    f = codecs.open('game\\senryu_word.txt', 'a', 'UTF-8')
+                    f = codecs.open('game/senryu_word.txt', 'a', 'UTF-8')
                     f.write(str(sen1) + ">>>" + str(sen2) + ">>>" +
                             str(sen3) + ">>>" + account["acct"] + "\r\n")
                     f.close()
@@ -1473,7 +1485,7 @@ class game(bot):
                     v.start()
             elif re.compile("ももな.*(せんりゅう|川柳)(ゲーム|げーむ).*(一句|ひとつ|おねがい|お願い|一つ|１つ)").search(content):
                 if account["acct"] != "JC":
-                    f = codecs.open('game\\senryu_word.txt', 'r', 'utf-8')
+                    f = codecs.open('game/senryu_word.txt', 'r', 'utf-8')
                     word1 = []
                     for x in f:
                         word1.append(x.rstrip("\r\n").replace('\\n', '\n'))
@@ -1716,7 +1728,7 @@ class clock(bot):
                 tex0 = self.load_txt("prof", name)
                 spo = "【定期】:@{}:を紹介するよ！！".format(name)
                 try:
-                    with codecs.open('date\\adana\\' + name + '.txt', 'r', 'UTF-8', "ignore") as f:
+                    with codecs.open('date/adana/' + name + '.txt', 'r', 'UTF-8', "ignore") as f:
                         name = f.read()
                         adan = name + "だよ！！"
                 except:
@@ -1849,7 +1861,7 @@ game = game()
 if __name__ == '__main__':
     # Logに書き込むファイルを作ります(✿´ ꒳ ` )
     nowing = str(datetime.now(JST).strftime("%Y%m%d%H%M%S"))
-    with open('log\\' + 'log_' + nowing + '.txt', 'w') as f:
+    with open('log/' + 'log_' + nowing + '.txt', 'w') as f:
         f.write("【log_{}】".format(str(datetime.now)) + '\n')
     ready = ready()
     count(), ready.go()  # 設定が入ってるクラスを展開(๑>◡<๑)
