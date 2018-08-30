@@ -193,18 +193,19 @@ class bot():
         with codecs.open(file, mode, 'utf-8', "ignore") as f:
             f.write(date)
 
-    def dlt(nstr):
+    def dlt(self, nstr):
         if re.search("\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z", nstr):
-            tstr = re.sub("\....Z", "", nstr)
-            a = datetime.strptime(tstr, '%Y-%m-%dT%H:%M:%S')
-            return a.replace(tzinfo=tz.tzutc())
+            tstr = re.sub("Z", "", nstr)
+            a = datetime.strptime(tstr, '%Y-%m-%dT%H:%M:%S.%f')
+            return a
         elif re.search("\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{6}\+00:00", nstr):
-            tstr = re.sub("\+00:00", "", nstr)
+            tstr = re.sub("\d{3}\+00:00", "", nstr)
             a = datetime.strptime(tstr, '%Y-%m-%d %H:%M:%S.%f')
-            return a.replace(tzinfo=tz.tzutc())
+            return a
         elif re.search("\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{6}", nstr):
-            a = datetime.strptime(nstr, '%Y-%m-%d %H:%M:%S.%f')
-            return a.replace(tzinfo=tz.tzutc())
+            tstr = re.sub("\d{3}$", "", nstr)
+            a = datetime.strptime(tstr, '%Y-%m-%d %H:%M:%S.%f')
+            return a
 
 class Home(StreamListener, bot):
     def on_update(self, status):
@@ -535,7 +536,7 @@ class res(bot):
                 f.write(created_at)  # \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z
         elif isinstance(created_at, datetime):
             z = created_at.isoformat()
-            y = re.sub("...$", "Z", z)
+            y = re.sub("\d{3}\+..:..$", "Z", z)
             with codecs.open('at_time/' + account["acct"] + '.txt', 'w', 'UTF-8') as f:  # 書き込みモードで開く
                 f.write(y)  # \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z
         else:
@@ -681,11 +682,11 @@ class res(bot):
                             with codecs.open('at_time/' + account["acct"] + '.txt', 'r', 'UTF-8') as f:
                                 nstr = f.read()
                             print(nstr)
-                            tstr = re.sub("\....Z", "", nstr)
-                            last_time = datetime.strptime(tstr, '%Y-%m-%dT%H:%M:%S')
+                            tstr = re.sub("Z$", "", nstr)
+                            last_time = datetime.strptime(tstr, '%Y-%m-%dT%H:%M:%S.%f')
                             nstr = status['created_at']
-                            tstr = self.dlt(nstr)
-                            now_time = datetime.strptime(tstr, '%Y-%m-%dT%H:%M:%S')
+                            tstr = self.dlt(str(nstr))
+                            now_time = datetime.strptime(str(tstr), '%Y-%m-%dT%H:%M:%S.%f')
                             delta = now_time - last_time
                             print(delta)
                             if delta.total_seconds() >= 604800:
