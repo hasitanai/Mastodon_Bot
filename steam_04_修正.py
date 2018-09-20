@@ -193,6 +193,14 @@ class bot():
         with codecs.open(file, mode, 'utf-8', "ignore") as f:
             f.write(date)
 
+    def url_user(self, acct):
+        try:
+            u = request.urlopen("https://friends.nico/@{}".format(acct))
+            return True
+        except:
+            return False
+
+
 class Home(StreamListener, bot):
     def on_update(self, status):
         account = status["account"]
@@ -637,34 +645,37 @@ class res(bot):
                             self.rets(6, toot_now, "public")
                     elif re.compile("([いイ行逝]って|出かけて|(風呂|ふろ).*(入|はい)って)(くる|きま([あぁー]*す|[きキ]マストドン|$))[^？\?]|"
                                     "おでかけ(する|しま([あぁー]*す|[しシ]マストドン|$))[^？\?]|(ふろ|風呂)って(くる|きま(す|$))|"
-                                    "(出勤|離脱|しゅっきん|りだつ)(する[^な]|しま([あぁー]*す[^？\?]|[しシ]マストドン|$))|"
-                                    "(出勤|離脱)([。っ！]*$|しま$)|(.+)して?(くる|きま([あぁー]*す[^？\?]|$)|[きキ]マストドン)([ー～！。よぞね]|$)|"
-                                    "(仕事|しごと).*(戻|もど)(る|りゅ|りま([すつ]|$))|(飯|めし)って(くる|きま(す|$))|(めし|飯)([い行]く|[お落]ち)|"
-                                    "^りだつ$"
-                                    ).search(content):
-                        print("○hitしました♪")
-                        print("○見送ります（*'∀'人）")
-                        if account['acct'] == "5":  # やなちゃん専用挨拶
-                            print("○やなちゃんだ！！（*'∀'人）")
-                            posting = '(*>_<*)ﾉいってらいってらーーーー！！！！'
-                        else:
-                            posting = 'いってらーーーー！！'
-                        toot_now = (":@{0}: {1}\n{2}\n#ニコフレ挨拶部".format(account['acct'], name, posting))
-                        self.rets(6, toot_now, "public")
+                                    "(出勤|離脱|しゅっきん|りだつ)(する|しま([あぁー]*す[^？\?]|[しシ]マストドン|$))|"
+                                    "(出勤|離脱)([。っ！]*$|しま(す|$)|する)|(.+)して(くる|きま([あぁー]*す[^？\?]|$)|"
+                                    "[きキ]マストドン)([ー～！。よぞね]|$)|(仕事|しごと).*(戻|もど)(る|りゅ|りま([すつ]|$))|"
+                                    "(飯|めし)って(くる|きま(す|$))|(めし|飯)([い行]く|[お落]ち|りだ|離脱)|^りだつ$|"
+                                    "落ち(る|ま([あぁー]*す[^？\?]|マストドン|$))").search(content):
+                        if not re.compile("ません|たか？|ました？|した(人|ひと)|の(人|ひと)|るな|しない").search(content):
+                            print("○hitしました♪")
+                            print("○見送ります（*'∀'人）")
+                            if account['acct'] == "5":  # やなちゃん専用挨拶
+                                print("○やなちゃんだ！！（*'∀'人）")
+                                posting = '(*>_<*)ﾉいってらいってらーーーー！！！！'
+                            else:
+                                posting = 'いってらーーーー！！'
+                            toot_now = (":@{0}: {1}\n{2}\n#ニコフレ挨拶部".format(account['acct'], name, posting))
+                            self.rets(6, toot_now, "public")
                     elif re.compile("ただいま(です|[！あー～。…]*(<br/ >|$)|(もど|戻)(ってきた|った|りました))|ただいマストドン"
                                     "|(おうち|家).*([着つ]いた|帰った|帰ってきた)|(帰宅|きたく)(した|しました|$)|ほかいま|"
-                                    "^ただいま|(飯|めし|ふろ|風呂|シャワー).*(もど|戻)ってき(た|ました)|ほかってき(た|ました)").search(content):
-                        print("○hitしました♪")
-                        print("○優しく迎えます（*'∀'人）")
-                        if account['acct'] == "5":  # やなちゃん専用挨拶
-                            print("○やなちゃんだ！！（*'∀'人）")
-                            posting = '٩(๑❛ᴗ❛๑)۶おかえりおかえりーー！！'
-                        else:
-                            posting = '( 〃 ❛ᴗ❛ 〃 )おかえりおかえりーー！！'
-                        toot_now = (":@{0}: {1}\n{2}\n#ニコフレ挨拶部".format(account['acct'], name, posting))
-                        self.rets(6, toot_now, "public")
+                                    "^ただいま|(飯|めし|ふろ|風呂|シャワー).*(もど|戻)ってき(た|ました)|ほかってき(た|ました)|"
+                                    "(生き返った|生き返りました)").search(content):
+                        if not re.compile("たみたい|たか？|ました？|した(人|ひと)|の(人|ひと)").search(content):
+                            print("○hitしました♪")
+                            print("○優しく迎えます（*'∀'人）")
+                            if account['acct'] == "5":  # やなちゃん専用挨拶
+                                print("○やなちゃんだ！！（*'∀'人）")
+                                posting = '٩(๑❛ᴗ❛๑)۶おかえりおかえりーー！！'
+                            else:
+                                posting = '( 〃 ❛ᴗ❛ 〃 )おかえりおかえりーー！！'
+                            toot_now = (":@{0}: {1}\n{2}\n#ニコフレ挨拶部".format(account['acct'], name, posting))
+                            self.rets(6, toot_now, "public")
                     else:
-                        try:  # 新しいVerに向けてコードを組まないといけない……
+                        try:  # 新しいVerに向けてコード組んだ……？？
                             with codecs.open('at_time/' + account["acct"] + '.txt', 'r', 'UTF-8') as f:
                                 nstr = f.read()
                             print(nstr)
@@ -672,7 +683,8 @@ class res(bot):
                             last_time = datetime.strptime(tstr, '%Y-%m-%dT%H:%M:%S.%f')
                             created_at = status['created_at']
                             if isinstance(created_at, str):
-                                now_time = datetime.strptime(created_at.pla, '%Y-%m-%dT%H:%M:%S.%f')
+                                tstr = re.sub("Z$", "", created_at)
+                                now_time = datetime.strptime(tstr, '%Y-%m-%dT%H:%M:%S.%f')
                             elif isinstance(created_at, datetime):
                                 now_time = created_at.replace(tzinfo=None)
                             delta = now_time - last_time
@@ -889,7 +901,7 @@ class res(bot):
                     toot_now = (":@{}:のあだ名は設定してないよ！！！！".format(acct))
                 self.rets(6, toot_now, "public")
 
-    def res05(self, status):  # t.co警察とか
+    def res05(self, status):  # t.co警察とかのお約束
         account = status["account"]
         content = Re1.text(status["content"])
         if re.search('^あ$', content):
@@ -936,6 +948,17 @@ class res(bot):
                     def cool():
                         count.n = False
                     t = threading.Timer(180, cool)
+                    t.start()
+        elif re.compile("^しばちゃん(は|と[言い]えば)[～〜ー]*？").search(content):
+            if not account["acct"] == "Ko4ba":
+                if Ko4ba == False:
+                    print("○hitしました♪")
+                    toot_now = (":@Ko4ba: ＼絶好調に美少女----！！！！／")
+                    self.rets(3, toot_now, "public")
+                    count.Ko4ba = True
+                    def cool():
+                        count.Ko4ba = False
+                    t = threading.Timer(90, cool)
                     t.start()
 
     def fav01(self, status):  # 呼ばれた気がしたらニコる
@@ -1598,7 +1621,7 @@ class game(bot):
                 pass
             return ct
         toot_now = None
-        if re.search('[待ま]って$|[待ま]て$|^[待ま]って|^[待ま]て|(いや|ちょっと)([待ま]って)|'
+        if re.search('^[待ま]って|[待ま]て|待って$|(いや|ちょっと)([待ま]って)|'
                      '[待ま]て(や|よ|[待ま]て)|[待ま]った', content):
             print("◆待たない！！！！")
             count.wait = ck("wait", count.wait)
@@ -1627,7 +1650,7 @@ class game(bot):
             if lx >= 50:
                 if toot_now is None:
                     if count.tori != 0:
-                        toot_now = ("青鶏の味噌和え{}丁！".format(str(count.tori)))
+                        toot_now = ("青鶏の味噌和え{}丁！\n#ももなの口癖数え事情".format(str(count.tori)))
                     else:
                         toot_now = ("青鶏の味噌和え……和え……\n"
                                     "٩(๑`^´๑)۶ああもう！！！！"
@@ -1640,6 +1663,10 @@ class game(bot):
             count.oahyo = ck("oahyo", count.oahyo)
         if re.search('死ね|死んで|^しね$|ﾀﾋね|氏ね$|殺す|殺せ', content):
             if not re.search('死ねる|死ねない|死んで(ほしく|欲しく)ない|殺すな|殺[させ]ない', content):
+                print("◆怖いよ！！！！")
+                count.shine = ck("shine", count.shine)
+                self.thank(account, -80)
+        if re.search('^は[あぁ]*？*|クソザコ', content):
                 print("◆怖いよ！！！！")
                 count.shine = ck("shine", count.shine)
                 self.thank(account, -80)
@@ -1712,8 +1739,19 @@ class clock(bot):
                 ls = os.listdir("game/prof/")
                 x = len(ls)
                 y = random.randint(1, x)
-                z = ls[y-1]
-                name, ext = os.path.splitext(z)
+                z = ls[y - 1]
+                def r1(x):
+                    name = ""
+                    u = False
+                    while u is False:
+                        y = random.randint(1, x)
+                        z = ls[y-1]
+                        name, ext = os.path.splitext(z)
+                        u = self.url_user(name)
+                    else:
+                        print("定期図鑑を検出！！！！")
+                    return name
+                name = r1(x)
                 tex0 = self.load_txt("prof", name)
                 spo = "【定期】:@{}:を紹介するよ！！".format(name)
                 try:
@@ -1746,10 +1784,12 @@ class count():
     memo = 0
     n = False
     t = False
+    Ko4ba = False
     tori = 0
     wait = 0
     oahyo = 0
     shine = 0
+    but = 0
     movieCT = False
 
     def emo01(time=10800):  # 定期的に評価を下げまーーす♪（無慈悲）
@@ -1860,17 +1900,27 @@ if __name__ == '__main__':
         f.write("【log_{}】".format(str(datetime.now)) + '\n')
     ready = ready()
     count(), ready.go()  # 設定が入ってるクラスを展開(๑>◡<๑)
+    #準備
+    uuu = threading.Thread(target=ready.local)
+    lll = threading.Thread(target=ready.user)
+    fff = threading.Thread(target=count.emo01)
+    ccc = threading.Thread(target=clock().clock)
+    #発言
+    lll.start() #先にホーム監視させます
+    """
+    bot().rets(5, "(*ﾟ﹃ﾟ*)……はっ！！！！", "public")
+    bot().rets(5,  "(*ﾟ﹃ﾟ*)あれ……お、おは……よう……？？", "public")
+    bot().rets(10,  "(*ﾟ̥̥̥̥̥̥̥̥﹃ﾟ̥̥̥̥̥̥̥̥*)宿題の追い上げしてたつもりが……丸二日も寝てた……", "public")
+    bot().rets(10,  "( ´•̥×•̥` )はっ、落ち込んでる場合じゃなかった！！！！, ", "public")
+    bot().rets(5,  "(｡>﹏<｡)あいさつする……！！", "public")
+    """
     m = input("start: ")
     if m is "":
         pass
     else:
         bot().rets(5, "(*ﾟ﹃ﾟ*)……はっ！！！！", "public")
         bot().rets(5, m, "public")
-    uuu = threading.Thread(target=ready.local)
-    lll = threading.Thread(target=ready.user)
-    fff = threading.Thread(target=count.emo01)
-    ccc = threading.Thread(target=clock().clock)
+    #スタート
     uuu.start()
-    lll.start()
     fff.start()
     ccc.start()
