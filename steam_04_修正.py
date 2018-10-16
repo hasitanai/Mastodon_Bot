@@ -1638,7 +1638,7 @@ class game(bot):
                 a = 0
                 if not date:
                     date = {}
-                    date.update({name: {}})
+                date.update({name: {}})
             a = a + 1
             date[name].update({today: a})
             dump("habit", acct, date, "w")
@@ -1651,58 +1651,61 @@ class game(bot):
                 pass
             return ct
         toot_now = None
-        if re.search('しまった', content):
-            print("◆あらら？")
-            count.shimatta = ck("shimatta", count.shimatta)
-        elif re.search('^([待ま]って)|[待ま]て|待って$|(いや|ちょっと)([待ま]って)|'
-                     '[待ま]て(や|よ|[待ま]て)|[待ま]った', content):
-            print("◆待たない！！！！")
-            count.wait = ck("wait", count.wait)
-            lx = random.randint(0, 15)
-            def text(lx):
-                if lx < 4:
-                    text=("(๑•̀ㅁ•́๑)いや待てない！！")
-                elif lx < 8:
-                    text = ("(๑•̀ㅁ•́๑)待てない！！")
-                elif lx < 12:
-                    text = ("(๑•̀ㅁ•́๑)待ちません！！")
-                elif lx < 13:
-                    text = ("(๑•̀ㅁ•́๑)時間は待ってはくれないよ！！")
-                elif lx < 14:
-                    text = ("(๑•̀ㅁ•́๑)その待ったは無効でーーーーす！！")
-                else:
-                    text = ("(๑•̀ㅁ•́๑)待った警察だ！！")
-                return text
-            toot_now = text(lx)
-            self.rets(5, toot_now, "public")
-
-        if re.search('^とりま|とりあえず', content):
-            print("◆とりあえず警察だ！！！！")
-            count.tori = ck("tori", count.tori)
-            lx = random.randint(0,100)
-            if lx >= 50:
-                if toot_now is None:
-                    if count.tori != 0:
-                        toot_now = ("青鶏の味噌和え{}丁！\n#ももなの口癖数え事情".format(str(count.tori)))
-                    else:
-                        toot_now = ("青鶏の味噌和え……和え……\n"
-                                    "٩(๑`^´๑)۶ああもう！！！！"
-                                    "回数忘れたやり直し！！！！".format(str(count.tori)))
+        if acct != "JC":
+            if re.search('しまった', content):
+                print("◆あらら？")
+                count.shimatta = ck("shimatta", count.shimatta)
+            elif re.search('^([待ま]って)|[待ま]て|待って$|(いや|ちょっと)([待ま]って)|'
+                         '[待ま]て(や|よ|[待ま]て)|[待ま]った', content):
+                if not re.search('[待ま]てない|([待ま]ってくれない)'):
+                    print("◆待たない！！！！")
+                    count.wait = ck("wait", count.wait)
+                    lx = random.randint(0, 15)
+                    def text(lx):
+                        if lx < 4:
+                            text = ("(๑•̀ㅁ•́๑)いや待てない！！")
+                        elif lx < 8:
+                            text = ("(๑•̀ㅁ•́๑)待てない！！")
+                        elif lx < 12:
+                            text = ("(๑•̀ㅁ•́๑)待ちません！！")
+                        elif lx < 13:
+                            text = ("(๑•̀ㅁ•́๑)時間は待ってはくれないよ！！")
+                        elif lx < 14:
+                            text = ("(๑•̀ㅁ•́๑)その待ったは無効でーーーーす！！")
+                        else:
+                            text = ("(๑•̀ㅁ•́๑)待った警察だ！！")
+                        return text
+                    toot_now = text(lx)
                     self.rets(5, toot_now, "public")
-                    print("鶏から！")
 
-        if re.search('お[おぉー～]あ[ー～]ひょ[おぉー～]', content):
-            print("◆おあひょう文化だ！！！！")
-            count.oahyo = ck("oahyo", count.oahyo)
-        if re.search('死ね|死んで|^しね$|ﾀﾋね|氏ね$|殺す|殺せ', content):
-            if not re.search('死ねる|死ねない|死んで(ほしく|欲しく)ない|殺すな|殺[させ]ない', content):
+            if re.search('^とりま|とりあえず', content):
+                if not re.search('とります|とりません', content):
+                    print("◆とりあえず警察だ！！！！")
+                    count.tori = ck("tori", count.tori)
+                    lx = random.randint(0,100)
+                    if lx >= 50:
+                        if toot_now is None:
+                            if count.tori != 0:
+                                toot_now = ("青鶏の味噌和え{}丁！\n#ももなの口癖数え事情".format(str(count.tori)))
+                            else:
+                                toot_now = ("青鶏の味噌和え……和え……\n"
+                                            "٩(๑`^´๑)۶ああもう！！！！"
+                                            "回数忘れたやり直し！！！！".format(str(count.tori)))
+                            self.rets(5, toot_now, "public")
+                            print("鶏から！")
+
+            if re.search('お[おぉー～]あ[ー～]ひょ[おぉー～]', content):
+                print("◆おあひょう文化だ！！！！")
+                count.oahyo = ck("oahyo", count.oahyo)
+            if re.search('死ね|死んで|^しね$|ﾀﾋね|氏ね$|殺す|殺せ', content):
+                if not re.search('死ねる|死ねない|死んで(ほしく|欲しく)ない|殺すな|殺[させ]ない', content):
+                    print("◆怖いよ！！！！")
+                    count.shine = ck("shine", count.shine)
+                    self.thank(account, -64)
+            if re.search('^は[あぁ]*？*|クソザコ', content):
                 print("◆怖いよ！！！！")
                 count.shine = ck("shine", count.shine)
-                self.thank(account, -80)
-        if re.search('^は[あぁ]*？*|クソザコ', content):
-            print("◆怖いよ！！！！")
-            count.shine = ck("shine", count.shine)
-            self.thank(account, -80)
+                self.thank(account, -64)
 
 
     def honyaku(self, status):  # ももな翻訳（中止）
@@ -1821,6 +1824,7 @@ class count():
     oahyo = 0
     shine = 0
     but = 0
+    shimatta = 0
     movieCT = False
 
     def emo01(time=10800):  # 定期的に評価を下げまーーす♪（無慈悲）
