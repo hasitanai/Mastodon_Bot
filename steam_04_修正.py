@@ -413,10 +413,40 @@ def men(status):
             tx = com.group(2)
             bot.toot("@lamazeP ももな図鑑の訂正要望が来たよ！！\n"
                      ":@{0}: 「{1}」".format(account["acct"], tx), "direct", status["id"])
+        elif re.compile("ももな.*あだ[名な][｢「](.+)[」｣](って|と)[呼よ]んで").search(status['content']):
+            data_dir_path = u"./thank/"
+            abs_name = data_dir_path + '/' + account["acct"] + '.txt'
+            with open(abs_name, 'r')as f:
+                x = f.read()
+                y = int(x)
+            if y >= 0:
+                print("○hitしました♪")
+                ad = re.search("ももな.*あだ[名な][｢「](.+)[」｣](って|と)[呼よ]んで", status['content'])
+                name = ad.group(1)
+                adan = Re1.text(name)
+                adan = re.sub(':', '', adan)
+                adan = re.sub('(@[a-zA-Z0-9_]+)', ':\1:', adan)
+                sekuhara = self.block01(status)
+                bougen = self.block02(status)
+                if len(adan) > 50:
+                    toot_now = "@{} ٩(๑`^´๑)۶長い！！！！！！".format(account["acct"])
+                else:
+                    if sekuhara:
+                        toot_now = "@{} (｡>﹏<｡)そんないやらしい呼び方出来ないよーー……".format(account["acct"])
+                    elif bougen:
+                        toot_now = "@{} (｡>﹏<｡)ふぇぇ暴言怖いよーー……".format(account["acct"])
+                    elif re.compile("^[　.。,、 -]+$").search(adan):
+                        toot_now = "@{} ٩(๑`^´๑)۶ちゃんとあだ名つけて！！！！".format(account["acct"])
+                    else:
+                        with codecs.open('date/adana/' + account["acct"] + '.txt', 'w', 'UTF-8') as f:
+                            f.write(adan)
+                        toot_now = ("@{1} ٩(๑> ₃ <)۶分かったーーーー！！\n「{0}」って呼ぶようにするね！！" \
+                                    "#ももなのあだ名事情".format(adan, account["acct"]))
+                self.rets(6, toot_now, status["visibility"], status["id"])
         else:
             pass
-    v = threading.Timer(5, bot.fav_now, [status["id"]])
-    v.start()
+        v = threading.Timer(5, bot.fav_now, [status["id"]])
+        v.start()
 
 
 class res(bot):
@@ -649,7 +679,7 @@ class res(bot):
                                     "(出勤|離脱)([。っ！]*$|しま(す|$)|する)|(.+)して(くる|きま([あぁー]*す[^？\?]|$)|"
                                     "[きキ]マストドン)([ー～！。よぞね]|$)|(仕事|しごと).*(戻|もど)(る|りゅ|りま([すつ]|$))|"
                                     "(飯|めし)って(くる|きま(す|$))|(めし|飯)([い行]く|[お落]ち|りだ|離脱)|^りだつ$|"
-                                    "落ち(る|ま([あぁー]*す[^？\?]|マストドン|$))").search(content):
+                                    "落ち(る$|ま([あぁー]*す[^？\?]|マストドン|$))").search(content):
                         if not re.compile("ません|たか？|ました？|した(人|ひと)|の(人|ひと)|るな|しない").search(content):
                             print("○hitしました♪")
                             print("○見送ります（*'∀'人）")
@@ -950,8 +980,8 @@ class res(bot):
                     t = threading.Timer(180, cool)
                     t.start()
         elif re.compile("^しばちゃん(は|と[言い]えば)[～〜ー]*？").search(content):
-            if not account["acct"] == "Ko4ba":
-                if Ko4ba == False:
+            if account["acct"] == "Ko4ba":
+                if count.Ko4ba == False:
                     print("○hitしました♪")
                     toot_now = (":@Ko4ba: ＼絶好調に美少女----！！！！／")
                     self.rets(3, toot_now, "public")
@@ -1603,12 +1633,12 @@ class game(bot):
                     else:
                         a = 0
                 else:
-                    date.update({name: 0})
+                    date.update({name: {}})
             except:
                 a = 0
                 if not date:
                     date = {}
-                    date.update({name: 0})
+                    date.update({name: {}})
             a = a + 1
             date[name].update({today: a})
             dump("habit", acct, date, "w")
@@ -1621,7 +1651,10 @@ class game(bot):
                 pass
             return ct
         toot_now = None
-        if re.search('^[待ま]って|[待ま]て|待って$|(いや|ちょっと)([待ま]って)|'
+        if re.search('しまった', content):
+            print("◆あらら？")
+            count.shimatta = ck("shimatta", count.shimatta)
+        elif re.search('^([待ま]って)|[待ま]て|待って$|(いや|ちょっと)([待ま]って)|'
                      '[待ま]て(や|よ|[待ま]て)|[待ま]った', content):
             print("◆待たない！！！！")
             count.wait = ck("wait", count.wait)
@@ -1643,7 +1676,7 @@ class game(bot):
             toot_now = text(lx)
             self.rets(5, toot_now, "public")
 
-        if re.search('とり(あえず|ま)', content):
+        if re.search('^とりま|とりあえず', content):
             print("◆とりあえず警察だ！！！！")
             count.tori = ck("tori", count.tori)
             lx = random.randint(0,100)
@@ -1667,12 +1700,10 @@ class game(bot):
                 count.shine = ck("shine", count.shine)
                 self.thank(account, -80)
         if re.search('^は[あぁ]*？*|クソザコ', content):
-                print("◆怖いよ！！！！")
-                count.shine = ck("shine", count.shine)
-                self.thank(account, -80)
-        if re.search('しまった', content):
-            print("◆あらら？")
-            count.shimatta = ck("shimatta", count.shimatta)
+            print("◆怖いよ！！！！")
+            count.shine = ck("shine", count.shine)
+            self.thank(account, -80)
+
 
     def honyaku(self, status):  # ももな翻訳（中止）
         # ネイティオ語が分かるようになる装置
@@ -1892,6 +1923,12 @@ class ready():
 res = res()
 game = game()
 
+def first1():
+    bot().rets(5, "(*ﾟ﹃ﾟ*)……はっ！！！！", "public")
+    bot().rets(5,  "(*ﾟ﹃ﾟ*)あれ……お、おは……よう……？？", "public")
+    bot().rets(10,  "(*ﾟ̥̥̥̥̥̥̥̥﹃ﾟ̥̥̥̥̥̥̥̥*)宿題の追い上げしてたつもりが……丸二日も寝てた……", "public")
+    bot().rets(10,  "( ´•̥×•̥` )はっ、落ち込んでる場合じゃなかった！！！！, ", "public")
+    bot().rets(5,  "(｡>﹏<｡)あいさつする……！！", "public")
 
 if __name__ == '__main__':
     # Logに書き込むファイルを作ります(✿´ ꒳ ` )
@@ -1907,13 +1944,7 @@ if __name__ == '__main__':
     ccc = threading.Thread(target=clock().clock)
     #発言
     lll.start() #先にホーム監視させます
-    """
-    bot().rets(5, "(*ﾟ﹃ﾟ*)……はっ！！！！", "public")
-    bot().rets(5,  "(*ﾟ﹃ﾟ*)あれ……お、おは……よう……？？", "public")
-    bot().rets(10,  "(*ﾟ̥̥̥̥̥̥̥̥﹃ﾟ̥̥̥̥̥̥̥̥*)宿題の追い上げしてたつもりが……丸二日も寝てた……", "public")
-    bot().rets(10,  "( ´•̥×•̥` )はっ、落ち込んでる場合じゃなかった！！！！, ", "public")
-    bot().rets(5,  "(｡>﹏<｡)あいさつする……！！", "public")
-    """
+    # first1()
     m = input("start: ")
     if m is "":
         pass
