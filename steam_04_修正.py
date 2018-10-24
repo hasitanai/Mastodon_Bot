@@ -939,22 +939,22 @@ class res(bot):
                 print("○hitしました♪")
                 toot_now = ("い".format(account["acct"]))
                 self.rets(1, toot_now, "public")
-        elif re.search('^あっ$', content):
+        if re.search('^あっ$', content):
             if account["acct"] != "JC":
                 print("○hitしました♪")
                 toot_now = ("いっ".format(account["acct"]))
                 self.rets(1, toot_now, "public")
-        elif re.search('(ぬるぽ|NullPointerException)', content):
+        if re.search('^(ぬるぽ|NullPointerException)$', content):
             if account["acct"] != "JC":
                 print("○hitしました♪")
                 toot_now = ("ｶﾞｯ".format(account["acct"]))
                 self.rets(1, toot_now, "public")
-        elif re.search('ちくわ大明神', content):
+        if re.search('^ちくわ大明神$', content):
             if account["acct"] != "JC":
                 print("○hitしました♪")
                 toot_now = ("(๑•̀ㅁ•́๑)誰だ今の！？".format(account["acct"]))
                 self.rets(2, toot_now, "public")
-        elif re.search('(?:[^a-z0-9_-]|^)t\.co/[a-zA-Z0-9]', status["content"]):
+        if re.search('(?:[^a-z0-9_-]|^)t\.co/[a-zA-Z0-9]', status["content"]):
             if account["acct"] != "JC":
                 if count.t == False:
                     print("○hitしました♪")
@@ -968,7 +968,7 @@ class res(bot):
                 else:
                     print("○t.coしつこい٩(๑`^´๑)۶")
                 self.thank(account, -32)
-        elif re.compile("(なんでも(する|します)|何でも(する|します)|ナンデモ(する|します|シマス)|ナンでも(する|します))").search(content):
+        if re.compile("(なんでも(する|します)|何でも(する|します)|ナンデモ(する|します|シマス)|ナンでも(する|します))").search(content):
             if not account["acct"] != "4_0s":
                 if count.n == False:
                     print("○hitしました♪")
@@ -979,17 +979,35 @@ class res(bot):
                         count.n = False
                     t = threading.Timer(180, cool)
                     t.start()
-        elif re.compile("^しばちゃん(は|と[言い]えば)[～〜ー]*？").search(content):
+        if re.compile("^しばちゃん(は|と[言い]えば)[～〜ー]*？").search(content):
             if account["acct"] == "Ko4ba":
                 if count.Ko4ba == False:
                     print("○hitしました♪")
-                    toot_now = (":@Ko4ba: ＼絶好調に美少女----！！！！／")
+                    toot_now = (":@Ko4ba: ＼絶好調に美少女ーーーー！！！！／")
                     self.rets(3, toot_now, "public")
                     count.Ko4ba = True
                     def cool():
                         count.Ko4ba = False
                     t = threading.Timer(90, cool)
                     t.start()
+        if re.compile("^ももな.*(かわいい|可愛い)").search(content):
+            print("○hitしました♪")
+            toot_now = ("でしょーーーー？？")
+            self.rets(4, toot_now, "public")
+            count.k = True
+            def cool():
+                count.k = False
+            t = threading.Timer(60, cool)
+            t.start()
+        if re.compile("\(´･ω･`\)").search(content):
+            print("○メモ")
+            toot_now = ("シャキーンとして！！")
+            self.rets(4, toot_now, "public")
+            count.shobo = True
+            def cool():
+                count.shobo = False
+            t = threading.Timer(90, cool)
+            t.start()
 
     def fav01(self, status):  # 呼ばれた気がしたらニコる
         account = status["account"]
@@ -1682,7 +1700,7 @@ class game(bot):
                 if not re.search('とります|とりません', content):
                     print("◆とりあえず警察だ！！！！")
                     count.tori = ck("tori", count.tori)
-                    lx = random.randint(0,100)
+                    lx = random.randint(0, 100)
                     if lx >= 50:
                         if toot_now is None:
                             if count.tori != 0:
@@ -1818,7 +1836,9 @@ class count():
     memo = 0
     n = False
     t = False
+    k = False
     Ko4ba = False
+    shobo = False
     tori = 0
     wait = 0
     oahyo = 0
