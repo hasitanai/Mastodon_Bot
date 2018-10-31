@@ -30,4 +30,6 @@ if not t:
         print("foo?")
 else:
     for x in t:
-        print(x["id"])
+        print("最新トゥート:{}".format(x["id"]))
+        for y in x["account"]:
+            print("{0}:{1}".format(y,x["account"][y]))
