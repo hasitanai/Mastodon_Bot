@@ -307,6 +307,7 @@ def LTL(status):  # ここに受け取ったtootに対してどうするか追�
     res.check01(status)
     res.fav01(status)
     res.fav02(status)
+    res.fav03(status)
     res.res01(status)
     res.res02(status)
     res.res03(status)
@@ -1043,15 +1044,12 @@ class res(bot):
             if point < -32:
                 self.repoint(account["acct"], -32)
 
-
-
     def fav01(self, status):  # 呼ばれた気がしたらニコる
         account = status["account"]
         if re.compile("(ももな|:@JC:|ちゃんもも|:nicoru\d*:|\WJC\W|もなな)").search(status['content']):
             self.thank(account, 8)
             v = threading.Timer(5, self.fav_now, [status["id"]])
             v.start()
-
 
     def fav02(self, status):  # 期間限定用←とは
         account = status["account"]
@@ -1083,6 +1081,17 @@ class res(bot):
             self.thank(account, 2400)
             v = threading.Timer(5, self.fav_now, [status["id"]])
             v.start()
+
+    def fav03(self, status):
+        account = status["account"]
+        content = status['content']
+        if count.shobo == True:
+            if re.compile("[´ʹ́′][・･]ω[・･][｀`]").search(content):
+                self.thank(account, -4)
+            elif re.compile("[｀`][・･]ω[・･][´ʹ́′]|シャキーン|ｼｬｷｰﾝ|( ･`ω･´)").search(content):
+                self.thank(account, 64)
+                v = threading.Timer(5, self.fav_now, [status["id"]])
+                v.start()
 
 
 class game(bot):
@@ -1223,6 +1232,63 @@ class game(bot):
                 if len(toot_now) > 500:
                     toot_now = ("(｡>﹏<｡)ごめんね……:@{}:を紹介しようと思ったけど文字数がオーバーしちゃった……".format(acct) + "\n#ももな図鑑")
                 self.rets(6, toot_now, "public", spo=spo)
+            elif re.compile("ももな.*(誰か|だれかで|どなたか|らんだむで?|ランダム?)(図鑑|ずかん)(紹介|しょうかい)(して|お願い|おねがい)").search(content):
+                ls = os.listdir("game/prof/")
+                v = len(ls)
+                def r1(v):
+                    name = ""
+                    u = False
+                    while u is False:
+                        y = random.randint(1, v)
+                        z = ls[y - 1]
+                        name, ext = os.path.splitext(z)
+                        a = mastodon.account_search(name, limit=1)
+                        for x in a:
+                            print(x)
+                            if x["acct"] == name:
+                                t = mastodon.account_statuses(x["id"], limit=1)
+                                if not t:
+                                    if x['statuses_count'] > 0:
+                                        print("Out")
+                                        pass
+                                    else:
+                                        print("foo?")
+                                        pass
+                                else:
+                                    print("Hit! →", x["acct"], "ID:{}".format(x["id"]))
+                                    u = self.url_user(name)
+                            else:
+                                print("No...")
+                    else:
+                        print("定期図鑑を検出！！！！")
+                    return name
+                name = r1(v)
+                tex0 = self.load_txt("prof", name)
+                if name == "JC":
+                    spo = "じゃあももな:@{}:の図鑑紹介するね！！".format(name)
+                else:
+                    spo = "わかった！！:@{}:を紹介するよ！！".format(name)
+                try:
+                    with codecs.open('date/adana/' + name + '.txt', 'r', 'UTF-8', "ignore") as f:
+                        name = f.read()
+                        adan = name + "だよ！！"
+                except:
+                    adan = "まだないみたいだよ！！"
+                toot_now = (tex0 + "\nあだ名は{}".format(adan) +
+                            "\n"
+                            "どんどん図鑑登録していってね💞\n"
+                            "#ももな図鑑")
+                if len(toot_now) > 500:
+                    toot_now = (tex0 + "\nあだ名は{}".format(adan) +
+                                "#ももな図鑑")
+                self.rets(10, toot_now, "public", spo=spo)
+
+                def cool():
+                    self.cooltime = False
+                    print("クールタイム終了！！")
+
+                q = threading.Timer(120, cool)
+                q.start()
 
     def movie(self, status):  # 動画IDをランダムで探す機能
         account = status["account"]
@@ -1761,7 +1827,7 @@ class game(bot):
                 count.shimatta = ck("shimatta", count.shimatta)
             elif re.search('^([待ま]って)|[待ま]て|待って$|(いや|ちょっと)([待ま]って)|'
                          '[待ま]て(や|よ|[待ま]て)|待った|^まった', content):
-                if not re.search('[待ま]てない|([待ま]ってくれない)', content):
+                if not re.search('[待ま]て(ない|ね[えぇ])|([待ま]ってくれ(ない|ね[えぇ]))', content):
                     print("◆待たない！！！！")
                     count.wait = ck("wait", count.wait)
                     if count.wait_cool == False:
@@ -1894,16 +1960,15 @@ class clock(bot):
                             if x["acct"] == name:
                                 t = mastodon.account_statuses(x["id"], limit=1)
                                 if not t:
-                                    if status['statuses_count'] > 0:
+                                    if x['statuses_count'] > 0:
                                         print("Out")
                                         pass
                                     else:
                                         print("foo?")
                                         pass
                                 else:
-                                    for x in t:
-                                        print("Hit! →", x["acct"], "ID:{}".format(x["id"]))
-                                        u = self.url_user(name)
+                                    print("Hit! →", x["acct"], "ID:{}".format(x["id"]))
+                                    u = self.url_user(name)
                             else:
                                 print("No...")
                     else:
@@ -1911,7 +1976,10 @@ class clock(bot):
                     return name
                 name = r1(v)
                 tex0 = self.load_txt("prof", name)
-                spo = "【定期】:@{}:を紹介するよ！！".format(name)
+                if name == "JC":
+                    spo = "【定期】ももな:@{}:の図鑑紹介だよ！！".format(name)
+                else:
+                    spo = "【定期】:@{}:を紹介するよ！！".format(name)
                 try:
                     with codecs.open('date/adana/' + name + '.txt', 'r', 'UTF-8', "ignore") as f:
                         name = f.read()
